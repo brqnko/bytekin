@@ -31,7 +31,8 @@ public interface IBytekinMethodTransformer {
         for (Method method : clazz.getDeclaredMethods()) {
 
             for (Annotation annotation : method.getDeclaredAnnotations()) {
-                if (annotation instanceof Inject inject) {
+                if (annotation instanceof Inject) {
+                    Inject inject = (Inject) annotation;
                     MethodData methodData = new MethodData(
                             mapping.getMethodName(className, inject.methodName(), inject.methodDesc()),
                             mapping.getMethodDesc(className, inject.methodName(), inject.methodDesc())
@@ -40,7 +41,8 @@ public interface IBytekinMethodTransformer {
                     methodTransformers.add(new InjectMethodTransformer(logger, mapping, method, inject, className));
                 }
 
-                if (annotation instanceof Invoke invoke) {
+                if (annotation instanceof Invoke) {
+                    Invoke invoke = (Invoke) annotation;
                     MethodData methodData = new MethodData(
                             mapping.getMethodName(className, invoke.targetMethodName(), invoke.targetMethodDesc()),
                             mapping.getMethodDesc(className, invoke.targetMethodName(), invoke.targetMethodDesc())
