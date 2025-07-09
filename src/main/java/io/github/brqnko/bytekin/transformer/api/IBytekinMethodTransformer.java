@@ -4,7 +4,7 @@ import io.github.brqnko.bytekin.injection.Inject;
 import io.github.brqnko.bytekin.injection.Invoke;
 import io.github.brqnko.bytekin.logging.ILogger;
 import io.github.brqnko.bytekin.mapping.IMappingProvider;
-import io.github.brqnko.bytekin.target.MethodData;
+import io.github.brqnko.bytekin.data.MethodData;
 import io.github.brqnko.bytekin.transformer.method.InjectMethodTransformer;
 import io.github.brqnko.bytekin.transformer.method.InvokeMethodTransformer;
 import io.github.brqnko.bytekin.transformer.visitor.BytekinMethodVisitor;
@@ -33,17 +33,17 @@ public interface IBytekinMethodTransformer {
             for (Annotation annotation : method.getDeclaredAnnotations()) {
                 if (annotation instanceof Inject inject) {
                     MethodData methodData = new MethodData(
-                            mapping.getMethodName(clazz.getName(), inject.methodName(), inject.methodDesc()),
-                            mapping.getMethodDesc(clazz.getName(), inject.methodName(), inject.methodDesc())
+                            mapping.getMethodName(className, inject.methodName(), inject.methodDesc()),
+                            mapping.getMethodDesc(className, inject.methodName(), inject.methodDesc())
                     );
                     List<IBytekinMethodTransformer> methodTransformers = transformers.computeIfAbsent(methodData, k -> new ArrayList<>());
-                    methodTransformers.add(new InjectMethodTransformer(logger, mapping, clazz, method, inject, className));
+                    methodTransformers.add(new InjectMethodTransformer(logger, mapping, method, inject, className));
                 }
 
                 if (annotation instanceof Invoke invoke) {
                     MethodData methodData = new MethodData(
-                            mapping.getMethodName(clazz.getName(), invoke.targetMethodName(), invoke.targetMethodDesc()),
-                            mapping.getMethodDesc(clazz.getName(), invoke.targetMethodName(), invoke.targetMethodDesc())
+                            mapping.getMethodName(className, invoke.targetMethodName(), invoke.targetMethodDesc()),
+                            mapping.getMethodDesc(className, invoke.targetMethodName(), invoke.targetMethodDesc())
                     );
                     List<IBytekinMethodTransformer> methodTransformers = transformers.computeIfAbsent(methodData, k -> new ArrayList<>());
                     methodTransformers.add(new InvokeMethodTransformer(logger, mapping, clazz, method, invoke, className));

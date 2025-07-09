@@ -1,5 +1,6 @@
 package io.github.brqnko.bytekin.test.inject;
 
+import io.github.brqnko.bytekin.data.Injection;
 import io.github.brqnko.bytekin.injection.At;
 import io.github.brqnko.bytekin.injection.CallbackInfo;
 import io.github.brqnko.bytekin.injection.Inject;
@@ -20,6 +21,38 @@ public class InjectAtHeadTest {
     void injectAtHeadTest() throws Exception {
         BytekinTransformer transformer = new BytekinTransformer.Builder(InjectAtHeadTest.class)
                 .mapping(new QMappingProvider())
+                .build();
+
+        // create a new class loader with the transformer
+        TestClassLoader loader = new TestClassLoader(
+                Test.class.getClassLoader(),
+                (name, bytes) -> transformer.transform(name, bytes, Opcodes.ASM9));
+
+        // load the class
+        Class<?> clazz = loader.loadClass("io.github.brqnko.bytekin.test.inject.target.InjectTestTargetQ");
+
+        // run the method and capture the output
+        String capture = PrintCapture.captureOutput(() -> {
+            try {
+                // invoke the method
+                String ret = (String) clazz.getMethod("runGameLoopQ", String[][].class, int.class)
+                        .invoke(clazz.getConstructor().newInstance(), new String[0][0], 0);
+
+                Assertions.assertEquals("injected return value", ret);
+            } catch (Exception e) {
+                Assertions.fail(e);
+            }
+        });
+
+        Assertions.assertEquals("Inject at head\n", capture);
+    }
+
+
+    @Test
+    void injectAtHeadTestWithoutAnnotation() throws Exception {
+        BytekinTransformer transformer = new BytekinTransformer.Builder()
+                .mapping(new QMappingProvider())
+                .inject("io.github.brqnko.bytekin.test.inject.target.InjectTestTarget", new Injection("runGameLoop", "([[Ljava/lang/String;I)Ljava/lang/String;", At.HEAD, "io.github.brqnko.bytekin.test.inject.InjectAtHeadTest", "injectAtHead"))
                 .build();
 
         // create a new class loader with the transformer

@@ -1,5 +1,6 @@
 package io.github.brqnko.bytekin.test.invoke;
 
+import io.github.brqnko.bytekin.data.Invocation;
 import io.github.brqnko.bytekin.injection.CallbackInfo;
 import io.github.brqnko.bytekin.injection.Invoke;
 import io.github.brqnko.bytekin.injection.ModifyClass;
@@ -20,6 +21,42 @@ public class InvokeAfterTest {
     void invokeAfterTest() throws Exception {
         BytekinTransformer transformer = new BytekinTransformer.Builder(InvokeAfterTest.class)
                 .mapping(new QMappingProvider())
+                .build();
+
+        TestClassLoader loader = new TestClassLoader(
+                Test.class.getClassLoader(),
+                (name, bytes) -> transformer.transform(name, bytes, Opcodes.ASM9));
+
+        Class<?> clazz = loader.loadClass("io.github.brqnko.bytekin.test.invoke.target.InvokeTestTargetQ");
+
+        String capture = PrintCapture.captureOutput(() -> {
+            try {
+                clazz.getMethod("runGameLoopQ", String[][].class, int.class)
+                        .invoke(clazz.getConstructor().newInstance(), new String[0][0], 0);
+            } catch (Exception e) {
+                Assertions.fail(e);
+            }
+        });
+
+        Assertions.assertEquals("before invoke\ninvokeAfter called\nafter invoke\n", capture);
+    }
+
+    @Test
+    void invokeWithoutAnnoationAfterTest() throws Exception {
+        BytekinTransformer transformer = new BytekinTransformer.Builder()
+                .mapping(new QMappingProvider())
+                .invoke(
+                        "io.github.brqnko.bytekin.test.invoke.target.InvokeTestTarget",
+                        new Invocation(
+                                "runGameLoop",
+                                "([[Ljava/lang/String;I)Ljava/lang/String;",
+                                "io.github.brqnko.bytekin.test.invoke.target.InvokeTestTarget",
+                                "invokeTarget",
+                                "([[Ljava/lang/String;I)Ljava/lang/String;",
+                                Shift.AFTER,
+                                "io.github.brqnko.bytekin.test.invoke.InvokeAfterTest",
+                                "invokeAfter"
+                        ))
                 .build();
 
         TestClassLoader loader = new TestClassLoader(

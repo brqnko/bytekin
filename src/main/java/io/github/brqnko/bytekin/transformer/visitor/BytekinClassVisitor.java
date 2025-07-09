@@ -1,6 +1,6 @@
 package io.github.brqnko.bytekin.transformer.visitor;
 
-import io.github.brqnko.bytekin.target.MethodData;
+import io.github.brqnko.bytekin.data.MethodData;
 import io.github.brqnko.bytekin.transformer.BytekinClassTransformer;
 import io.github.brqnko.bytekin.transformer.api.IBytekinMethodTransformer;
 import org.objectweb.asm.ClassVisitor;

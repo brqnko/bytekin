@@ -1,4 +1,4 @@
-package io.github.brqnko.bytekin.target;
+package io.github.brqnko.bytekin.data;
 
 import lombok.Data;
 

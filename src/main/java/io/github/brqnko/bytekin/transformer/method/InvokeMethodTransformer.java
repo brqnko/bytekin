@@ -5,7 +5,7 @@ import io.github.brqnko.bytekin.injection.Invoke;
 import io.github.brqnko.bytekin.injection.Shift;
 import io.github.brqnko.bytekin.logging.ILogger;
 import io.github.brqnko.bytekin.mapping.IMappingProvider;
-import io.github.brqnko.bytekin.target.TypeData;
+import io.github.brqnko.bytekin.data.TypeData;
 import io.github.brqnko.bytekin.transformer.api.IBytekinMethodTransformer;
 import io.github.brqnko.bytekin.transformer.visitor.BytekinMethodVisitor;
 import io.github.brqnko.bytekin.util.BytecodeManipulator;
@@ -40,15 +40,30 @@ public class InvokeMethodTransformer implements IBytekinMethodTransformer {
         this.shift = invoke.shift();
 
         this.targetMethodOwner = className.replaceAll("\\.", "/");
-        this.targetMethodName = mapping.getMethodName(clazz.getName(), invoke.targetMethodName(), invoke.targetMethodDesc());
-        this.targetMethodDesc = mapping.getMethodDesc(clazz.getName(), invoke.targetMethodName(), invoke.targetMethodDesc());
+        this.targetMethodName = mapping.getMethodName(className, invoke.targetMethodName(), invoke.targetMethodDesc());
+        this.targetMethodDesc = mapping.getMethodDesc(className, invoke.targetMethodName(), invoke.targetMethodDesc());
 
         this.invokeMethodOwner = mapping.getClassName(invoke.invokeMethodOwner()).replaceAll("\\.", "/");
-        this.invokeMethodName = mapping.getMethodName(clazz.getName(), invoke.invokeMethodName(), invoke.invokeMethodDesc());
-        this.invokeMethodDesc = mapping.getMethodDesc(clazz.getName(), invoke.invokeMethodName(), invoke.invokeMethodDesc());
+        this.invokeMethodName = mapping.getMethodName(invoke.invokeMethodOwner(), invoke.invokeMethodName(), invoke.invokeMethodDesc());
+        this.invokeMethodDesc = mapping.getMethodDesc(invoke.invokeMethodOwner(), invoke.invokeMethodName(), invoke.invokeMethodDesc());
 
         this.callMethodOwner = clazz.getName().replace(".", "/");
         this.callMethodName = method.getName();
+
+        this.invokeParameters = DescriptorParser.parseParameterTypes(invokeMethodDesc);
+    }
+
+    public InvokeMethodTransformer(ILogger logger, String targetMethodOwner, String targetMethodName, String targetMethodDesc, String invokeMethodOwner, String invokeMethodName, String invokeMethodDesc, Shift shift, String callMethodOwner, String callMethodName) {
+        this.shift = shift;
+        this.targetMethodOwner = targetMethodOwner.replaceAll("\\.", "/");
+        this.targetMethodName = targetMethodName;
+        this.targetMethodDesc = targetMethodDesc;
+        this.invokeMethodOwner = invokeMethodOwner.replaceAll("\\.", "/");
+        this.invokeMethodName = invokeMethodName;
+        this.invokeMethodDesc = invokeMethodDesc;
+
+        this.callMethodOwner = callMethodOwner.replaceAll("\\.", "/");
+        this.callMethodName = callMethodName;
 
         this.invokeParameters = DescriptorParser.parseParameterTypes(invokeMethodDesc);
     }

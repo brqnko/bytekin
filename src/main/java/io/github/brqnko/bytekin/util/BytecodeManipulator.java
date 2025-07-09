@@ -1,7 +1,7 @@
 package io.github.brqnko.bytekin.util;
 
-import io.github.brqnko.bytekin.target.TypeCategory;
-import io.github.brqnko.bytekin.target.TypeData;
+import io.github.brqnko.bytekin.data.TypeCategory;
+import io.github.brqnko.bytekin.data.TypeData;
 import lombok.experimental.UtilityClass;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;

@@ -5,7 +5,7 @@ import io.github.brqnko.bytekin.injection.CallbackInfo;
 import io.github.brqnko.bytekin.injection.Inject;
 import io.github.brqnko.bytekin.logging.ILogger;
 import io.github.brqnko.bytekin.mapping.IMappingProvider;
-import io.github.brqnko.bytekin.target.TypeData;
+import io.github.brqnko.bytekin.data.TypeData;
 import io.github.brqnko.bytekin.transformer.api.IBytekinMethodTransformer;
 import io.github.brqnko.bytekin.util.BytecodeManipulator;
 import io.github.brqnko.bytekin.util.DescriptorParser;
@@ -50,15 +50,26 @@ public class InjectMethodTransformer implements IBytekinMethodTransformer {
         return builder.toString();
     }
 
-    public InjectMethodTransformer(ILogger logger, IMappingProvider mapping, Class<?> clazz, Method method, Inject inject, String className) {
-        this.targetMethodName = mapping.getMethodName(clazz.getName(), inject.methodName(), inject.methodDesc());
-        this.targetMethodDesc = mapping.getMethodDesc(clazz.getName(), inject.methodName(), inject.methodDesc());
+    public InjectMethodTransformer(ILogger logger, IMappingProvider mapping, Method method, Inject inject, String className) {
+        this.targetMethodName = mapping.getMethodName(className, inject.methodName(), inject.methodDesc());
+        this.targetMethodDesc = mapping.getMethodDesc(className, inject.methodName(), inject.methodDesc());
 
         this.targetMethodOwner = className.replaceAll("\\.", "/");
         this.callMethodOwner = method.getDeclaringClass().getName().replace(".", "/");
         this.callMethodName = method.getName();
 
         this.at = inject.at();
+    }
+
+    public InjectMethodTransformer(ILogger logger, String targetMethodOwner, String targetMethodName, String targetMethodDesc, String callMethodOwner, String callMethodName, At at) {
+        this.targetMethodOwner = targetMethodOwner.replaceAll("\\.", "/");
+        this.targetMethodName = targetMethodName;
+        this.targetMethodDesc = targetMethodDesc;
+
+        this.callMethodOwner = callMethodOwner.replaceAll("\\.", "/");
+        this.callMethodName = callMethodName;
+
+        this.at = at;
     }
 
     private void invokeMethod(MethodVisitor mv) {
