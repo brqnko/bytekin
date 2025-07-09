@@ -18,7 +18,9 @@ public class InjectAtReturnTest {
 
     @Test
     void injectAtReturnTest() throws Exception {
-        BytekinTransformer transformer = new BytekinTransformer(new QMappingProvider(), InjectAtReturnTest.class);
+        BytekinTransformer transformer = new BytekinTransformer.Builder(InjectAtReturnTest.class)
+                .mapping(new QMappingProvider())
+                .build();
 
         TestClassLoader loader = new TestClassLoader(
                 Test.class.getClassLoader(),

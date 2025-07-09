@@ -41,18 +41,6 @@ public class BytekinTransformer {
         }
     }
 
-    public BytekinTransformer(IMappingProvider mapping, Class<?>... classes) {
-        this(new StdLogger(), mapping, classes);
-    }
-
-    public BytekinTransformer(ILogger logger, Class<?>... classes) {
-        this(logger, new EmptyMappingProvider(), classes);
-    }
-
-    public BytekinTransformer(Class<?>... classes) {
-        this(new StdLogger(), new EmptyMappingProvider(), classes);
-    }
-
     public byte[] transform(String className, byte[] bytes, int api) {
         BytekinClassTransformer transformer = transformers.get(className);
         if (transformer == null) {
@@ -62,4 +50,37 @@ public class BytekinTransformer {
         return transformer.transform(bytes, api);
     }
 
+    public static class Builder {
+
+        private final Class<?>[] classes;
+
+        private ILogger logger;
+        private IMappingProvider mapping;
+
+        public Builder(Class<?>... classes) {
+            this.classes = classes;
+        }
+
+        public Builder logger(ILogger logger) {
+            this.logger = logger;
+            return this;
+        }
+
+        public Builder mapping(IMappingProvider mapping) {
+            this.mapping = mapping;
+            return this;
+        }
+
+        public BytekinTransformer build() {
+            if (logger == null) {
+                logger = new StdLogger();
+            }
+
+            if (mapping == null) {
+                mapping = new EmptyMappingProvider();
+            }
+
+            return new BytekinTransformer(logger, mapping, classes);
+        }
+    }
 }

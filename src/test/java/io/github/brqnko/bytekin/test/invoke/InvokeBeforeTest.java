@@ -18,7 +18,9 @@ public class InvokeBeforeTest {
 
     @Test
     void invokeBeforeTest() throws Exception {
-        BytekinTransformer transformer = new BytekinTransformer(new QMappingProvider(), InvokeBeforeTest.class);
+        BytekinTransformer transformer = new BytekinTransformer.Builder(InvokeBeforeTest.class)
+                .mapping(new QMappingProvider())
+                .build();
 
         TestClassLoader loader = new TestClassLoader(
                 Test.class.getClassLoader(),

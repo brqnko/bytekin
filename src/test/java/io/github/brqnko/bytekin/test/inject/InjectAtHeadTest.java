@@ -18,7 +18,9 @@ public class InjectAtHeadTest {
 
     @Test
     void injectAtHeadTest() throws Exception {
-        BytekinTransformer transformer = new BytekinTransformer(new QMappingProvider(), InjectAtHeadTest.class);
+        BytekinTransformer transformer = new BytekinTransformer.Builder(InjectAtHeadTest.class)
+                .mapping(new QMappingProvider())
+                .build();
 
         // create a new class loader with the transformer
         TestClassLoader loader = new TestClassLoader(
