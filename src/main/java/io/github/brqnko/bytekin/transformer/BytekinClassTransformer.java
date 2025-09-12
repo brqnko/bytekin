@@ -78,7 +78,16 @@ public class BytekinClassTransformer {
     public byte[] transform(byte[] bytes, int api) {
 
         ClassReader reader = new ClassReader(bytes);
-        ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+        ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES) {
+            @Override
+            protected String getCommonSuperClass(String type1, String type2) {
+                try {
+                    return super.getCommonSuperClass(type1, type2);
+                } catch (Exception e) {
+                    return "java/lang/Object";
+                }
+            }
+        };
 
         reader.accept(new BytekinClassVisitor(api, writer, this), 0);
 

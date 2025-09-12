@@ -1,5 +1,6 @@
 package io.github.brqnko.bytekin.transformer.api;
 
+import io.github.brqnko.bytekin.data.Invocation;
 import io.github.brqnko.bytekin.injection.Inject;
 import io.github.brqnko.bytekin.injection.Invoke;
 import io.github.brqnko.bytekin.logging.ILogger;
