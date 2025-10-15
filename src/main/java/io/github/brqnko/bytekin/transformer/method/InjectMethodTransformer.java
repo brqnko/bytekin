@@ -81,8 +81,10 @@ public class InjectMethodTransformer implements IBytekinMethodTransformer {
         // load all parameters that target method has to stack
         int offset = isStatic ? 0 : 1;
         List<TypeData> types = DescriptorParser.parseParameterTypes(targetMethodDesc);
-        for (int i = 0; i < types.size(); i++) {
-            BytecodeManipulator.load(mv, types.get(i).getCategory(), i + offset);
+        int localIndex = offset;
+        for (TypeData type : types) {
+            BytecodeManipulator.load(mv, type.getCategory(), localIndex);
+            localIndex += type.getCategory().getSize();
         }
 
         int callbackInfoIndex = 1000;//(isStatic ? 0 : 1) + types.size();
@@ -104,8 +106,10 @@ public class InjectMethodTransformer implements IBytekinMethodTransformer {
         mv.visitJumpInsn(Opcodes.IFEQ, cancelledLabel);
 
         // load CallbackInfo#returnValue to stack
-        mv.visitVarInsn(Opcodes.ALOAD, callbackInfoIndex);
-        mv.visitFieldInsn(Opcodes.GETFIELD, CallbackInfo.CALLBACK_OWNER, CallbackInfo.FIELD_RETURN_VALUE, "Ljava/lang/Object;");
+        if (!targetMethodDesc.endsWith("V")) {
+            mv.visitVarInsn(Opcodes.ALOAD, callbackInfoIndex);
+            mv.visitFieldInsn(Opcodes.GETFIELD, CallbackInfo.CALLBACK_OWNER, CallbackInfo.FIELD_RETURN_VALUE, "Ljava/lang/Object;");
+        }
 
         // cast the return value to the target method return type
         TypeData returnType = DescriptorParser.parseReturnType(targetMethodDesc);

@@ -9,9 +9,9 @@ public class CallbackInfo {
     public static final String FIELD_RETURN_VALUE = "returnValue";
     public static final String FIELD_MODIFY_ARGS = "modifyArgs";
 
-    public final boolean cancelled;
-    public final Object returnValue;
-    public final Object[] modifyArgs;
+    public boolean cancelled;
+    public Object returnValue;
+    public Object[] modifyArgs;
 
     public CallbackInfo(boolean cancelled, Object returnValue, Object[] modifyArgs) {
         this.cancelled = cancelled;
@@ -21,5 +21,29 @@ public class CallbackInfo {
 
     public static CallbackInfo empty() {
         return new CallbackInfo(false, null, null);
+    }
+
+    public void cancel() {
+        this.cancelled = true;
+    }
+
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    public Object getReturnValue() {
+        return this.returnValue;
+    }
+
+    public void setReturnValue(Object returnValue) {
+        this.returnValue = returnValue;
+    }
+
+    public Object[] getModifyArgs() {
+        return this.modifyArgs;
+    }
+
+    public void setModifyArgs(Object[] modifyArgs) {
+        this.modifyArgs = modifyArgs;
     }
 }

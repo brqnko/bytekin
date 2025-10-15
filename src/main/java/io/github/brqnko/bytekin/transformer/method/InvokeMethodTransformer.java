@@ -36,6 +36,14 @@ public class InvokeMethodTransformer implements IBytekinMethodTransformer {
 
     private boolean isStatic;
 
+    private int getTotalLocalSize(List<TypeData> types) {
+        int size = 0;
+        for (TypeData type : types) {
+            size += type.getCategory().getSize();
+        }
+        return size;
+    }
+
     public InvokeMethodTransformer(ILogger logger, IMappingProvider mapping, Class<?> clazz, Method method, Invoke invoke, String className) {
         this.shift = invoke.shift();
 
@@ -107,14 +115,17 @@ public class InvokeMethodTransformer implements IBytekinMethodTransformer {
         // load all parameters that target method has to stack
         int offset = isStatic ? 0 : 1;
         List<TypeData> types = DescriptorParser.parseParameterTypes(targetMethodDesc);
-        for (int i = 0; i < types.size(); i++) {
-            BytecodeManipulator.load(mv, types.get(i).getCategory(), i + offset);
+        int targetLocalIndex = offset;
+        for (TypeData type : types) {
+            BytecodeManipulator.load(mv, type.getCategory(), targetLocalIndex);
+            targetLocalIndex += type.getCategory().getSize();
         }
 
         // load all parameters that invoke method has to stack
-        for (int i = 0; i < invokeParameters.size(); i++) {
-            TypeData typeData = invokeParameters.get(i);
-            BytecodeManipulator.load(mv, typeData.getCategory(), localIndex + i);
+        int invokeLocalIndex = localIndex;
+        for (TypeData typeData : invokeParameters) {
+            BytecodeManipulator.load(mv, typeData.getCategory(), invokeLocalIndex);
+            invokeLocalIndex += typeData.getCategory().getSize();
         }
 
         // invoke the method
@@ -154,10 +165,14 @@ public class InvokeMethodTransformer implements IBytekinMethodTransformer {
         }
         // now we have parameters in stack and assign them to local variables
         int localIndex = 10000;
-        int callbackInfoIndex = localIndex + invokeParameters.size();
+        int paramsSize = getTotalLocalSize(invokeParameters);
+        int callbackInfoIndex = localIndex + paramsSize;
+        int currentIndex = callbackInfoIndex;
         for (int i = invokeParameters.size() - 1; i >= 0; i--) {
             TypeData typeData = invokeParameters.get(i);
-            BytecodeManipulator.store(mv, typeData.getCategory(), localIndex + i);
+            int size = typeData.getCategory().getSize();
+            currentIndex -= size;
+            BytecodeManipulator.store(mv, typeData.getCategory(), currentIndex);
         }
 
         if (shift == Shift.BEFORE) {
@@ -176,9 +191,10 @@ public class InvokeMethodTransformer implements IBytekinMethodTransformer {
             }
         } else {
             // load parameters from local variables to stack
-            for (int i = 0; i < invokeParameters.size(); i++) {
-                TypeData typeData = invokeParameters.get(i);
-                BytecodeManipulator.load(mv, typeData.getCategory(), localIndex + i);
+            int invokeLocalIndex = localIndex;
+            for (TypeData typeData : invokeParameters) {
+                BytecodeManipulator.load(mv, typeData.getCategory(), invokeLocalIndex);
+                invokeLocalIndex += typeData.getCategory().getSize();
             }
         }
         IBytekinMethodTransformer.super.beforeMethodInsn(mv, visitor, opcode, owner, name, descriptor, isInterface);
@@ -193,7 +209,7 @@ public class InvokeMethodTransformer implements IBytekinMethodTransformer {
 
         if (shift == Shift.AFTER) {
             int localIndex = 10000;
-            int callbackInfoIndex = localIndex + invokeParameters.size();
+            int callbackInfoIndex = localIndex + getTotalLocalSize(invokeParameters);
             invoke(mv, localIndex, callbackInfoIndex);
         }
 

@@ -9,6 +9,6 @@ public enum At {
     HEAD,
 
     /** Injects the code before the return statement */
-    RETURN;
+    RETURN
 
 }

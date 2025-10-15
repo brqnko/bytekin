@@ -1,13 +1,19 @@
 package io.github.brqnko.bytekin.transformer;
 
+import io.github.brqnko.bytekin.data.ConstantModification;
 import io.github.brqnko.bytekin.data.Injection;
 import io.github.brqnko.bytekin.data.Invocation;
 import io.github.brqnko.bytekin.logging.ILogger;
 import io.github.brqnko.bytekin.mapping.IMappingProvider;
 import io.github.brqnko.bytekin.data.MethodData;
+import io.github.brqnko.bytekin.data.RedirectData;
+import io.github.brqnko.bytekin.data.VariableModification;
+import io.github.brqnko.bytekin.transformer.method.ModifyConstantMethodTransformer;
+import io.github.brqnko.bytekin.transformer.method.RedirectMethodTransformer;
 import io.github.brqnko.bytekin.transformer.api.IBytekinMethodTransformer;
 import io.github.brqnko.bytekin.transformer.method.InjectMethodTransformer;
 import io.github.brqnko.bytekin.transformer.method.InvokeMethodTransformer;
+import io.github.brqnko.bytekin.transformer.method.ModifyVariableMethodTransformer;
 import io.github.brqnko.bytekin.transformer.visitor.BytekinClassVisitor;
 import lombok.Getter;
 import org.objectweb.asm.ClassReader;
@@ -65,7 +71,7 @@ public class BytekinClassTransformer {
                 logger,
                 className,
                 mapping.getMethodName(className, invocation.getTargetMethodName(), invocation.getTargetMethodDesc()),
-                mapping.getMethodDesc(className, invocation.getTargetMethodName(), invocation.getInvokeMethodDesc()),
+        mapping.getMethodDesc(className, invocation.getTargetMethodName(), invocation.getTargetMethodDesc()),
                 invokeOwner,
                 mapping.getMethodName(invokeOwner, invocation.getInvokeMethodName(), invocation.getInvokeMethodDesc()),
                 mapping.getMethodDesc(invokeOwner, invocation.getInvokeMethodName(), invocation.getInvokeMethodDesc()),
@@ -73,6 +79,54 @@ public class BytekinClassTransformer {
                 invocation.getHookMethodOwner(),
                 invocation.getHookMethodName()
                 ));
+    }
+
+    public void addRedirect(ILogger logger, IMappingProvider mapping, RedirectData redirect, String className) {
+        MethodData methodData = new MethodData(
+                mapping.getMethodName(className, redirect.getTargetMethodName(), redirect.getTargetMethodDesc()),
+                mapping.getMethodDesc(className, redirect.getTargetMethodName(), redirect.getTargetMethodDesc())
+        );
+
+        List<IBytekinMethodTransformer> transformer = this.methodTransformers.computeIfAbsent(methodData, k -> new ArrayList<>());
+
+        transformer.add(new RedirectMethodTransformer(
+                mapping,
+                redirect.getType(),
+                redirect.getOwner(),
+                redirect.getName(),
+                redirect.getDesc(),
+                redirect.getOrdinal(),
+                redirect.getHookMethodOwner(),
+                redirect.getHookMethodName()
+        ));
+    }
+
+    public void addConstantModification(ILogger logger, IMappingProvider mapping, ConstantModification modification, String className) {
+        String mappedName = mapping.getMethodName(className, modification.getMethodName(), modification.getMethodDesc());
+        String mappedDesc = mapping.getMethodDesc(className, modification.getMethodName(), modification.getMethodDesc());
+
+        MethodData methodData = new MethodData(mappedName, mappedDesc);
+
+        List<IBytekinMethodTransformer> transformer = this.methodTransformers.computeIfAbsent(methodData, k -> new ArrayList<>());
+
+        transformer.add(new ModifyConstantMethodTransformer(
+                mappedName,
+                mappedDesc,
+                modification.getConstantValue(),
+                modification.getOrdinal(),
+                modification.getHookMethodOwner(),
+                modification.getHookMethodName()
+        ));
+    }
+
+    public void addVariableModification(ILogger logger, IMappingProvider mapping, VariableModification modification, String className) {
+        String mappedName = mapping.getMethodName(className, modification.getMethodName(), modification.getMethodDesc());
+        String mappedDesc = mapping.getMethodDesc(className, modification.getMethodName(), modification.getMethodDesc());
+
+        MethodData methodData = new MethodData(mappedName, mappedDesc);
+
+        List<IBytekinMethodTransformer> transformer = this.methodTransformers.computeIfAbsent(methodData, k -> new ArrayList<>());
+        transformer.add(new ModifyVariableMethodTransformer(className.replace('.', '/'), mappedName, mappedDesc, modification));
     }
 
     public byte[] transform(byte[] bytes, int api) {

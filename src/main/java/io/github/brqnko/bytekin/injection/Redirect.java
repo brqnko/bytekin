@@ -7,18 +7,19 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Invoke {
+public @interface Redirect {
 
     String targetMethodName();
 
     String targetMethodDesc();
 
-    String invokeMethodOwner();
+    String owner();
 
-    String invokeMethodName();
+    String name();
 
-    String invokeMethodDesc();
+    String desc();
 
-    Shift shift() default Shift.BEFORE;
+    RedirectType type() default RedirectType.METHOD;
 
+    int ordinal() default -1;
 }

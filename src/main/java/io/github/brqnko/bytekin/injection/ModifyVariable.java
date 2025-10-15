@@ -7,18 +7,21 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Invoke {
+public @interface ModifyVariable {
 
     String targetMethodName();
 
     String targetMethodDesc();
 
-    String invokeMethodOwner();
+    VariableTarget target() default VariableTarget.HEAD;
 
-    String invokeMethodName();
+    int ordinal() default -1;
 
-    String invokeMethodDesc();
+    int index() default -1;
 
-    Shift shift() default Shift.BEFORE;
+    boolean argsOnly() default false;
 
+    boolean captureSelf() default false;
+
+    String variableDesc() default "";
 }

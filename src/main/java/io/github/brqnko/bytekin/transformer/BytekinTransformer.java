@@ -1,7 +1,10 @@
 package io.github.brqnko.bytekin.transformer;
 
+import io.github.brqnko.bytekin.data.ConstantModification;
 import io.github.brqnko.bytekin.data.Injection;
 import io.github.brqnko.bytekin.data.Invocation;
+import io.github.brqnko.bytekin.data.RedirectData;
+import io.github.brqnko.bytekin.data.VariableModification;
 import io.github.brqnko.bytekin.injection.ModifyClass;
 import io.github.brqnko.bytekin.logging.ILogger;
 import io.github.brqnko.bytekin.logging.impl.StdLogger;
@@ -15,6 +18,7 @@ import java.util.Map;
 
 public class BytekinTransformer {
 
+    @SuppressWarnings("unused")
     private final ILogger logger;
 
     private final Map<String, BytekinClassTransformer> transformers;
@@ -23,6 +27,8 @@ public class BytekinTransformer {
 
         this.logger = logger;
         this.transformers = transformers;
+
+//        transformers.keySet().forEach(v -> System.out.println(v));
     }
 
     public byte[] transform(String className, byte[] bytes, int api) {
@@ -43,6 +49,9 @@ public class BytekinTransformer {
 
         private final Map<String, List<Injection>> injections = new HashMap<>();
         private final Map<String, List<Invocation>> invocations = new HashMap<>();
+        private final Map<String, List<RedirectData>> redirects = new HashMap<>();
+        private final Map<String, List<ConstantModification>> constantModifications = new HashMap<>();
+        private final Map<String, List<VariableModification>> variableModifications = new HashMap<>();
 
         public Builder(Class<?>... classes) {
             this.classes = classes;
@@ -65,6 +74,21 @@ public class BytekinTransformer {
 
         public Builder invoke(String className, Invocation invocation) {
             this.invocations.computeIfAbsent(className, k -> new ArrayList<>()).add(invocation);
+            return this;
+        }
+
+        public Builder redirect(String className, RedirectData redirect) {
+            this.redirects.computeIfAbsent(className, k -> new ArrayList<>()).add(redirect);
+            return this;
+        }
+
+        public Builder modifyConstant(String className, ConstantModification modification) {
+            this.constantModifications.computeIfAbsent(className, k -> new ArrayList<>()).add(modification);
+            return this;
+        }
+
+        public Builder modifyVariable(String className, VariableModification modification) {
+            this.variableModifications.computeIfAbsent(className, k -> new ArrayList<>()).add(modification);
             return this;
         }
 
@@ -118,6 +142,33 @@ public class BytekinTransformer {
                 BytekinClassTransformer transformer = transformers.computeIfAbsent(className, k -> new BytekinClassTransformer());
                 for (Invocation invocation : invocations) {
                     transformer.addInvocation(logger, mapping, invocation, className);
+                }
+            });
+
+            this.redirects.forEach((className, redirects) -> {
+                className = mapping.getClassName(className);
+
+                BytekinClassTransformer transformer = transformers.computeIfAbsent(className, k -> new BytekinClassTransformer());
+                for (RedirectData redirect : redirects) {
+                    transformer.addRedirect(logger, mapping, redirect, className);
+                }
+            });
+
+            this.constantModifications.forEach((className, modifications) -> {
+                className = mapping.getClassName(className);
+
+                BytekinClassTransformer transformer = transformers.computeIfAbsent(className, k -> new BytekinClassTransformer());
+                for (ConstantModification modification : modifications) {
+                    transformer.addConstantModification(logger, mapping, modification, className);
+                }
+            });
+
+            this.variableModifications.forEach((className, modifications) -> {
+                className = mapping.getClassName(className);
+
+                BytekinClassTransformer transformer = transformers.computeIfAbsent(className, k -> new BytekinClassTransformer());
+                for (VariableModification modification : modifications) {
+                    transformer.addVariableModification(logger, mapping, modification, className);
                 }
             });
 

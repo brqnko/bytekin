@@ -17,6 +17,18 @@ public enum TypeCategory {
     OBJECT,
     ARRAY;
 
+    public int getSize() {
+        switch (this) {
+            case LONG:
+            case DOUBLE:
+                return 2;
+            case VOID:
+                return 0;
+            default:
+                return 1;
+        }
+    }
+
     /**
      * Parses the return type from descriptor
      *
