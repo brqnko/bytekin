@@ -6,8 +6,6 @@ import io.github.brqnko.bytekin.data.Invocation;
 import io.github.brqnko.bytekin.data.RedirectData;
 import io.github.brqnko.bytekin.data.VariableModification;
 import io.github.brqnko.bytekin.injection.ModifyClass;
-import io.github.brqnko.bytekin.logging.ILogger;
-import io.github.brqnko.bytekin.logging.impl.StdLogger;
 import io.github.brqnko.bytekin.mapping.IMappingProvider;
 import io.github.brqnko.bytekin.mapping.impl.EmptyMappingProvider;
 
@@ -18,17 +16,10 @@ import java.util.Map;
 
 public class BytekinTransformer {
 
-    @SuppressWarnings("unused")
-    private final ILogger logger;
-
     private final Map<String, BytekinClassTransformer> transformers;
 
-    public BytekinTransformer(ILogger logger, Map<String, BytekinClassTransformer> transformers) {
-
-        this.logger = logger;
+    public BytekinTransformer(Map<String, BytekinClassTransformer> transformers) {
         this.transformers = transformers;
-
-//        transformers.keySet().forEach(v -> System.out.println(v));
     }
 
     public byte[] transform(String className, byte[] bytes, int api) {
@@ -44,7 +35,6 @@ public class BytekinTransformer {
 
         private final Class<?>[] classes;
 
-        private ILogger logger;
         private IMappingProvider mapping;
 
         private final Map<String, List<Injection>> injections = new HashMap<>();
@@ -55,11 +45,6 @@ public class BytekinTransformer {
 
         public Builder(Class<?>... classes) {
             this.classes = classes;
-        }
-
-        public Builder logger(ILogger logger) {
-            this.logger = logger;
-            return this;
         }
 
         public Builder mapping(IMappingProvider mapping) {
@@ -93,10 +78,6 @@ public class BytekinTransformer {
         }
 
         public BytekinTransformer build() {
-            if (logger == null) {
-                logger = new StdLogger();
-            }
-
             if (mapping == null) {
                 mapping = new EmptyMappingProvider();
             }
@@ -107,21 +88,15 @@ public class BytekinTransformer {
             for (Class<?> clazz : classes) {
                 ModifyClass modifyClass = clazz.getAnnotation(ModifyClass.class);
                 if (modifyClass == null) {
-                    logger.log("Class " + clazz.getName() + " does not have ModifyClass annotation");
                     continue;
                 }
 
                 String className = mapping.getClassName(modifyClass.className());
-                if (className == null) {
-                    logger.log("Class " + modifyClass.className() + " not found in mapping");
-                }
-
                 if (transformers.containsKey(className)) {
-                    logger.log("Class " + className + " already has a transformer");
                     continue;
                 }
 
-                BytekinClassTransformer transformer = new BytekinClassTransformer(logger, mapping, clazz, className);
+                BytekinClassTransformer transformer = new BytekinClassTransformer(mapping, clazz, className);
                 transformers.put(className, transformer);
             }
 
@@ -131,7 +106,7 @@ public class BytekinTransformer {
 
                 BytekinClassTransformer transformer = transformers.computeIfAbsent(className, k -> new BytekinClassTransformer());
                 for (Injection injection : injections) {
-                    transformer.addInjection(logger, mapping, injection, className);
+                    transformer.addInjection(mapping, injection, className);
                 }
             });
 
@@ -141,7 +116,7 @@ public class BytekinTransformer {
 
                 BytekinClassTransformer transformer = transformers.computeIfAbsent(className, k -> new BytekinClassTransformer());
                 for (Invocation invocation : invocations) {
-                    transformer.addInvocation(logger, mapping, invocation, className);
+                    transformer.addInvocation(mapping, invocation, className);
                 }
             });
 
@@ -150,7 +125,7 @@ public class BytekinTransformer {
 
                 BytekinClassTransformer transformer = transformers.computeIfAbsent(className, k -> new BytekinClassTransformer());
                 for (RedirectData redirect : redirects) {
-                    transformer.addRedirect(logger, mapping, redirect, className);
+                    transformer.addRedirect(mapping, redirect, className);
                 }
             });
 
@@ -159,7 +134,7 @@ public class BytekinTransformer {
 
                 BytekinClassTransformer transformer = transformers.computeIfAbsent(className, k -> new BytekinClassTransformer());
                 for (ConstantModification modification : modifications) {
-                    transformer.addConstantModification(logger, mapping, modification, className);
+                    transformer.addConstantModification(mapping, modification, className);
                 }
             });
 
@@ -168,11 +143,11 @@ public class BytekinTransformer {
 
                 BytekinClassTransformer transformer = transformers.computeIfAbsent(className, k -> new BytekinClassTransformer());
                 for (VariableModification modification : modifications) {
-                    transformer.addVariableModification(logger, mapping, modification, className);
+                    transformer.addVariableModification(mapping, modification, className);
                 }
             });
 
-            return new BytekinTransformer(logger, transformers);
+            return new BytekinTransformer(transformers);
         }
     }
 }

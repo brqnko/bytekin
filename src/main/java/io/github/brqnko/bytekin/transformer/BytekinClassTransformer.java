@@ -3,7 +3,6 @@ package io.github.brqnko.bytekin.transformer;
 import io.github.brqnko.bytekin.data.ConstantModification;
 import io.github.brqnko.bytekin.data.Injection;
 import io.github.brqnko.bytekin.data.Invocation;
-import io.github.brqnko.bytekin.logging.ILogger;
 import io.github.brqnko.bytekin.mapping.IMappingProvider;
 import io.github.brqnko.bytekin.data.MethodData;
 import io.github.brqnko.bytekin.data.RedirectData;
@@ -33,12 +32,12 @@ public class BytekinClassTransformer {
         this.methodTransformers = new HashMap<>();
     }
 
-    public BytekinClassTransformer(ILogger logger, IMappingProvider mapping, Class<?> clazz, String className) {
+    public BytekinClassTransformer(IMappingProvider mapping, Class<?> clazz, String className) {
 
-        this.methodTransformers = IBytekinMethodTransformer.createTransformers(logger, mapping, clazz, className);
+        this.methodTransformers = IBytekinMethodTransformer.createTransformers(mapping, clazz, className);
     }
 
-    public void addInjection(ILogger logger, IMappingProvider mapping, Injection injection, String className) {
+    public void addInjection(IMappingProvider mapping, Injection injection, String className) {
         List<IBytekinMethodTransformer> transformer = this.methodTransformers.computeIfAbsent(
                 new MethodData(
                         mapping.getMethodName(className, injection.getMethodName(), injection.getMethodDesc()),
@@ -46,7 +45,6 @@ public class BytekinClassTransformer {
                 k -> new ArrayList<>());
 
         transformer.add(new InjectMethodTransformer(
-                logger,
                 className,
                 mapping.getMethodName(className, injection.getMethodName(), injection.getMethodDesc()),
                 mapping.getDesc(injection.getMethodDesc()),
@@ -56,7 +54,7 @@ public class BytekinClassTransformer {
         ));
     }
 
-    public void addInvocation(ILogger logger, IMappingProvider mapping, Invocation invocation, String className) {
+    public void addInvocation(IMappingProvider mapping, Invocation invocation, String className) {
         List<IBytekinMethodTransformer> transformer = this.methodTransformers.computeIfAbsent(
                 new MethodData(
                         mapping.getMethodName(className, invocation.getTargetMethodName(), invocation.getTargetMethodDesc()),
@@ -66,7 +64,6 @@ public class BytekinClassTransformer {
         String invokeOwner = mapping.getClassName(invocation.getInvokeMethodOwner());
 
         transformer.add(new InvokeMethodTransformer(
-                logger,
                 className,
                 mapping.getMethodName(className, invocation.getTargetMethodName(), invocation.getTargetMethodDesc()),
                 mapping.getDesc(invocation.getTargetMethodDesc()),
@@ -79,7 +76,7 @@ public class BytekinClassTransformer {
         ));
     }
 
-    public void addRedirect(ILogger logger, IMappingProvider mapping, RedirectData redirect, String className) {
+    public void addRedirect(IMappingProvider mapping, RedirectData redirect, String className) {
         MethodData methodData = new MethodData(
                 mapping.getMethodName(className, redirect.getTargetMethodName(), redirect.getTargetMethodDesc()),
                 mapping.getDesc(redirect.getTargetMethodDesc()));
@@ -98,7 +95,7 @@ public class BytekinClassTransformer {
         ));
     }
 
-    public void addConstantModification(ILogger logger, IMappingProvider mapping, ConstantModification modification, String className) {
+    public void addConstantModification(IMappingProvider mapping, ConstantModification modification, String className) {
         String mappedName = mapping.getMethodName(className, modification.getMethodName(), modification.getMethodDesc());
         String mappedDesc = mapping.getDesc(modification.getMethodDesc());
 
@@ -116,7 +113,7 @@ public class BytekinClassTransformer {
         ));
     }
 
-    public void addVariableModification(ILogger logger, IMappingProvider mapping, VariableModification modification, String className) {
+    public void addVariableModification(IMappingProvider mapping, VariableModification modification, String className) {
         String mappedName = mapping.getMethodName(className, modification.getMethodName(), modification.getMethodDesc());
         String mappedDesc = mapping.getDesc(modification.getMethodDesc());
 

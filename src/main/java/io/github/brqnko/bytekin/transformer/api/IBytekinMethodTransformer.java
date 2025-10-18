@@ -6,7 +6,6 @@ import io.github.brqnko.bytekin.injection.Inject;
 import io.github.brqnko.bytekin.injection.Invoke;
 import io.github.brqnko.bytekin.injection.ModifyVariable;
 import io.github.brqnko.bytekin.injection.Redirect;
-import io.github.brqnko.bytekin.logging.ILogger;
 import io.github.brqnko.bytekin.mapping.IMappingProvider;
 import io.github.brqnko.bytekin.transformer.method.InjectMethodTransformer;
 import io.github.brqnko.bytekin.transformer.method.InvokeMethodTransformer;
@@ -52,7 +51,7 @@ public interface IBytekinMethodTransformer {
         return false;
     }
 
-    static Map<MethodData, List<IBytekinMethodTransformer>> createTransformers(ILogger logger, IMappingProvider mapping, Class<?> clazz, String className) {
+    static Map<MethodData, List<IBytekinMethodTransformer>> createTransformers(IMappingProvider mapping, Class<?> clazz, String className) {
 
         Map<MethodData, List<IBytekinMethodTransformer>> transformers = new HashMap<>();
 
@@ -66,7 +65,7 @@ public interface IBytekinMethodTransformer {
                             mapping.getDesc(inject.methodDesc())
                     );
                     List<IBytekinMethodTransformer> methodTransformers = transformers.computeIfAbsent(methodData, k -> new ArrayList<>());
-                    methodTransformers.add(new InjectMethodTransformer(logger, mapping, method, inject, className));
+                    methodTransformers.add(new InjectMethodTransformer(mapping, method, inject, className));
                 }
 
                 if (annotation instanceof Invoke) {
@@ -76,7 +75,7 @@ public interface IBytekinMethodTransformer {
                             mapping.getDesc(invoke.targetMethodDesc())
                     );
                     List<IBytekinMethodTransformer> methodTransformers = transformers.computeIfAbsent(methodData, k -> new ArrayList<>());
-                    methodTransformers.add(new InvokeMethodTransformer(logger, mapping, clazz, method, invoke, className));
+                    methodTransformers.add(new InvokeMethodTransformer(mapping, clazz, method, invoke, className));
                 }
 
                 if (annotation instanceof Redirect) {

@@ -3,7 +3,6 @@ package io.github.brqnko.bytekin.transformer.method;
 import io.github.brqnko.bytekin.injection.CallbackInfo;
 import io.github.brqnko.bytekin.injection.Invoke;
 import io.github.brqnko.bytekin.injection.Shift;
-import io.github.brqnko.bytekin.logging.ILogger;
 import io.github.brqnko.bytekin.mapping.IMappingProvider;
 import io.github.brqnko.bytekin.data.TypeData;
 import io.github.brqnko.bytekin.transformer.api.IBytekinMethodTransformer;
@@ -44,7 +43,7 @@ public class InvokeMethodTransformer implements IBytekinMethodTransformer {
         return size;
     }
 
-    public InvokeMethodTransformer(ILogger logger, IMappingProvider mapping, Class<?> clazz, Method method, Invoke invoke, String className) {
+    public InvokeMethodTransformer(IMappingProvider mapping, Class<?> clazz, Method method, Invoke invoke, String className) {
         this.shift = invoke.shift();
 
         this.targetMethodOwner = className.replaceAll("\\.", "/");
@@ -61,7 +60,7 @@ public class InvokeMethodTransformer implements IBytekinMethodTransformer {
         this.invokeParameters = DescriptorParser.parseParameterTypes(invokeMethodDesc);
     }
 
-    public InvokeMethodTransformer(ILogger logger, String targetMethodOwner, String targetMethodName, String targetMethodDesc, String invokeMethodOwner, String invokeMethodName, String invokeMethodDesc, Shift shift, String callMethodOwner, String callMethodName) {
+    public InvokeMethodTransformer(String targetMethodOwner, String targetMethodName, String targetMethodDesc, String invokeMethodOwner, String invokeMethodName, String invokeMethodDesc, Shift shift, String callMethodOwner, String callMethodName) {
         this.shift = shift;
         this.targetMethodOwner = targetMethodOwner.replaceAll("\\.", "/");
         this.targetMethodName = targetMethodName;

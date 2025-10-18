@@ -3,7 +3,6 @@ package io.github.brqnko.bytekin.transformer.method;
 import io.github.brqnko.bytekin.injection.At;
 import io.github.brqnko.bytekin.injection.CallbackInfo;
 import io.github.brqnko.bytekin.injection.Inject;
-import io.github.brqnko.bytekin.logging.ILogger;
 import io.github.brqnko.bytekin.mapping.IMappingProvider;
 import io.github.brqnko.bytekin.data.TypeData;
 import io.github.brqnko.bytekin.transformer.api.IBytekinMethodTransformer;
@@ -50,7 +49,7 @@ public class InjectMethodTransformer implements IBytekinMethodTransformer {
         return builder.toString();
     }
 
-    public InjectMethodTransformer(ILogger logger, IMappingProvider mapping, Method method, Inject inject, String className) {
+    public InjectMethodTransformer(IMappingProvider mapping, Method method, Inject inject, String className) {
         this.targetMethodName = mapping.getMethodName(className, inject.methodName(), inject.methodDesc());
         this.targetMethodDesc = mapping.getDesc(inject.methodDesc());
 
@@ -61,7 +60,7 @@ public class InjectMethodTransformer implements IBytekinMethodTransformer {
         this.at = inject.at();
     }
 
-    public InjectMethodTransformer(ILogger logger, String targetMethodOwner, String targetMethodName, String targetMethodDesc, String callMethodOwner, String callMethodName, At at) {
+    public InjectMethodTransformer(String targetMethodOwner, String targetMethodName, String targetMethodDesc, String callMethodOwner, String callMethodName, At at) {
         this.targetMethodOwner = targetMethodOwner.replaceAll("\\.", "/");
         this.targetMethodName = targetMethodName;
         this.targetMethodDesc = targetMethodDesc;
