@@ -34,12 +34,12 @@ public class RedirectMethodTransformer implements IBytekinMethodTransformer {
         switch (type) {
             case METHOD:
                 this.targetName = mapping.getMethodName(normalizedOwner, name, desc);
-                this.targetDesc = mapping.getMethodDesc(normalizedOwner, name, desc);
+                this.targetDesc = mapping.getDesc(desc);
                 break;
             case FIELD_GET:
             case FIELD_SET:
                 this.targetName = mapping.getFieldName(normalizedOwner, name, desc);
-                this.targetDesc = mapping.getFieldDesc(normalizedOwner, name, desc);
+                this.targetDesc = mapping.getDesc(desc);
                 break;
             default:
                 throw new IllegalStateException("Unsupported redirect type: " + type);

@@ -42,28 +42,26 @@ public class BytekinClassTransformer {
         List<IBytekinMethodTransformer> transformer = this.methodTransformers.computeIfAbsent(
                 new MethodData(
                         mapping.getMethodName(className, injection.getMethodName(), injection.getMethodDesc()),
-                        mapping.getMethodDesc(className, injection.getMethodName(), injection.getMethodDesc())),
+                        mapping.getDesc(injection.getMethodDesc())),
                 k -> new ArrayList<>());
 
         transformer.add(new InjectMethodTransformer(
                 logger,
                 className,
                 mapping.getMethodName(className, injection.getMethodName(), injection.getMethodDesc()),
-                mapping.getMethodDesc(className, injection.getMethodName(), injection.getMethodDesc()),
+                mapping.getDesc(injection.getMethodDesc()),
                 injection.getHookMethodOwner(),
                 injection.getHookMethodName(),
                 injection.getAt()
-                ));
+        ));
     }
 
     public void addInvocation(ILogger logger, IMappingProvider mapping, Invocation invocation, String className) {
         List<IBytekinMethodTransformer> transformer = this.methodTransformers.computeIfAbsent(
                 new MethodData(
                         mapping.getMethodName(className, invocation.getTargetMethodName(), invocation.getTargetMethodDesc()),
-                        mapping.getMethodDesc(className, invocation.getTargetMethodName(), invocation.getTargetMethodDesc())
-                ),
-                k -> new ArrayList<>()
-        );
+                        mapping.getDesc(invocation.getTargetMethodDesc())),
+                k -> new ArrayList<>());
 
         String invokeOwner = mapping.getClassName(invocation.getInvokeMethodOwner());
 
@@ -71,21 +69,20 @@ public class BytekinClassTransformer {
                 logger,
                 className,
                 mapping.getMethodName(className, invocation.getTargetMethodName(), invocation.getTargetMethodDesc()),
-        mapping.getMethodDesc(className, invocation.getTargetMethodName(), invocation.getTargetMethodDesc()),
+                mapping.getDesc(invocation.getTargetMethodDesc()),
                 invokeOwner,
                 mapping.getMethodName(invokeOwner, invocation.getInvokeMethodName(), invocation.getInvokeMethodDesc()),
-                mapping.getMethodDesc(invokeOwner, invocation.getInvokeMethodName(), invocation.getInvokeMethodDesc()),
+                mapping.getDesc(invocation.getInvokeMethodDesc()),
                 invocation.getShift(),
                 invocation.getHookMethodOwner(),
                 invocation.getHookMethodName()
-                ));
+        ));
     }
 
     public void addRedirect(ILogger logger, IMappingProvider mapping, RedirectData redirect, String className) {
         MethodData methodData = new MethodData(
                 mapping.getMethodName(className, redirect.getTargetMethodName(), redirect.getTargetMethodDesc()),
-                mapping.getMethodDesc(className, redirect.getTargetMethodName(), redirect.getTargetMethodDesc())
-        );
+                mapping.getDesc(redirect.getTargetMethodDesc()));
 
         List<IBytekinMethodTransformer> transformer = this.methodTransformers.computeIfAbsent(methodData, k -> new ArrayList<>());
 
@@ -103,7 +100,7 @@ public class BytekinClassTransformer {
 
     public void addConstantModification(ILogger logger, IMappingProvider mapping, ConstantModification modification, String className) {
         String mappedName = mapping.getMethodName(className, modification.getMethodName(), modification.getMethodDesc());
-        String mappedDesc = mapping.getMethodDesc(className, modification.getMethodName(), modification.getMethodDesc());
+        String mappedDesc = mapping.getDesc(modification.getMethodDesc());
 
         MethodData methodData = new MethodData(mappedName, mappedDesc);
 
@@ -121,7 +118,7 @@ public class BytekinClassTransformer {
 
     public void addVariableModification(ILogger logger, IMappingProvider mapping, VariableModification modification, String className) {
         String mappedName = mapping.getMethodName(className, modification.getMethodName(), modification.getMethodDesc());
-        String mappedDesc = mapping.getMethodDesc(className, modification.getMethodName(), modification.getMethodDesc());
+        String mappedDesc = mapping.getDesc(modification.getMethodDesc());
 
         MethodData methodData = new MethodData(mappedName, mappedDesc);
 

@@ -52,7 +52,7 @@ public class InjectMethodTransformer implements IBytekinMethodTransformer {
 
     public InjectMethodTransformer(ILogger logger, IMappingProvider mapping, Method method, Inject inject, String className) {
         this.targetMethodName = mapping.getMethodName(className, inject.methodName(), inject.methodDesc());
-        this.targetMethodDesc = mapping.getMethodDesc(className, inject.methodName(), inject.methodDesc());
+        this.targetMethodDesc = mapping.getDesc(inject.methodDesc());
 
         this.targetMethodOwner = className.replaceAll("\\.", "/");
         this.callMethodOwner = method.getDeclaringClass().getName().replace(".", "/");

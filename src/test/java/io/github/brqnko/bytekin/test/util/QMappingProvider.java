@@ -17,17 +17,12 @@ public class QMappingProvider implements IMappingProvider {
     }
 
     @Override
-    public String getMethodDesc(String className, String methodName, String methodDesc) {
-        return methodDesc;
-    }
-
-    @Override
     public String getFieldName(String className, String fieldName, String fieldDesc) {
         return fieldName + "Q";
     }
 
     @Override
-    public String getFieldDesc(String className, String fieldName, String fieldDesc) {
-        return fieldDesc;
+    public String getDesc(String desc) {
+        return desc;
     }
 }

@@ -49,11 +49,11 @@ public class InvokeMethodTransformer implements IBytekinMethodTransformer {
 
         this.targetMethodOwner = className.replaceAll("\\.", "/");
         this.targetMethodName = mapping.getMethodName(className, invoke.targetMethodName(), invoke.targetMethodDesc());
-        this.targetMethodDesc = mapping.getMethodDesc(className, invoke.targetMethodName(), invoke.targetMethodDesc());
+    this.targetMethodDesc = mapping.getDesc(invoke.targetMethodDesc());
 
         this.invokeMethodOwner = mapping.getClassName(invoke.invokeMethodOwner()).replaceAll("\\.", "/");
         this.invokeMethodName = mapping.getMethodName(invoke.invokeMethodOwner(), invoke.invokeMethodName(), invoke.invokeMethodDesc());
-        this.invokeMethodDesc = mapping.getMethodDesc(invoke.invokeMethodOwner(), invoke.invokeMethodName(), invoke.invokeMethodDesc());
+    this.invokeMethodDesc = mapping.getDesc(invoke.invokeMethodDesc());
 
         this.callMethodOwner = clazz.getName().replace(".", "/");
         this.callMethodName = method.getName();

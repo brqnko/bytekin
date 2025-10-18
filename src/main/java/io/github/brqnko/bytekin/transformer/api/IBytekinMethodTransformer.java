@@ -63,7 +63,7 @@ public interface IBytekinMethodTransformer {
                     Inject inject = (Inject) annotation;
                     MethodData methodData = new MethodData(
                             mapping.getMethodName(className, inject.methodName(), inject.methodDesc()),
-                            mapping.getMethodDesc(className, inject.methodName(), inject.methodDesc())
+                            mapping.getDesc(inject.methodDesc())
                     );
                     List<IBytekinMethodTransformer> methodTransformers = transformers.computeIfAbsent(methodData, k -> new ArrayList<>());
                     methodTransformers.add(new InjectMethodTransformer(logger, mapping, method, inject, className));
@@ -73,7 +73,7 @@ public interface IBytekinMethodTransformer {
                     Invoke invoke = (Invoke) annotation;
                     MethodData methodData = new MethodData(
                             mapping.getMethodName(className, invoke.targetMethodName(), invoke.targetMethodDesc()),
-                            mapping.getMethodDesc(className, invoke.targetMethodName(), invoke.targetMethodDesc())
+                            mapping.getDesc(invoke.targetMethodDesc())
                     );
                     List<IBytekinMethodTransformer> methodTransformers = transformers.computeIfAbsent(methodData, k -> new ArrayList<>());
                     methodTransformers.add(new InvokeMethodTransformer(logger, mapping, clazz, method, invoke, className));
@@ -83,7 +83,7 @@ public interface IBytekinMethodTransformer {
                     Redirect redirect = (Redirect) annotation;
                     MethodData methodData = new MethodData(
                             mapping.getMethodName(className, redirect.targetMethodName(), redirect.targetMethodDesc()),
-                            mapping.getMethodDesc(className, redirect.targetMethodName(), redirect.targetMethodDesc())
+                            mapping.getDesc(redirect.targetMethodDesc())
                     );
                     List<IBytekinMethodTransformer> methodTransformers = transformers.computeIfAbsent(methodData, k -> new ArrayList<>());
                     methodTransformers.add(new RedirectMethodTransformer(
@@ -102,7 +102,7 @@ public interface IBytekinMethodTransformer {
                     ModifyVariable modifyVariable = (ModifyVariable) annotation;
                     MethodData methodData = new MethodData(
                             mapping.getMethodName(className, modifyVariable.targetMethodName(), modifyVariable.targetMethodDesc()),
-                            mapping.getMethodDesc(className, modifyVariable.targetMethodName(), modifyVariable.targetMethodDesc())
+                            mapping.getDesc(modifyVariable.targetMethodDesc())
                     );
                     List<IBytekinMethodTransformer> methodTransformers = transformers.computeIfAbsent(methodData, k -> new ArrayList<>());
                     VariableModification modification = new VariableModification(
