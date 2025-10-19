@@ -1,15 +1,15 @@
-# Examples - Basic Usage
+# 例 - 基本的な使用方法
 
-This section contains complete, working examples for common bytekin use cases.
+このセクションには、一般的なbytekinのユースケースの完全で動作する例が含まれています。
 
-## Example 1: Adding Logging
+## 例1: ログの追加
 
-### Problem
-Add logging to a method without modifying source code.
+### 問題
+ソースコードを変更せずにメソッドにログを追加する。
 
-### Solution
+### 解決策
 
-**Target Class:**
+**ターゲットクラス:**
 ```java
 package com.example;
 
@@ -20,7 +20,7 @@ public class Calculator {
 }
 ```
 
-**Hook Class:**
+**フッククラス:**
 ```java
 package com.example;
 
@@ -42,7 +42,7 @@ public class CalculatorLoggingHooks {
 }
 ```
 
-**Usage:**
+**使用方法:**
 ```java
 public class Main {
     public static void main(String[] args) {
@@ -52,24 +52,24 @@ public class Main {
 
         byte[] original = getClassBytecode("com.example.Calculator");
         byte[] transformed = transformer.transform("com.example.Calculator", original);
-        
+
         Calculator calc = loadTransformed(transformed);
         int result = calc.add(5, 3);
-        // Output:
+        // 出力:
         // Adding: 5 + 3
         // 8
     }
 }
 ```
 
-## Example 2: Parameter Validation
+## 例2: パラメータ検証
 
-### Problem
-Validate method parameters before execution.
+### 問題
+実行前にメソッドパラメータを検証する。
 
-### Solution
+### 解決策
 
-**Hook Class:**
+**フッククラス:**
 ```java
 @ModifyClass("com.example.UserService")
 public class UserValidationHooks {
@@ -85,27 +85,27 @@ public class UserValidationHooks {
             ci.cancelled = true;
             return ci;
         }
-        
+
         if (age < 18) {
             System.out.println("ERROR: User must be 18 or older");
             ci.cancelled = true;
             return ci;
         }
-        
+
         System.out.println("Valid user: " + name + ", age " + age);
         return CallbackInfo.empty();
     }
 }
 ```
 
-## Example 3: Caching
+## 例3: キャッシング
 
-### Problem
-Intercept method calls to implement caching.
+### 問題
+キャッシングを実装するためにメソッド呼び出しをインターセプトする。
 
-### Solution
+### 解決策
 
-**Hook Class:**
+**フッククラス:**
 ```java
 @ModifyClass("com.example.DataRepository")
 public class CachingHooks {
@@ -132,14 +132,14 @@ public class CachingHooks {
 }
 ```
 
-## Example 4: Security - Authentication Check
+## 例4: セキュリティ - 認証チェック
 
-### Problem
-Ensure all sensitive methods require authentication.
+### 問題
+すべての機密メソッドに認証が必要であることを確認する。
 
-### Solution
+### 解決策
 
-**Hook Class:**
+**フッククラス:**
 ```java
 @ModifyClass("com.example.PaymentService")
 public class AuthenticationHooks {
@@ -156,26 +156,26 @@ public class AuthenticationHooks {
             ci.returnValue = false;
             return ci;
         }
-        
+
         System.out.println("Authenticated transfer: " + amount);
         return CallbackInfo.empty();
     }
 
     private static boolean isUserAuthenticated() {
-        // Check authentication status
+        // 認証状態を確認
         return true;
     }
 }
 ```
 
-## Example 5: Monitoring - Method Call Counter
+## 例5: 監視 - メソッド呼び出しカウンター
 
-### Problem
-Count how many times specific methods are called.
+### 問題
+特定のメソッドが何回呼び出されたかをカウントする。
 
-### Solution
+### 解決策
 
-**Hook Class:**
+**フッククラス:**
 ```java
 @ModifyClass("com.example.UserService")
 public class MonitoringHooks {
@@ -196,14 +196,14 @@ public class MonitoringHooks {
 }
 ```
 
-## Example 6: Transforming Return Values
+## 例6: 戻り値の変換
 
-### Problem
-Modify the return value of a method.
+### 問題
+メソッドの戻り値を変更する。
 
-### Solution
+### 解決策
 
-**Hook Class:**
+**フッククラス:**
 ```java
 @ModifyClass("com.example.PriceCalculator")
 public class PriceHooks {
@@ -215,18 +215,18 @@ public class PriceHooks {
     )
     public static CallbackInfo applyDiscount(CallbackInfo ci) {
         double originalPrice = (double) ci.returnValue;
-        double discounted = originalPrice * 0.9;  // 10% discount
+        double discounted = originalPrice * 0.9;  // 10%割引
         ci.returnValue = discounted;
         return ci;
     }
 }
 ```
 
-## Invoke Examples
+## Invokeの例
 
-### Example: Method Call Interception
+### 例: メソッド呼び出しのインターセプト
 
-**Hook Class:**
+**フッククラス:**
 ```java
 @ModifyClass("com.example.DataProcessor")
 public class ProcessorHooks {
@@ -246,9 +246,9 @@ public class ProcessorHooks {
 }
 ```
 
-## Combined Example: Comprehensive Transformation
+## 組み合わせ例: 包括的な変換
 
-**Complete Hook Class:**
+**完全なフッククラス:**
 ```java
 @ModifyClass("com.example.UserRepository")
 public class ComprehensiveHooks {
@@ -259,7 +259,7 @@ public class ComprehensiveHooks {
         at = At.HEAD
     )
     public static CallbackInfo validateBeforeSave(Object user, CallbackInfo ci) {
-        // Validate input
+        // 入力を検証
         if (user == null) {
             System.out.println("ERROR: Cannot save null user");
             ci.cancelled = true;
@@ -275,7 +275,7 @@ public class ComprehensiveHooks {
         shift = Shift.BEFORE
     )
     public static CallbackInfo modifyValidation(Object user, CallbackInfo ci) {
-        // Enhance validation
+        // 検証を強化
         System.out.println("Validating user...");
         return ci;
     }
@@ -292,8 +292,8 @@ public class ComprehensiveHooks {
 }
 ```
 
-## Next Steps
+## 次のステップ
 
-- Review [Advanced Examples](./examples-advanced.md)
-- Check [Best Practices](./best-practices.md)
-- Explore more [Features](./features.md)
+- [高度な例](./examples-advanced.md)を確認する
+- [ベストプラクティス](./best-practices.md)を確認する
+- さらなる[機能](./features.md)を探索する

@@ -1,43 +1,43 @@
-# Mappings
+# マッピング
 
-bytekin supports class and method name mappings for working with obfuscated or renamed code.
+bytekinは難読化または名前変更されたコードを扱うためのクラス名とメソッド名のマッピングをサポートしています。
 
-## What Are Mappings?
+## マッピングとは?
 
-Mappings translate between human-readable names and bytecode names. This is useful when:
-- Working with obfuscated code
-- Applying transformations to renamed classes
-- Handling version differences
-- Supporting multiple naming conventions
+マッピングは人間が読める名前とバイトコード名の間を変換します。これは以下の場合に便利です:
+- 難読化されたコードを扱う場合
+- 名前変更されたクラスに変換を適用する場合
+- バージョンの違いを処理する場合
+- 複数の命名規則をサポートする場合
 
-## Creating a Mapping Provider
+## マッピングプロバイダーの作成
 
-Implement `IMappingProvider` interface:
+`IMappingProvider`インターフェースを実装:
 
 ```java
 public class MyMappingProvider implements IMappingProvider {
-    
+
     @Override
     public String getClassName(String name) {
-        // Map class names
+        // クラス名をマップ
         if ("OriginalName".equals(name)) {
             return "MappedName";
         }
         return name;
     }
-    
+
     @Override
     public String getMethodName(String className, String methodName, String descriptor) {
-        // Map method names based on class and signature
+        // クラスとシグネチャに基づいてメソッド名をマップ
         if ("MyClass".equals(className) && "oldMethod".equals(methodName)) {
             return "newMethod";
         }
         return methodName;
     }
-    
+
     @Override
     public String getFieldName(String className, String fieldName) {
-        // Map field names
+        // フィールド名をマップ
         if ("MyClass".equals(className) && "oldField".equals(fieldName)) {
             return "newField";
         }
@@ -46,9 +46,9 @@ public class MyMappingProvider implements IMappingProvider {
 }
 ```
 
-## Using Mappings
+## マッピングの使用
 
-Pass mapping provider to builder:
+ビルダーにマッピングプロバイダーを渡す:
 
 ```java
 BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class)
@@ -56,9 +56,9 @@ BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class)
     .build();
 ```
 
-## Common Mapping Patterns
+## 一般的なマッピングパターン
 
-### Simple Rename
+### シンプルな名前変更
 
 ```java
 public String getClassName(String name) {
@@ -66,7 +66,7 @@ public String getClassName(String name) {
 }
 ```
 
-### Lookup Table
+### ルックアップテーブル
 
 ```java
 private static final Map<String, String> classMap = new HashMap<>();
@@ -81,23 +81,23 @@ public String getClassName(String name) {
 }
 ```
 
-### File-Based Mappings
+### ファイルベースのマッピング
 
 ```java
 public String getClassName(String name) {
-    // Load from configuration file
+    // 設定ファイルから読み込み
     Properties props = loadMappings("mappings.properties");
     return props.getProperty(name, name);
 }
 ```
 
-## Mapping Obfuscated Code
+## 難読化されたコードのマッピング
 
-When working with obfuscated code:
+難読化されたコードを扱う場合:
 
 ```java
 public class ObfuscationMapping implements IMappingProvider {
-    
+
     @Override
     public String getClassName(String name) {
         // a.class -> com.example.MyClass
@@ -107,7 +107,7 @@ public class ObfuscationMapping implements IMappingProvider {
             default: return name;
         }
     }
-    
+
     @Override
     public String getMethodName(String className, String methodName, String descriptor) {
         // a.b() -> MyClass.process()
@@ -123,56 +123,56 @@ public class ObfuscationMapping implements IMappingProvider {
 }
 ```
 
-## Hook Configuration with Mappings
+## マッピングを使用したフック設定
 
-Write hooks using human-readable names:
+人間が読める名前を使用してフックを書く:
 
 ```java
-@ModifyClass("com.example.UserService")  // Use readable name
+@ModifyClass("com.example.UserService")  // 読みやすい名前を使用
 public class UserServiceHooks {
     @Inject(methodName = "getUser", methodDesc = "(I)Lcom/example/User;", at = At.HEAD)
     public static CallbackInfo hook() { }
 }
 ```
 
-The mapping provider will translate to actual class names in bytecode.
+マッピングプロバイダーがバイトコード内の実際のクラス名に変換します。
 
-## Default (No-Op) Mapping
+## デフォルト（何もしない）マッピング
 
-Use empty mapping for unchanged names:
+変更されない名前のために空のマッピングを使用:
 
 ```java
 public class EmptyMappingProvider implements IMappingProvider {
-    
+
     @Override
     public String getClassName(String name) {
-        return name;  // No change
+        return name;  // 変更なし
     }
-    
+
     @Override
     public String getMethodName(String className, String methodName, String descriptor) {
-        return methodName;  // No change
+        return methodName;  // 変更なし
     }
-    
+
     @Override
     public String getFieldName(String className, String fieldName) {
-        return fieldName;  // No change
+        return fieldName;  // 変更なし
     }
 }
 ```
 
-## Advanced: Version-Specific Mappings
+## 応用: バージョン固有のマッピング
 
-Support multiple versions:
+複数のバージョンをサポート:
 
 ```java
 public class VersionAwareMappingProvider implements IMappingProvider {
     private final String version;
-    
+
     public VersionAwareMappingProvider(String version) {
         this.version = version;
     }
-    
+
     @Override
     public String getClassName(String name) {
         if ("1.0".equals(version)) {
@@ -182,21 +182,21 @@ public class VersionAwareMappingProvider implements IMappingProvider {
         }
         return name;
     }
-    
+
     private String mapToV1(String name) {
-        // Version 1 mappings
+        // バージョン1のマッピング
         return name;
     }
-    
+
     private String mapToV2(String name) {
-        // Version 2 mappings
+        // バージョン2のマッピング
         return name;
     }
 }
 ```
 
-## Next Steps
+## 次のステップ
 
-- Review [Advanced Usage](./advanced-usage.md)
-- Check [Best Practices](./best-practices.md)
-- Explore [Examples](./examples.md)
+- [高度な使用方法](./advanced-usage.md)を確認する
+- [ベストプラクティス](./best-practices.md)を確認する
+- [例](./examples.md)を探索する

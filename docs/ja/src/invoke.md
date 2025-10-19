@@ -1,8 +1,8 @@
-# Invoke Transformation
+# インボケーション変換
 
-The `@Invoke` annotation allows you to intercept method calls and optionally modify their arguments before execution.
+`@Invoke`アノテーションを使用すると、メソッド呼び出しをインターセプトし、実行前に引数をオプションで変更できます。
 
-## Basic Usage
+## 基本的な使用法
 
 ```java
 @ModifyClass("com.example.DataProcessor")
@@ -24,49 +24,49 @@ public class ProcessorHooks {
 }
 ```
 
-## Annotation Parameters
+## アノテーションパラメータ
 
-### targetMethodName (required)
+### targetMethodName (必須)
 
-The method name that contains the call to intercept.
+インターセプトする呼び出しを含むメソッド名。
 
 ```java
 targetMethodName = "process"
 ```
 
-### targetMethodDesc (required)
+### targetMethodDesc (必須)
 
-The JVM descriptor of the method that contains the call.
+呼び出しを含むメソッドのJVMディスクリプタ。
 
 ```java
 targetMethodDesc = "(Ljava/lang/String;)V"
 ```
 
-### invokeMethodName (required)
+### invokeMethodName (必須)
 
-The name of the method being called (the one you want to intercept).
+呼び出されているメソッド(インターセプトしたいもの)の名前。
 
 ```java
 invokeMethodName = "helper"
 ```
 
-### invokeMethodDesc (required)
+### invokeMethodDesc (必須)
 
-The JVM descriptor of the method being called.
+呼び出されているメソッドのJVMディスクリプタ。
 
 ```java
 invokeMethodDesc = "(I)Ljava/lang/String;"
 ```
 
-### shift (required)
+### shift (必須)
 
-When to execute the hook relative to the method call.
+メソッド呼び出しに対してフックを実行するタイミング。
 
-## Shift Enum - Timing
+## Shift列挙型 - タイミング
 
 ### Shift.BEFORE
 
-Execute the hook **before** the method is called.
+メソッドが呼び出される**前**にフックを実行します。
 
 ```java
 @Invoke(
@@ -82,18 +82,18 @@ public static CallbackInfo beforeCall(String input) {
 }
 ```
 
-**Result:**
+**結果:**
 ```java
 public void process(String input) {
-    System.out.println("Before calling validate");  // Injected
+    System.out.println("Before calling validate");  // インジェクション済み
     validate(input);
-    // Rest of code
+    // 残りのコード
 }
 ```
 
 ### Shift.AFTER
 
-Execute the hook **after** the method is called.
+メソッドが呼び出された**後**にフックを実行します。
 
 ```java
 @Invoke(
@@ -109,18 +109,18 @@ public static CallbackInfo afterCall() {
 }
 ```
 
-**Result:**
+**結果:**
 ```java
 public void process(String input) {
-    // Some code
+    // 何らかのコード
     save();
-    System.out.println("After calling save");  // Injected
+    System.out.println("After calling save");  // インジェクション済み
 }
 ```
 
-## Modifying Arguments
+## 引数の変更
 
-Use `CallbackInfo` to change the arguments passed to the intercepted call:
+`CallbackInfo`を使用して、インターセプトされた呼び出しに渡される引数を変更します:
 
 ```java
 @Invoke(
@@ -131,27 +131,27 @@ Use `CallbackInfo` to change the arguments passed to the intercepted call:
     shift = Shift.BEFORE
 )
 public static CallbackInfo sanitizeInput(String data, int count, CallbackInfo ci) {
-    // Modify arguments
+    // 引数を変更
     String sanitized = data.trim().toLowerCase();
     int newCount = Math.max(0, count);
-    
+
     ci.modifyArgs = new Object[]{sanitized, newCount};
     return ci;
 }
 ```
 
-**Result:**
+**結果:**
 ```java
 public void processData(String data, int count) {
-    // Original: transform(data, count);
-    // After hook: transform(data.trim().toLowerCase(), max(0, count));
+    // 元: transform(data, count);
+    // フック後: transform(data.trim().toLowerCase(), max(0, count));
     transform(data, count);
 }
 ```
 
-## Cancelling Method Calls
+## メソッド呼び出しのキャンセル
 
-Prevent the method from being called:
+メソッドが呼び出されないようにします:
 
 ```java
 @Invoke(
@@ -163,7 +163,7 @@ Prevent the method from being called:
 )
 public static CallbackInfo preventDeletion(File file, CallbackInfo ci) {
     if (isSystemFile(file)) {
-        // Don't call delete(), return false
+        // delete()を呼び出さず、falseを返す
         ci.cancelled = true;
         ci.returnValue = false;
     }
@@ -171,9 +171,9 @@ public static CallbackInfo preventDeletion(File file, CallbackInfo ci) {
 }
 ```
 
-## Handling Return Values
+## 戻り値の処理
 
-Access and modify return values (with `Shift.AFTER`):
+戻り値にアクセスして変更します(`Shift.AFTER`の場合):
 
 ```java
 @Invoke(
@@ -184,23 +184,23 @@ Access and modify return values (with `Shift.AFTER`):
     shift = Shift.AFTER
 )
 public static CallbackInfo modifyReturnValue(CallbackInfo ci) {
-    // Access the return value
+    // 戻り値にアクセス
     int original = (int) ci.returnValue;
-    
-    // Modify it
+
+    // 変更する
     ci.returnValue = original * 2;
-    
+
     return ci;
 }
 ```
 
-## Complex Example
+## 複雑な例
 
 ```java
 @ModifyClass("com.example.UserService")
 public class UserServiceHooks {
 
-    // Intercept login attempts
+    // ログイン試行をインターセプト
     @Invoke(
         targetMethodName = "authenticate",
         targetMethodDesc = "(Ljava/lang/String;Ljava/lang/String;)Z",
@@ -211,40 +211,40 @@ public class UserServiceHooks {
     public static CallbackInfo logAuthAttempt(
         String username, String password, CallbackInfo ci
     ) {
-        // Log the attempt
+        // 試行をログに記録
         System.out.println("Auth attempt for: " + username);
-        
-        // Block certain usernames
+
+        // 特定のユーザー名をブロック
         if (username.equals("blocked")) {
             ci.cancelled = true;
             ci.returnValue = false;
         }
-        
+
         return ci;
     }
 }
 ```
 
-## Best Practices
+## ベストプラクティス
 
-1. **Understand call flow**: Know where the method is called
-2. **Consider timing**: `BEFORE` for input validation, `AFTER` for output transformation
-3. **Test argument modification**: Ensure types match
-4. **Handle cancellation carefully**: Ensure calling code handles cancelled calls
-5. **Profile performance**: Hooks are executed on every call
+1. **呼び出しフローを理解する**: メソッドがどこで呼び出されるかを知る
+2. **タイミングを考慮する**: 入力検証には`BEFORE`、出力変換には`AFTER`
+3. **引数の変更をテスト**: 型が一致することを確認
+4. **キャンセルを慎重に処理**: 呼び出し元のコードがキャンセルされた呼び出しを処理することを確認
+5. **パフォーマンスをプロファイル**: フックはすべての呼び出しで実行される
 
-## Limitations
+## 制限事項
 
-- Can only intercept explicit method calls, not virtual method invocations from bytecode
-- Cannot intercept calls to constructors directly
-- Performance impact is incurred for every call
+- 明示的なメソッド呼び出しのみインターセプト可能、バイトコードからの仮想メソッド呼び出しは不可
+- コンストラクタへの呼び出しを直接インターセプトできない
+- すべての呼び出しでパフォーマンスへの影響が発生する
 
-## Examples
+## 例
 
-See [Examples - Invoke](./examples-basic.md#invoke-examples) for complete working examples.
+完全な動作例については、[例 - インボケーション](./examples-basic.md#invoke-examples)をご覧ください。
 
-## Next Steps
+## 次のステップ
 
-- Learn about [Redirect](./redirect.md) transformation
-- Explore [Advanced Usage](./advanced-usage.md)
-- Check [API Reference](./api-reference.md)
+- [リダイレクト](./redirect.md)変換について学ぶ
+- [高度な使用法](./advanced-usage.md)を探る
+- [APIリファレンス](./api-reference.md)をチェック

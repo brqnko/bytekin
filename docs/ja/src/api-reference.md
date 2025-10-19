@@ -1,17 +1,17 @@
-# API Reference
+# APIリファレンス
 
-This section provides detailed API documentation for bytekin.
+このセクションではbytekinの詳細なAPIドキュメントを提供します。
 
-## Core Classes
+## コアクラス
 
 ### BytekinTransformer
 
-The main entry point for bytecode transformation.
+バイトコード変換のメインエントリーポイント。
 
 ```java
 public class BytekinTransformer {
     public byte[] transform(String className, byte[] bytes, int api);
-    
+
     public static class Builder {
         public Builder(Class<?>... classes);
         public Builder mapping(IMappingProvider mapping);
@@ -27,23 +27,23 @@ public class BytekinTransformer {
 
 ### CallbackInfo
 
-Controls transformation behavior within hook methods.
+フックメソッド内で変換動作を制御します。
 
 ```java
 public class CallbackInfo {
     public boolean cancelled;
     public Object returnValue;
     public Object[] modifyArgs;
-    
+
     public static CallbackInfo empty();
 }
 ```
 
-## Annotations
+## アノテーション
 
 ### @ModifyClass
 
-Marks a class as a hook container for bytecode transformations.
+バイトコード変換のフックコンテナとしてクラスをマークします。
 
 ```java
 @Target(ElementType.TYPE)
@@ -55,7 +55,7 @@ public @interface ModifyClass {
 
 ### @Inject
 
-Injects code at specific points in methods.
+メソッドの特定の箇所にコードをインジェクトします。
 
 ```java
 @Target(ElementType.METHOD)
@@ -69,7 +69,7 @@ public @interface Inject {
 
 ### @Invoke
 
-Intercepts method calls.
+メソッド呼び出しをインターセプトします。
 
 ```java
 @Target(ElementType.METHOD)
@@ -85,7 +85,7 @@ public @interface Invoke {
 
 ### @Redirect
 
-Redirects method calls to different target.
+メソッド呼び出しを別のターゲットにリダイレクトします。
 
 ```java
 @Target(ElementType.METHOD)
@@ -100,7 +100,7 @@ public @interface Redirect {
 
 ### @ModifyConstant
 
-Modifies constant values in bytecode.
+バイトコード内の定数値を変更します。
 
 ```java
 @Target(ElementType.METHOD)
@@ -114,7 +114,7 @@ public @interface ModifyConstant {
 
 ### @ModifyVariable
 
-Modifies local variable values.
+ローカル変数の値を変更します。
 
 ```java
 @Target(ElementType.METHOD)
@@ -125,36 +125,36 @@ public @interface ModifyVariable {
 }
 ```
 
-## Enums
+## 列挙型
 
 ### At
 
-Specifies where to inject code.
+コードをインジェクトする場所を指定します。
 
 ```java
 public enum At {
-    HEAD,      // Before method body
-    RETURN,    // Before return statements
-    TAIL       // At method end
+    HEAD,      // メソッド本体の前
+    RETURN,    // return文の前
+    TAIL       // メソッドの終わり
 }
 ```
 
 ### Shift
 
-Specifies timing relative to method invocation.
+メソッド呼び出しに対する相対的なタイミングを指定します。
 
 ```java
 public enum Shift {
-    BEFORE,    // Before the call
-    AFTER      // After the call
+    BEFORE,    // 呼び出しの前
+    AFTER      // 呼び出しの後
 }
 ```
 
-## Interfaces
+## インターフェース
 
 ### IMappingProvider
 
-Maps class and method names.
+クラス名とメソッド名をマッピングします。
 
 ```java
 public interface IMappingProvider {
@@ -164,100 +164,100 @@ public interface IMappingProvider {
 }
 ```
 
-## Data Classes
+## データクラス
 
 ### Injection
 
-Represents an injection transformation.
+インジェクション変換を表します。
 
 ```java
 public class Injection {
-    // Constructor and methods
+    // コンストラクタとメソッド
 }
 ```
 
 ### Invocation
 
-Represents an invocation transformation.
+インボケーション変換を表します。
 
 ```java
 public class Invocation {
-    // Constructor and methods
+    // コンストラクタとメソッド
 }
 ```
 
 ### RedirectData
 
-Represents a redirect transformation.
+リダイレクト変換を表します。
 
 ```java
 public class RedirectData {
-    // Constructor and methods
+    // コンストラクタとメソッド
 }
 ```
 
 ### ConstantModification
 
-Represents a constant modification transformation.
+定数変更変換を表します。
 
 ```java
 public class ConstantModification {
-    // Constructor and methods
+    // コンストラクタとメソッド
 }
 ```
 
 ### VariableModification
 
-Represents a variable modification transformation.
+変数変更変換を表します。
 
 ```java
 public class VariableModification {
-    // Constructor and methods
+    // コンストラクタとメソッド
 }
 ```
 
-## Common Exceptions
+## 一般的な例外
 
 ### VerifyError
 
-Thrown when transformed bytecode is invalid.
+変換されたバイトコードが無効な場合にスローされます。
 
 ### ClassNotFoundException
 
-Thrown when target class cannot be found.
+ターゲットクラスが見つからない場合にスローされます。
 
 ### ClassFormatException
 
-Thrown when bytecode format is invalid.
+バイトコード形式が無効な場合にスローされます。
 
-## Utility Classes
+## ユーティリティクラス
 
 ### DescriptorParser
 
-Utility for parsing and validating method descriptors.
+メソッドディスクリプタの解析と検証のためのユーティリティ。
 
 ### BytecodeManipulator
 
-Low-level bytecode manipulation utilities.
+低レベルのバイトコード操作ユーティリティ。
 
-## Threading
+## スレッディング
 
-All public methods are **thread-safe after initialization**:
+すべてのpublicメソッドは**初期化後はスレッドセーフ**です:
 
-- `BytekinTransformer.transform()` can be called from multiple threads
-- `Builder` is **not** thread-safe during configuration
-- `CallbackInfo` is local to each hook invocation
+- `BytekinTransformer.transform()`は複数のスレッドから呼び出し可能
+- `Builder`は設定中は**スレッドセーフではない**
+- `CallbackInfo`は各フック呼び出しにローカル
 
-## Performance Characteristics
+## パフォーマンス特性
 
-| Operation | Complexity |
+| 操作 | 複雑さ |
 |-----------|-----------|
-| Builder.build() | O(n) where n = number of hook methods |
-| transform() | O(m) where m = bytecode size |
-| Hook execution | O(1) average case |
+| Builder.build() | O(n) n = フックメソッド数 |
+| transform() | O(m) m = バイトコードサイズ |
+| フックの実行 | 平均O(1) |
 
-## Next Steps
+## 次のステップ
 
-- Review [Annotations](./annotations.md) in detail
-- Check [Classes and Interfaces](./classes-interfaces.md)
-- Explore [Examples](./examples.md)
+- [アノテーション](./annotations.md)を詳しく確認する
+- [クラスとインターフェース](./classes-interfaces.md)を確認する
+- [例](./examples.md)を探索する

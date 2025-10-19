@@ -1,212 +1,212 @@
-# Troubleshooting Guide
+# トラブルシューティングガイド
 
-This guide helps you resolve common issues when using bytekin.
+このガイドは、bytekin使用時の一般的な問題を解決するのに役立ちます。
 
-## Transformation Not Applied
+## 変換が適用されない
 
-### Symptoms
+### 症状
 
-- Hook methods are never called
-- Original code runs without modifications
-- Breakpoints in hooks are never hit
+- フックメソッドが呼び出されない
+- 元のコードが変更なしで実行される
+- フック内のブレークポイントが到達されない
 
-### Causes and Solutions
+### 原因と解決策
 
-#### 1. Incorrect Class Name
+#### 1. 不正なクラス名
 
-The `@ModifyClass` value must exactly match the bytecode class name.
+`@ModifyClass`の値はバイトコードのクラス名と正確に一致する必要があります。
 
-**Problem:**
+**問題:**
 ```java
-@ModifyClass("Calculator")  // Wrong!
+@ModifyClass("Calculator")  // 誤り!
 public class CalcHooks { }
 ```
 
-**Solution:**
+**解決策:**
 ```java
-@ModifyClass("com.example.Calculator")  // Correct
+@ModifyClass("com.example.Calculator")  // 正しい
 public class CalcHooks { }
 ```
 
-**How to verify:**
+**確認方法:**
 ```bash
-# List all classes in JAR
+# JAR内のすべてのクラスをリスト
 jar tf myapp.jar | grep -i calculator
 ```
 
-#### 2. Wrong Method Descriptor
+#### 2. 間違ったメソッドディスクリプタ
 
-The `methodDesc` must exactly match the method signature in bytecode.
+`methodDesc`はバイトコード内のメソッドシグネチャと正確に一致する必要があります。
 
-**Problem:**
+**問題:**
 ```java
-// Method in bytecode: public int add(int a, int b)
-@Inject(methodName = "add", methodDesc = "(int, int)int", at = At.HEAD)  // Wrong!
+// バイトコード内のメソッド: public int add(int a, int b)
+@Inject(methodName = "add", methodDesc = "(int, int)int", at = At.HEAD)  // 誤り!
 public static CallbackInfo hook() { }
 ```
 
-**Solution:**
+**解決策:**
 ```java
-@Inject(methodName = "add", methodDesc = "(II)I", at = At.HEAD)  // Correct
+@Inject(methodName = "add", methodDesc = "(II)I", at = At.HEAD)  // 正しい
 public static CallbackInfo hook() { }
 ```
 
-**How to find correct descriptor:**
+**正しいディスクリプタの見つけ方:**
 ```bash
-# Use javap to see method signatures
+# javapを使用してメソッドシグネチャを確認
 javap -c com.example.Calculator | grep -A 5 "public int add"
 ```
 
-#### 3. Hook Class Not Passed to Builder
+#### 3. フッククラスがBuilderに渡されていない
 
-The hook class must be passed to the Builder.
+フッククラスはBuilderに渡す必要があります。
 
-**Problem:**
+**問題:**
 ```java
 BytekinTransformer transformer = new BytekinTransformer.Builder()
-    .build();  // Where are the hooks?
+    .build();  // フックはどこ?
 ```
 
-**Solution:**
+**解決策:**
 ```java
 BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class)
-    .build();  // Pass hook class
+    .build();  // フッククラスを渡す
 ```
 
-#### 4. Class Not Yet Loaded
+#### 4. クラスがまだロードされていない
 
-Transformations must be applied before the class is loaded by the JVM.
+変換は、JVMがクラスをロードする前に適用する必要があります。
 
-**Problem:**
+**問題:**
 ```java
-// Class already loaded
+// クラスがすでにロード済み
 Class<?> clazz = Class.forName("com.example.MyClass");
 
-// Now trying to transform - too late!
+// 今変換しようとしている - 遅すぎる!
 byte[] transformed = transformer.transform("com.example.MyClass", bytecode);
 ```
 
-**Solution:**
-- Use a custom `ClassLoader` that applies transformations during loading
-- Or use Java instrumentation/agents to intercept class loading
+**解決策:**
+- ロード中に変換を適用するカスタム`ClassLoader`を使用
+- またはクラスロードをインターセプトするJava instrumentation/agentsを使用
 
-## Type Mismatch Errors
+## 型不一致エラー
 
-### Symptoms
+### 症状
 
 - `java.lang.ClassCastException`
-- Wrong values returned from methods
-- Type incompatibility errors
+- メソッドから誤った値が返される
+- 型の非互換性エラー
 
-### Common Causes
+### 一般的な原因
 
-#### 1. Wrong Return Type in CallbackInfo
+#### 1. CallbackInfoの間違った戻り値型
 
-**Problem:**
+**問題:**
 ```java
 @Inject(methodName = "getCount", methodDesc = "()I", at = At.HEAD)
 public static CallbackInfo wrongReturn() {
     CallbackInfo ci = new CallbackInfo();
     ci.cancelled = true;
-    ci.returnValue = "42";  // String instead of int!
+    ci.returnValue = "42";  // intの代わりにString!
     return ci;
 }
 ```
 
-**Solution:**
+**解決策:**
 ```java
 @Inject(methodName = "getCount", methodDesc = "()I", at = At.HEAD)
 public static CallbackInfo correctReturn() {
     CallbackInfo ci = new CallbackInfo();
     ci.cancelled = true;
-    ci.returnValue = 42;  // Correct: int
+    ci.returnValue = 42;  // 正しい: int
     return ci;
 }
 ```
 
-#### 2. Wrong Parameter Types in Hook Method
+#### 2. フックメソッドの間違ったパラメータ型
 
-**Problem:**
+**問題:**
 ```java
-// Target method: void process(int count, String name)
+// ターゲットメソッド: void process(int count, String name)
 @Inject(methodName = "process", methodDesc = "(ILjava/lang/String;)V", at = At.HEAD)
-public static CallbackInfo wrongParams(String name, int count) {  // Reversed!
+public static CallbackInfo wrongParams(String name, int count) {  // 逆!
     return CallbackInfo.empty();
 }
 ```
 
-**Solution:**
+**解決策:**
 ```java
 @Inject(methodName = "process", methodDesc = "(ILjava/lang/String;)V", at = At.HEAD)
-public static CallbackInfo correctParams(int count, String name) {  // Correct order
+public static CallbackInfo correctParams(int count, String name) {  // 正しい順序
     return CallbackInfo.empty();
 }
 ```
 
-#### 3. Modifying Arguments to Wrong Type
+#### 3. 引数を間違った型に変更
 
-**Problem:**
+**問題:**
 ```java
 @Invoke(..., shift = Shift.BEFORE)
 public static CallbackInfo wrongArgType() {
     CallbackInfo ci = new CallbackInfo();
-    ci.modifyArgs = new Object[]{"100"};  // String instead of int
+    ci.modifyArgs = new Object[]{"100"};  // intの代わりにString
     return ci;
 }
 ```
 
-**Solution:**
+**解決策:**
 ```java
 @Invoke(..., shift = Shift.BEFORE)
 public static CallbackInfo correctArgType() {
     CallbackInfo ci = new CallbackInfo();
-    ci.modifyArgs = new Object[]{100};  // Correct: int
+    ci.modifyArgs = new Object[]{100};  // 正しい: int
     return ci;
 }
 ```
 
-## Null Pointer Exceptions
+## ヌルポインタ例外
 
-### Symptoms
+### 症状
 
-- NPE during transformation
-- NPE when calling transformed methods
-- Stack trace originates from bytecode
+- 変換中のNPE
+- 変換されたメソッド呼び出し時のNPE
+- バイトコードから発生するスタックトレース
 
-### Causes and Solutions
+### 原因と解決策
 
-#### 1. Returning null from Injection
+#### 1. インジェクションからnullを返す
 
-**Problem:**
+**問題:**
 ```java
 @Inject(methodName = "getValue", methodDesc = "()Ljava/lang/String;", at = At.HEAD)
 public static CallbackInfo returnNull() {
     CallbackInfo ci = new CallbackInfo();
     ci.cancelled = true;
-    ci.returnValue = null;  // Valid for objects, but may not be expected
+    ci.returnValue = null;  // オブジェクトには有効だが、期待されていない可能性
     return ci;
 }
 ```
 
-**Solution:**
-- Document that null can be returned
-- Or return a default value instead:
+**解決策:**
+- nullが返される可能性があることを文書化
+- または代わりにデフォルト値を返す:
 ```java
-ci.returnValue = "";  // Empty string instead of null
+ci.returnValue = "";  // nullの代わりに空文字列
 ```
 
-#### 2. Accessing null Parameters in Hooks
+#### 2. フック内でnullパラメータにアクセス
 
-**Problem:**
+**問題:**
 ```java
 @Inject(methodName = "process", methodDesc = "(Ljava/lang/String;)V", at = At.HEAD)
 public static CallbackInfo unsafeAccess(String input) {
-    System.out.println(input.length());  // NPE if input is null!
+    System.out.println(input.length());  // inputがnullの場合NPE!
     return CallbackInfo.empty();
 }
 ```
 
-**Solution:**
+**解決策:**
 ```java
 @Inject(methodName = "process", methodDesc = "(Ljava/lang/String;)V", at = At.HEAD)
 public static CallbackInfo safeAccess(String input) {
@@ -217,52 +217,52 @@ public static CallbackInfo safeAccess(String input) {
 }
 ```
 
-## Performance Issues
+## パフォーマンスの問題
 
-### Symptoms
+### 症状
 
-- Application startup is slow
-- Memory usage is high
-- Response times are degraded
+- アプリケーションの起動が遅い
+- メモリ使用量が多い
+- 応答時間が低下
 
-### Causes and Solutions
+### 原因と解決策
 
-#### 1. Complex Hook Methods
+#### 1. 複雑なフックメソッド
 
-**Problem:**
+**問題:**
 ```java
 @Inject(methodName = "process", methodDesc = "()V", at = At.HEAD)
 public static CallbackInfo slowHook() {
-    // Database queries
+    // データベースクエリ
     List<Item> items = database.queryAll();
-    // File I/O
+    // ファイルI/O
     Files.write(Paths.get("log.txt"), data);
-    // Expensive computations
+    // 高コストな計算
     // ...
     return CallbackInfo.empty();
 }
 ```
 
-**Solution:**
-- Keep hooks simple and fast
-- Defer expensive work to background threads
-- Use lazy initialization for resources
+**解決策:**
+- フックをシンプルで高速に保つ
+- 高コストな作業をバックグラウンドスレッドに延期
+- リソースの遅延初期化を使用
 
-#### 2. Rebuilding Transformers Repeatedly
+#### 2. トランスフォーマーの繰り返しビルド
 
-**Problem:**
+**問題:**
 ```java
 for (String className : classNames) {
-    // Creating new transformer for each class!
+    // 各クラスごとに新しいトランスフォーマーを作成!
     BytekinTransformer transformer = new BytekinTransformer.Builder(Hooks.class)
         .build();
     transformer.transform(className, bytecode);
 }
 ```
 
-**Solution:**
+**解決策:**
 ```java
-// Build once, reuse many times
+// 1回ビルドして、何度も再利用
 BytekinTransformer transformer = new BytekinTransformer.Builder(Hooks.class)
     .build();
 
@@ -271,128 +271,128 @@ for (String className : classNames) {
 }
 ```
 
-#### 3. Transforming Unnecessary Classes
+#### 3. 不要なクラスの変換
 
-**Problem:**
+**問題:**
 ```java
-// Applying transformation to all classes, even ones that don't need it
+// 必要ない場合でも、すべてのクラスに変換を適用
 for (String className : allClasses) {
     byte[] transformed = transformer.transform(className, bytecode);
 }
 ```
 
-**Solution:**
-- Transform only specific classes that need it
-- Use filtering/naming patterns
-- Profile to identify hotspots
+**解決策:**
+- 必要な特定のクラスのみを変換
+- フィルタリング/命名パターンを使用
+- ホットスポットを特定するためにプロファイル
 
-## Bytecode Verification Errors
+## バイトコード検証エラー
 
-### Symptoms
+### 症状
 
-- `java.lang.VerifyError` when loading class
-- "Illegal type at offset X" errors
-- Stack trace is hard to interpret
+- クラスロード時の`java.lang.VerifyError`
+- 「Illegal type at offset X」エラー
+- スタックトレースが解釈困難
 
-### Common Causes
+### 一般的な原因
 
-#### 1. Invalid Bytecode Modifications
+#### 1. 無効なバイトコード変更
 
-This usually means the transformation created invalid bytecode.
+これは通常、変換が無効なバイトコードを作成したことを意味します。
 
-**How to Debug:**
-1. Use `javap` to inspect the transformed bytecode
-2. Look for unusual instruction sequences
-3. Verify return types match
+**デバッグ方法:**
+1. `javap`を使用して変換されたバイトコードを検査
+2. 異常な命令シーケンスを探す
+3. 戻り値型が一致することを確認
 
-#### 2. Incorrect Method Descriptors
+#### 2. 不正なメソッドディスクリプタ
 
-An incorrect descriptor can cause verification failures.
+不正なディスクリプタは検証失敗を引き起こす可能性があります。
 
-**Solution:**
-- Double-check all method descriptors
-- Use online descriptor converters to verify
-- Compare with `javap` output
+**解決策:**
+- すべてのメソッドディスクリプタを再確認
+- 確認のためにオンラインディスクリプタコンバータを使用
+- `javap`出力と比較
 
-## Methods Not Found
+## メソッドが見つからない
 
-### Symptoms
+### 症状
 
-- Specific methods aren't being transformed
-- Overloaded methods cause issues
-- Constructor transformations fail
+- 特定のメソッドが変換されていない
+- オーバーロードされたメソッドが問題を引き起こす
+- コンストラクタ変換が失敗
 
-### Causes and Solutions
+### 原因と解決策
 
-#### 1. Overloaded Methods
+#### 1. オーバーロードされたメソッド
 
-Overloaded methods must be distinguished by their full descriptor.
+オーバーロードされたメソッドは完全なディスクリプタで区別する必要があります。
 
-**Problem:**
+**問題:**
 ```java
-// Class has multiple add() methods
-// add(int, int) and add(double, double)
+// クラスに複数のadd()メソッドがある
+// add(int, int) と add(double, double)
 
-@Inject(methodName = "add", methodDesc = "(II)I", at = At.HEAD)  // Only matches int version
+@Inject(methodName = "add", methodDesc = "(II)I", at = At.HEAD)  // intバージョンのみに一致
 public static CallbackInfo hook() { }
 ```
 
-**Solution:**
-- Use complete descriptor with parameter and return types
-- The descriptor automatically distinguishes overloads
+**解決策:**
+- パラメータと戻り値型を含む完全なディスクリプタを使用
+- ディスクリプタが自動的にオーバーロードを区別
 
-#### 2. Private or Internal Methods
+#### 2. プライベートまたは内部メソッド
 
-Some private methods might not be accessible.
+一部のプライベートメソッドはアクセスできない可能性があります。
 
-**Problem:**
+**問題:**
 ```java
-@Inject(methodName = "internalMethod", methodDesc = "()V", at = At.HEAD)  // Private method
+@Inject(methodName = "internalMethod", methodDesc = "()V", at = At.HEAD)  // プライベートメソッド
 public static CallbackInfo hook() { }
 ```
 
-**Solution:**
-- Verify the method is not synthetic or bridge method
-- Check that method name and descriptor are exactly correct
+**解決策:**
+- メソッドが合成またはブリッジメソッドでないことを確認
+- メソッド名とディスクリプタが正確に正しいことを確認
 
-## Cannot Load Transformed Classes
+## 変換されたクラスをロードできない
 
-### Symptoms
+### 症状
 
-- ClassNotFoundException after transformation
-- Class appears to be missing
-- Custom ClassLoader issues
+- 変換後のClassNotFoundException
+- クラスが見つからないようだ
+- カスタムClassLoaderの問題
 
-### Causes and Solutions
+### 原因と解決策
 
-#### 1. Incorrect ClassLoader Setup
+#### 1. 不正なClassLoaderセットアップ
 
-**Problem:**
+**問題:**
 ```java
-// Trying to use transformed bytecode with default classloader
+// デフォルトのクラスローダーで変換されたバイトコードを使用しようとしている
 byte[] transformed = transformer.transform("com.example.MyClass", bytecode);
-Class<?> clazz = Class.forName("com.example.MyClass");  // Won't use transformed bytecode!
+Class<?> clazz = Class.forName("com.example.MyClass");  // 変換されたバイトコードを使用しない!
 ```
 
-**Solution:**
-- Create custom ClassLoader to use transformed bytecode
-- Or use instrumentation/agents to intercept loading
+**解決策:**
+- 変換されたバイトコードを使用するカスタムClassLoaderを作成
+- またはinstrumentation/agentsを使用してロードをインターセプト
 
-#### 2. Bytecode Corruption
+#### 2. バイトコードの破損
 
-The transformation might have produced invalid bytecode.
+変換が無効なバイトコードを生成した可能性があります。
 
-**Solution:**
-- Verify transformation didn't corrupt bytecode
-- Check bytecode size/integrity
-- Use bytecode inspection tools
+**解決策:**
+- 変換がバイトコードを破損していないことを確認
+- バイトコードのサイズ/整合性を確認
+- バイトコード検査ツールを使用
 
-## Debugging Tips
+## デバッグのヒント
 
-### 1. Enable Verbose Output
+### 1. 詳細な出力を有効にする
 
 ```java
-// Add debug logging in hooks
+// フックにデバッグログを追加
 @Inject(methodName = "process", methodDesc = "()V", at = At.HEAD)
 public static CallbackInfo debug() {
     System.out.println("[DEBUG] Hook executed");
@@ -401,46 +401,46 @@ public static CallbackInfo debug() {
 }
 ```
 
-### 2. Inspect Bytecode
+### 2. バイトコードを検査
 
 ```bash
-# View transformed bytecode
+# 変換されたバイトコードを表示
 javap -c -private TransformedClass.class
 
-# Look for your injected calls
+# インジェクトされた呼び出しを探す
 ```
 
-### 3. Use a Bytecode Viewer
+### 3. バイトコードビューアを使用
 
-Tools like Bytecode Viewer or IDEA plugins help visualize bytecode.
+Bytecode ViewerやIDEAプラグインなどのツールがバイトコードの可視化に役立ちます。
 
-### 4. Profile Performance
+### 4. パフォーマンスをプロファイル
 
 ```bash
-# Use JProfiler or YourKit to identify bottlenecks
-# Monitor memory usage and CPU time
+# JProfilerまたはYourKitを使用してボトルネックを特定
+# メモリ使用量とCPU時間を監視
 ```
 
-## Common Questions
+## よくある質問
 
-**Q: Can I transform bootstrap classes?**
-A: Not easily with standard classloaders. Use Java agents with instrumentation API.
+**Q: ブートストラップクラスを変換できますか?**
+A: 標準のクラスローダーでは簡単ではありません。instrumentation APIでJavaエージェントを使用してください。
 
-**Q: Do transformations affect serialization?**
-A: Transformed classes will have different bytecode but same serialization format if you don't change fields.
+**Q: 変換はシリアライゼーションに影響しますか?**
+A: 変換されたクラスは異なるバイトコードを持ちますが、フィールドを変更しなければ同じシリアライゼーション形式です。
 
-**Q: Can I use bytekin in Spring Boot?**
-A: Yes, but you need to configure custom class loading or use agents.
+**Q: bytekinをSpring Bootで使用できますか?**
+A: はい、ただしカスタムクラスロードを設定するか、エージェントを使用する必要があります。
 
-## Getting Help
+## ヘルプを得る
 
-1. Check this troubleshooting guide
-2. Review [Best Practices](./best-practices.md)
-3. Look at [Examples](./examples.md)
-4. Open an issue on [GitHub](https://github.com/brqnko/bytekin/issues)
+1. このトラブルシューティングガイドを確認
+2. [ベストプラクティス](./best-practices.md)を確認
+3. [例](./examples.md)を確認
+4. [GitHub](https://github.com/brqnko/bytekin/issues)でissueを開く
 
-## Next Steps
+## 次のステップ
 
-- Review [Best Practices](./best-practices.md)
-- Check [Examples](./examples.md)
-- Report issues on GitHub
+- [ベストプラクティス](./best-practices.md)を確認する
+- [例](./examples.md)を確認する
+- GitHubでissueを報告する

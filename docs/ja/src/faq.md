@@ -1,235 +1,235 @@
-# FAQ - Frequently Asked Questions
+# FAQ - よくある質問
 
-## General Questions
+## 一般的な質問
 
-### What is bytekin?
+### bytekinとは何ですか?
 
-bytekin is a lightweight Java bytecode transformation framework built on ASM. It allows you to modify Java classes at the bytecode level without touching the source code.
+bytekinはASM上に構築された軽量なJavaバイトコード変換フレームワークです。ソースコードに触れることなく、バイトコードレベルでJavaクラスを変更できます。
 
-### Why would I need bytecode transformation?
+### なぜバイトコード変換が必要なのですか?
 
-Common use cases include:
-- Adding logging without modifying source code
-- Implementing cross-cutting concerns
-- Testing and mocking
-- Performance profiling
-- Security enhancements
+一般的なユースケース:
+- ソースコードを変更せずにログを追加
+- 横断的関心事の実装
+- テストとモック
+- パフォーマンスプロファイリング
+- セキュリティ強化
 
-### How does bytekin compare to other tools?
+### bytekinは他のツールとどう違いますか?
 
-| Tool | Size | Complexity | Use Case |
+| ツール | サイズ | 複雑さ | ユースケース |
 |------|------|-----------|----------|
-| bytekin | Small | Simple | Direct bytecode manipulation |
-| Spring AOP | Large | Complex | Enterprise framework |
-| Mockito | Medium | Medium | Testing/Mocking |
-| Aspect | Medium | Complex | Aspect-oriented programming |
+| bytekin | 小 | シンプル | 直接的なバイトコード操作 |
+| Spring AOP | 大 | 複雑 | エンタープライズフレームワーク |
+| Mockito | 中 | 中 | テスト/モック |
+| Aspect | 中 | 複雑 | アスペクト指向プログラミング |
 
-### Is bytekin production-ready?
+### bytekinは本番環境対応ですか?
 
-Yes, bytekin is designed for production use. It has minimal dependencies (only ASM) and has been tested thoroughly.
+はい、bytekinは本番環境での使用を目的として設計されています。最小限の依存関係（ASMのみ）で、徹底的にテストされています。
 
-## Technical Questions
+## 技術的な質問
 
-### What Java versions does bytekin support?
+### bytekinはどのJavaバージョンをサポートしていますか?
 
-bytekin requires **Java 8 or higher**.
+bytekinは**Java 8以降**が必要です。
 
-### Can I use bytekin with Spring Boot?
+### bytekinをSpring Bootと一緒に使用できますか?
 
-Yes! bytekin can work alongside Spring Boot. You would typically apply transformations during a custom `ClassLoader` setup or at build time.
+はい! bytekinはSpring Bootと並行して動作できます。通常、カスタム`ClassLoader`セットアップ中またはビルド時に変換を適用します。
 
-### Does bytekin work with obfuscated code?
+### bytekinは難読化されたコードで動作しますか?
 
-Yes, with mappings! Use the mapping system to handle obfuscated class and method names.
+はい、マッピングで! 難読化されたクラス名とメソッド名を処理するためにマッピングシステムを使用します。
 
-### Can I combine multiple transformations?
+### 複数の変換を組み合わせることはできますか?
 
-Yes! You can use multiple `@Inject`, `@Invoke`, and other annotations on the same class. They all get applied.
+はい! 同じクラスに複数の`@Inject`、`@Invoke`、その他のアノテーションを使用できます。すべてが適用されます。
 
-## Usage Questions
+## 使用方法に関する質問
 
-### How do I find the method descriptor for a method?
+### メソッドのメソッドディスクリプタを見つけるにはどうすればよいですか?
 
-Use `javap`:
+`javap`を使用:
 ```bash
 javap -c MyClass.class
 ```
 
-Look at the method signature and convert it to JVM descriptor format:
+メソッドシグネチャを確認し、JVMディスクリプタ形式に変換します:
 - `int add(int a, int b)` → `(II)I`
 - `String process(String s)` → `(Ljava/lang/String;)Ljava/lang/String;`
 
-### What's the difference between Inject and Invoke?
+### InjectとInvokeの違いは何ですか?
 
-- **Inject**: Insert your code at a specific point in a method
-- **Invoke**: Intercept a method call within a method and possibly modify arguments
+- **Inject**: メソッドの特定の箇所にコードを挿入
+- **Invoke**: メソッド内のメソッド呼び出しをインターセプトし、必要に応じて引数を変更
 
-### Can I cancel a method execution?
+### メソッドの実行をキャンセルできますか?
 
-Yes, set `ci.cancelled = true` in your hook method. However, this only works for certain transformation types.
+はい、フックメソッドで`ci.cancelled = true`を設定します。ただし、これは特定の変換タイプでのみ機能します。
 
-### How do I modify method arguments?
+### メソッド引数を変更するにはどうすればよいですか?
 
-Use `CallbackInfo.modifyArgs`:
+`CallbackInfo.modifyArgs`を使用:
 ```java
 ci.modifyArgs = new Object[]{ modifiedArg1, modifiedArg2 };
 ```
 
-### Can I access static fields from hook methods?
+### フックメソッドから静的フィールドにアクセスできますか?
 
-Yes, you can reference static fields from your hook class:
+はい、フッククラスから静的フィールドを参照できます:
 ```java
 @Inject(...)
 public static CallbackInfo hook() {
-    // Access static fields
+    // 静的フィールドにアクセス
     if (cacheEnabled) {
         // ...
     }
 }
 ```
 
-## Performance Questions
+## パフォーマンスに関する質問
 
-### What's the overhead of using bytekin?
+### bytekinを使用するオーバーヘッドは何ですか?
 
-- **Transformation time**: Minimal, happens once at class load
-- **Runtime overhead**: Zero! Transformed bytecode runs at same speed as hand-written code
+- **変換時間**: 最小限、クラスロード時に1回のみ発生
+- **ランタイムオーバーヘッド**: ゼロ! 変換されたバイトコードは手書きのコードと同じ速度で実行
 
-### Should I rebuild transformers for each transform?
+### 各変換ごとにトランスフォーマーを再ビルドする必要がありますか?
 
-No! Build once and reuse:
+いいえ! 1回ビルドして再利用:
 ```java
-// Good
+// 良い
 BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class).build();
 for (String className : classNames) {
     byte[] transformed = transformer.transform(className, bytecode);
 }
 
-// Bad
+// 悪い
 for (String className : classNames) {
     BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class).build();
     byte[] transformed = transformer.transform(className, bytecode);
 }
 ```
 
-### How much does bytecode transformation impact startup time?
+### バイトコード変換は起動時間にどれだけ影響しますか?
 
-Impact is minimal when transformations are simple and applied only to necessary classes.
+変換がシンプルで、必要なクラスにのみ適用される場合、影響は最小限です。
 
-## Troubleshooting Questions
+## トラブルシューティングの質問
 
-### My transformations aren't being applied
+### 変換が適用されていません
 
-Common causes:
-1. **Wrong class name**: Check the `@ModifyClass` value matches exactly
-2. **Wrong method descriptor**: Verify the `methodDesc` parameter
-3. **Class not loaded**: Ensure the class is loaded before transformation
+一般的な原因:
+1. **間違ったクラス名**: `@ModifyClass`の値が正確に一致することを確認
+2. **間違ったメソッドディスクリプタ**: `methodDesc`パラメータを確認
+3. **クラスが読み込まれていない**: 変換前にクラスがロードされることを確認
 
-### I'm getting ClassCastException
+### ClassCastExceptionが発生します
 
-This usually means:
-1. Type mismatch in `CallbackInfo.returnValue`
-2. Wrong type in hook method signature
-3. Modifying arguments to incompatible types
+これは通常、以下を意味します:
+1. `CallbackInfo.returnValue`の型不一致
+2. フックメソッドシグネチャの間違った型
+3. 互換性のない型への引数の変更
 
-### Hook method is not being called
+### フックメソッドが呼び出されていません
 
-Check:
-1. Is the hook class passed to the Builder?
-2. Are method name and descriptor correct?
-3. Is the target class name correct?
+確認事項:
+1. フッククラスがBuilderに渡されていますか?
+2. メソッド名とディスクリプタは正しいですか?
+3. ターゲットクラス名は正しいですか?
 
 ### java.lang.VerifyError
 
-This means the transformed bytecode is invalid. Common causes:
-1. Incorrect bytecode modification
-2. Type mismatches
-3. Invalid method signatures
+これは変換されたバイトコードが無効であることを意味します。一般的な原因:
+1. 不正なバイトコード変更
+2. 型の不一致
+3. 無効なメソッドシグネチャ
 
-### Performance degradation after transformation
+### 変換後のパフォーマンス低下
 
-If transformations are slow:
-1. Simplify hook methods
-2. Avoid expensive operations in hooks
-3. Use conditional logic to skip unnecessary work
-4. Profile with a JVM profiler
+変換が遅い場合:
+1. フックメソッドを簡素化
+2. フック内の高コストな操作を避ける
+3. 条件ロジックを使用して不要な作業をスキップ
+4. JVMプロファイラーでプロファイル
 
-## Advanced Questions
+## 高度な質問
 
-### Can I create custom transformers?
+### カスタムトランスフォーマーを作成できますか?
 
-Yes! You can extend the transformer classes or use the programmatic API instead of annotations.
+はい! トランスフォーマークラスを拡張するか、アノテーションの代わりにプログラマティックAPIを使用できます。
 
-### Does bytekin support method overloading?
+### bytekinはメソッドのオーバーロードをサポートしていますか?
 
-Yes, by using the complete method descriptor which includes parameter types and return type.
+はい、パラメータ型と戻り値型を含む完全なメソッドディスクリプタを使用することでサポートしています。
 
-### Can I transform the same class multiple times?
+### 同じクラスを複数回変換できますか?
 
-Yes, you can apply different transformations sequentially.
+はい、異なる変換を順次適用できます。
 
-### Is bytekin thread-safe?
+### bytekinはスレッドセーフですか?
 
-After building, `BytekinTransformer.transform()` is thread-safe and can be called from multiple threads concurrently.
+ビルド後、`BytekinTransformer.transform()`はスレッドセーフで、複数のスレッドから同時に呼び出すことができます。
 
-### Can I use bytekin with Java agents?
+### bytekinをJavaエージェントと一緒に使用できますか?
 
-Yes! bytekin works well with Java agents. Use it within your agent's `transform()` method.
+はい! bytekinはJavaエージェントとうまく動作します。エージェントの`transform()`メソッド内で使用します。
 
-## Migration and Upgrade Questions
+## 移行とアップグレードに関する質問
 
-### How do I migrate from another bytecode tool?
+### 他のバイトコードツールから移行するにはどうすればよいですか?
 
-The concepts are similar:
-1. Define target classes
-2. Create hook methods with transformation annotations
-3. Build transformers
-4. Apply transformations
+概念は似ています:
+1. ターゲットクラスを定義
+2. 変換アノテーション付きフックメソッドを作成
+3. トランスフォーマーをビルド
+4. 変換を適用
 
-### Can I upgrade bytekin without changing my code?
+### コードを変更せずにbytekinをアップグレードできますか?
 
-Yes, bytekin maintains backward compatibility. Always check release notes before upgrading.
+はい、bytekinは下位互換性を維持しています。アップグレード前に常にリリースノートを確認してください。
 
-## License and Legal Questions
+## ライセンスと法的質問
 
-### What license is bytekin under?
+### bytekinはどのライセンスの下にありますか?
 
-bytekin is licensed under the **Apache License 2.0**.
+bytekinは**Apache License 2.0**の下でライセンスされています。
 
-### Can I use bytekin in commercial projects?
+### bytekinを商用プロジェクトで使用できますか?
 
-Yes! Apache 2.0 allows commercial use.
+はい! Apache 2.0は商用利用を許可しています。
 
-### Do I need to open-source my code if I use bytekin?
+### bytekinを使用する場合、コードをオープンソース化する必要がありますか?
 
-No, Apache 2.0 does not require you to open-source your code. Just include the license notice.
+いいえ、Apache 2.0はコードのオープンソース化を要求しません。ライセンス通知を含めるだけです。
 
-## Community Questions
+## コミュニティに関する質問
 
-### How do I report bugs?
+### バグを報告するにはどうすればよいですか?
 
-Report bugs on the [GitHub Issues](https://github.com/brqnko/bytekin/issues) page.
+[GitHub Issues](https://github.com/brqnko/bytekin/issues)ページでバグを報告してください。
 
-### How can I contribute?
+### どのように貢献できますか?
 
-Contributions are welcome! See the GitHub repository for contribution guidelines.
+貢献は歓迎します! 貢献ガイドラインについてはGitHubリポジトリを参照してください。
 
-### Where can I get help?
+### どこで助けを得ることができますか?
 
-- Check the [documentation](./introduction.md)
-- Search [GitHub Issues](https://github.com/brqnko/bytekin/issues)
-- Review [Examples](./examples.md)
+- [ドキュメント](./introduction.md)を確認
+- [GitHub Issues](https://github.com/brqnko/bytekin/issues)を検索
+- [例](./examples.md)を確認
 
-## Still Have Questions?
+## まだ質問がありますか?
 
-If your question isn't answered here:
-1. Check the [API Reference](./api-reference.md)
-2. Review [Best Practices](./best-practices.md)
-3. Look at [Examples](./examples.md)
-4. Open an issue on GitHub
+質問がここで回答されていない場合:
+1. [APIリファレンス](./api-reference.md)を確認
+2. [ベストプラクティス](./best-practices.md)を確認
+3. [例](./examples.md)を確認
+4. GitHubでissueを開く
 
-## Next Steps
+## 次のステップ
 
-- Explore [Examples](./examples.md)
-- Review [Best Practices](./best-practices.md)
-- Check [Troubleshooting](./troubleshooting.md)
+- [例](./examples.md)を探索する
+- [ベストプラクティス](./best-practices.md)を確認する
+- [トラブルシューティング](./troubleshooting.md)を確認する

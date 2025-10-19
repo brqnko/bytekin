@@ -1,12 +1,12 @@
-# Your First Transformation
+# 最初の変換
 
-In this guide, we'll create a complete example demonstrating a simple bytecode transformation.
+このガイドでは、シンプルなバイトコード変換を実演する完全な例を作成します。
 
-## Example: Adding Logging to a Calculator
+## 例: 計算機にロギングを追加する
 
-### Step 1: Create the Target Class
+### ステップ1: ターゲットクラスの作成
 
-First, let's create a simple calculator class that we'll transform:
+まず、変換する簡単な計算機クラスを作成しましょう:
 
 ```java
 package com.example;
@@ -26,9 +26,9 @@ public class Calculator {
 }
 ```
 
-### Step 2: Create Hook Methods
+### ステップ2: フックメソッドの作成
 
-Create a class annotated with `@ModifyClass` that defines what you want to inject:
+インジェクションしたい内容を定義する`@ModifyClass`アノテーション付きのクラスを作成します:
 
 ```java
 package com.example;
@@ -63,7 +63,7 @@ public class CalculatorHooks {
 }
 ```
 
-### Step 3: Build the Transformer
+### ステップ3: トランスフォーマーの構築
 
 ```java
 package com.example;
@@ -78,7 +78,7 @@ public class TransformerSetup {
 }
 ```
 
-### Step 4: Apply the Transformation
+### ステップ4: 変換の適用
 
 ```java
 package com.example;
@@ -87,55 +87,55 @@ import io.github.brqnko.bytekin.transformer.BytekinTransformer;
 
 public class Main {
     public static void main(String[] args) {
-        // Get original bytecode
+        // 元のバイトコードを取得
         byte[] originalBytecode = getClassBytecode("com.example.Calculator");
 
-        // Create transformer
+        // トランスフォーマーを作成
         BytekinTransformer transformer = TransformerSetup.createTransformer();
 
-        // Apply transformation
+        // 変換を適用
         byte[] transformedBytecode = transformer.transform(
             "com.example.Calculator",
             originalBytecode
         );
 
-        // Load transformed class
+        // 変換されたクラスをロード
         Calculator calc = loadTransformedClass(transformedBytecode);
 
-        // Use the transformed class
+        // 変換されたクラスを使用
         int result = calc.add(5, 3);
-        // Output: "Computing: 5 + 3" then "8"
+        // 出力: "Computing: 5 + 3" その後 "8"
 
         result = calc.multiply(4, 7);
-        // Output: "Computing: 4 * 7" then "28"
+        // 出力: "Computing: 4 * 7" その後 "28"
     }
 
-    // Helper to get class bytecode (pseudo code)
+    // クラスバイトコードを取得するヘルパー(疑似コード)
     static byte[] getClassBytecode(String className) {
-        // Implementation depends on your classloader setup
+        // 実装はクラスローダーのセットアップに依存します
         return new byte[]{};
     }
 
-    // Helper to load transformed class (pseudo code)
+    // 変換されたクラスをロードするヘルパー(疑似コード)
     static Calculator loadTransformedClass(byte[] bytecode) {
-        // Load using custom ClassLoader
+        // カスタムClassLoaderを使用してロード
         return null;
     }
 }
 ```
 
-## What Happened?
+## 何が起こったのか?
 
-The transformation process:
+変換プロセス:
 
-1. **Scanned** `CalculatorHooks` for methods with `@Inject` annotation
-2. **Found** injections targeting `com.example.Calculator`
-3. **Modified** the Calculator class bytecode to call our hook methods
-4. **Inserted** the logging code at the head of specified methods
+1. **スキャン**: `@Inject`アノテーションを持つメソッドを`CalculatorHooks`でスキャンしました
+2. **発見**: `com.example.Calculator`をターゲットとするインジェクションを見つけました
+3. **変更**: フックメソッドを呼び出すようにCalculatorクラスのバイトコードを変更しました
+4. **挿入**: 指定されたメソッドの先頭にロギングコードを挿入しました
 
-## Before and After
+## 変換前と変換後
 
-**Before Transformation:**
+**変換前:**
 
 ```java
 public int add(int a, int b) {
@@ -143,19 +143,19 @@ public int add(int a, int b) {
 }
 ```
 
-**After Transformation:**
+**変換後:**
 
 ```java
 public int add(int a, int b) {
-    // Injected code
+    // インジェクションされたコード
     com.example.CalculatorHooks.logAdd(a, b);
-    // Original code
+    // 元のコード
     return a + b;
 }
 ```
 
-## Next Steps
+## 次のステップ
 
-- Explore other injection points with [At enum](./inject.md#at-enum)
-- Learn about [Invoke transformations](./invoke.md)
-- Check out more [Examples](./examples.md)
+- [At列挙型](./inject.md#at-enum)で他のインジェクションポイントを探る
+- [インボケーション変換](./invoke.md)について学ぶ
+- より多くの[例](./examples.md)をチェックする

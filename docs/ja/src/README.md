@@ -1,50 +1,50 @@
-# bytekin Documentation
+# bytekinドキュメント
 
-Welcome to the comprehensive documentation for **bytekin** - a lightweight Java bytecode transformation framework.
+**bytekin**の包括的なドキュメントへようこそ - 軽量なJavaバイトコード変換フレームワークです。
 
-## 📚 Documentation Overview
+## ドキュメント概要
 
-This documentation is organized into several sections to help you get started and master bytekin:
+このドキュメントは、bytekinを始めてマスターするためのいくつかのセクションに整理されています:
 
-### Getting Started
-- [Introduction](./introduction.md) - Overview of bytekin and its capabilities
-- [Installation](./installation.md) - How to add bytekin to your project
-- [Your First Transformation](./first-transformation.md) - Step-by-step guide to your first bytecode transformation
+### はじめに
+- [イントロダクション](./introduction.md) - bytekinとその機能の概要
+- [インストール](./installation.md) - プロジェクトにbytekinを追加する方法
+- [最初の変換](./first-transformation.md) - 最初のバイトコード変換へのステップバイステップガイド
 
-### Understanding bytekin
-- [Core Concepts](./core-concepts.md) - Fundamental concepts behind bytecode transformation
-- [Bytecode Basics](./bytecode-basics.md) - Understanding Java bytecode
-- [How bytekin Works](./how-it-works.md) - Internal architecture and mechanisms
+### bytekinを理解する
+- [コアコンセプト](./core-concepts.md) - バイトコード変換の背後にある基本的な概念
+- [バイトコードの基礎](./bytecode-basics.md) - Javaバイトコードを理解する
+- [bytekinの仕組み](./how-it-works.md) - 内部アーキテクチャとメカニズム
 
-### Features
-- [Features Overview](./features.md) - All available transformation features
-- [Inject Transformation](./inject.md) - Insert code at method points
-- [Invoke Transformation](./invoke.md) - Intercept method calls
-- [Redirect Transformation](./redirect.md) - Change method call targets
-- [Constant Modification](./constant-modification.md) - Modify hardcoded values
-- [Variable Modification](./variable-modification.md) - Transform local variables
+### 機能
+- [機能概要](./features.md) - 利用可能なすべての変換機能
+- [インジェクション変換](./inject.md) - メソッドのポイントにコードを挿入
+- [インボケーション変換](./invoke.md) - メソッド呼び出しをインターセプト
+- [リダイレクト変換](./redirect.md) - メソッド呼び出しのターゲットを変更
+- [定数の変更](./constant-modification.md) - ハードコードされた値を変更
+- [変数の変更](./variable-modification.md) - ローカル変数を変換
 
-### Advanced Topics
-- [Advanced Usage](./advanced-usage.md) - Advanced patterns and techniques
-- [Mappings](./mappings.md) - Handle obfuscated code with name mappings
-- [Builder Pattern](./builder-pattern.md) - Fluent API for configuration
-- [Custom Transformers](./custom-transformers.md) - Create custom transformers
+### 高度なトピック
+- [高度な使用法](./advanced-usage.md) - 高度なパターンとテクニック
+- [マッピング](./mappings.md) - 名前マッピングで難読化されたコードを扱う
+- [ビルダーパターン](./builder-pattern.md) - 設定のための流暢なAPI
+- [カスタムトランスフォーマー](./custom-transformers.md) - カスタムトランスフォーマーを作成
 
-### API Reference
-- [API Reference](./api-reference.md) - Complete API documentation
-- [Annotations](./annotations.md) - Annotation reference guide
-- [Classes and Interfaces](./classes-interfaces.md) - Class documentation
+### APIリファレンス
+- [APIリファレンス](./api-reference.md) - 完全なAPIドキュメント
+- [アノテーション](./annotations.md) - アノテーションリファレンスガイド
+- [クラスとインターフェース](./classes-interfaces.md) - クラスドキュメント
 
-### Examples and Guides
-- [Basic Examples](./examples-basic.md) - Practical code examples
-- [Advanced Examples](./examples-advanced.md) - Advanced use cases and patterns
-- [Best Practices](./best-practices.md) - Recommended practices and patterns
-- [FAQ](./faq.md) - Frequently asked questions
-- [Troubleshooting](./troubleshooting.md) - Solutions to common issues
+### 例とガイド
+- [基本的な例](./examples-basic.md) - 実用的なコード例
+- [高度な例](./examples-advanced.md) - 高度なユースケースとパターン
+- [ベストプラクティス](./best-practices.md) - 推奨されるプラクティスとパターン
+- [FAQ](./faq.md) - よくある質問
+- [トラブルシューティング](./troubleshooting.md) - 一般的な問題の解決策
 
-## 🚀 Quick Start
+## クイックスタート
 
-### 1. Installation
+### 1. インストール
 
 ```xml
 <!-- Maven -->
@@ -60,7 +60,7 @@ This documentation is organized into several sections to help you get started an
 implementation 'io.github.brqnko.bytekin:bytekin:1.0'
 ```
 
-### 2. Create Hook Class
+### 2. フッククラスの作成
 
 ```java
 @ModifyClass("com.example.Calculator")
@@ -73,155 +73,155 @@ public class CalculatorHooks {
 }
 ```
 
-### 3. Build Transformer
+### 3. トランスフォーマーの構築
 
 ```java
 BytekinTransformer transformer = new BytekinTransformer.Builder(CalculatorHooks.class)
     .build();
 ```
 
-### 4. Transform Bytecode
+### 4. バイトコードの変換
 
 ```java
 byte[] original = getClassBytecode("com.example.Calculator");
 byte[] transformed = transformer.transform("com.example.Calculator", original);
 ```
 
-## 📖 Reading Guide
+## 読み方ガイド
 
-### I want to...
+### やりたいこと...
 
-**Understand what bytekin is**
-→ Start with [Introduction](./introduction.md)
+**bytekinが何であるかを理解したい**
+→ [イントロダクション](./introduction.md)から始めてください
 
-**Get started immediately**
-→ Follow [Installation](./installation.md) and [Your First Transformation](./first-transformation.md)
+**すぐに始めたい**
+→ [インストール](./installation.md)と[最初の変換](./first-transformation.md)に従ってください
 
-**Learn how bytecode transformation works**
-→ Read [Core Concepts](./core-concepts.md) and [How bytekin Works](./how-it-works.md)
+**バイトコード変換の仕組みを学びたい**
+→ [コアコンセプト](./core-concepts.md)と[bytekinの仕組み](./how-it-works.md)を読んでください
 
-**Inject code into methods**
-→ See [Inject Transformation](./inject.md) and [Basic Examples](./examples-basic.md)
+**メソッドにコードをインジェクションしたい**
+→ [インジェクション変換](./inject.md)と[基本的な例](./examples-basic.md)を見てください
 
-**Intercept method calls**
-→ Check [Invoke Transformation](./invoke.md)
+**メソッド呼び出しをインターセプトしたい**
+→ [インボケーション変換](./invoke.md)をチェックしてください
 
-**Handle obfuscated code**
-→ Learn about [Mappings](./mappings.md)
+**難読化されたコードを扱いたい**
+→ [マッピング](./mappings.md)について学んでください
 
-**Solve a specific problem**
-→ Browse [FAQ](./faq.md) and [Troubleshooting](./troubleshooting.md)
+**特定の問題を解決したい**
+→ [FAQ](./faq.md)と[トラブルシューティング](./troubleshooting.md)を参照してください
 
-**See advanced patterns**
-→ Review [Advanced Usage](./advanced-usage.md) and [Advanced Examples](./examples-advanced.md)
+**高度なパターンを見たい**
+→ [高度な使用法](./advanced-usage.md)と[高度な例](./examples-advanced.md)をレビューしてください
 
-**Write better code**
-→ Follow [Best Practices](./best-practices.md)
+**より良いコードを書きたい**
+→ [ベストプラクティス](./best-practices.md)に従ってください
 
-## 🎯 Key Concepts
+## 主要な概念
 
-### Method Descriptors
-JVM method signatures use a special format:
-- `(II)I` - takes two ints, returns int
-- `(Ljava/lang/String;)V` - takes String, returns void
+### メソッドディスクリプタ
+JVMメソッドシグネチャは特別な形式を使用します:
+- `(II)I` - 2つのintを受け取り、intを返す
+- `(Ljava/lang/String;)V` - Stringを受け取り、voidを返す
 
-Learn more in [Bytecode Basics](./bytecode-basics.md)
+詳細は[バイトコードの基礎](./bytecode-basics.md)をご覧ください
 
-### Hook Classes
-Classes annotated with `@ModifyClass` that define transformations:
+### フッククラス
+変換を定義する`@ModifyClass`アノテーション付きのクラス:
 ```java
 @ModifyClass("target.ClassName")
 public class MyHooks { }
 ```
 
 ### CallbackInfo
-Controls transformation behavior:
+変換の動作を制御します:
 ```java
 public class CallbackInfo {
-    public boolean cancelled;      // Skip execution?
-    public Object returnValue;     // Custom return?
-    public Object[] modifyArgs;    // Modified args?
+    public boolean cancelled;      // 実行をスキップするか?
+    public Object returnValue;     // カスタムの戻り値?
+    public Object[] modifyArgs;    // 変更された引数?
 }
 ```
 
-### Transformation Types
-1. **Inject** - Insert code at specific points
-2. **Invoke** - Intercept method calls
-3. **Redirect** - Change call targets
-4. **Constant Modification** - Modify hardcoded values
-5. **Variable Modification** - Transform variables
+### 変換タイプ
+1. **インジェクション** - 特定のポイントにコードを挿入
+2. **インボケーション** - メソッド呼び出しをインターセプト
+3. **リダイレクト** - 呼び出しターゲットを変更
+4. **定数の変更** - ハードコードされた値を変更
+5. **変数の変更** - 変数を変換
 
-## 📋 Common Tasks
+## 一般的なタスク
 
-### Add Logging
-[Inject Transformation](./inject.md) → [Basic Examples](./examples-basic.md#example-1-adding-logging)
+### ロギングの追加
+[インジェクション変換](./inject.md) → [基本的な例](./examples-basic.md#example-1-adding-logging)
 
-### Validate Parameters
-[Inject Transformation](./inject.md) → [Basic Examples](./examples-basic.md#example-2-parameter-validation)
+### パラメータの検証
+[インジェクション変換](./inject.md) → [基本的な例](./examples-basic.md#example-2-parameter-validation)
 
-### Implement Caching
-[Invoke Transformation](./invoke.md) → [Basic Examples](./examples-basic.md#example-3-caching)
+### キャッシングの実装
+[インボケーション変換](./invoke.md) → [基本的な例](./examples-basic.md#example-3-caching)
 
-### Add Security Checks
-[Inject Transformation](./inject.md) → [Best Practices](./best-practices.md#security)
+### セキュリティチェックの追加
+[インジェクション変換](./inject.md) → [ベストプラクティス](./best-practices.md#security)
 
-### Performance Profiling
-[Inject Transformation](./inject.md) → [Advanced Examples](./examples-advanced.md#example-7-performance-profiling)
+### パフォーマンスプロファイリング
+[インジェクション変換](./inject.md) → [高度な例](./examples-advanced.md#example-7-performance-profiling)
 
-### Handle Obfuscated Code
-[Mappings](./mappings.md)
+### 難読化されたコードの処理
+[マッピング](./mappings.md)
 
-### Create Custom Transformers
-[Custom Transformers](./custom-transformers.md)
+### カスタムトランスフォーマーの作成
+[カスタムトランスフォーマー](./custom-transformers.md)
 
-## ❓ Need Help?
+## ヘルプが必要ですか?
 
-1. **Check the FAQ** - [FAQ](./faq.md)
-2. **Search Troubleshooting** - [Troubleshooting](./troubleshooting.md)
-3. **Review Examples** - [Basic](./examples-basic.md) and [Advanced](./examples-advanced.md)
-4. **Read Best Practices** - [Best Practices](./best-practices.md)
-5. **Check API Reference** - [API Reference](./api-reference.md)
+1. **FAQをチェック** - [FAQ](./faq.md)
+2. **トラブルシューティングを検索** - [トラブルシューティング](./troubleshooting.md)
+3. **例をレビュー** - [基本](./examples-basic.md)と[高度](./examples-advanced.md)
+4. **ベストプラクティスを読む** - [ベストプラクティス](./best-practices.md)
+5. **APIリファレンスをチェック** - [APIリファレンス](./api-reference.md)
 
-## 🔗 Navigation
+## ナビゲーション
 
-- [Introduction](./introduction.md) - Start here
-- [Getting Started](./getting-started.md) - Installation and setup
-- [Core Concepts](./core-concepts.md) - Fundamental understanding
-- [Features](./features.md) - All capabilities
-- [Advanced Usage](./advanced-usage.md) - Patterns and techniques
-- [Examples](./examples-basic.md) - Code samples
-- [Best Practices](./best-practices.md) - Recommendations
-- [API Reference](./api-reference.md) - Complete API
-- [FAQ](./faq.md) - Questions and answers
-- [Troubleshooting](./troubleshooting.md) - Problem solving
+- [イントロダクション](./introduction.md) - ここから始めてください
+- [はじめに](./getting-started.md) - インストールとセットアップ
+- [コアコンセプト](./core-concepts.md) - 基本的な理解
+- [機能](./features.md) - すべての機能
+- [高度な使用法](./advanced-usage.md) - パターンとテクニック
+- [例](./examples-basic.md) - コードサンプル
+- [ベストプラクティス](./best-practices.md) - 推奨事項
+- [APIリファレンス](./api-reference.md) - 完全なAPI
+- [FAQ](./faq.md) - 質問と回答
+- [トラブルシューティング](./troubleshooting.md) - 問題解決
 
-## 📝 Documentation Status
+## ドキュメントの状態
 
-This documentation covers bytekin version **1.0** and includes:
+このドキュメントはbytekinバージョン**1.0**をカバーし、以下を含んでいます:
 
-- ✅ Complete feature documentation
-- ✅ API reference
-- ✅ Multiple examples
-- ✅ Best practices guide
-- ✅ Troubleshooting guide
-- ✅ FAQ section
-- ✅ Advanced patterns
+- ✅ 完全な機能ドキュメント
+- ✅ APIリファレンス
+- ✅ 複数の例
+- ✅ ベストプラクティスガイド
+- ✅ トラブルシューティングガイド
+- ✅ FAQセクション
+- ✅ 高度なパターン
 
-## 🤝 Contributing
+## 貢献
 
-Found an error or want to improve the documentation?
-- Report issues on [GitHub](https://github.com/brqnko/bytekin)
-- Contribute improvements via pull requests
+エラーを見つけたか、ドキュメントを改善したいですか?
+- [GitHub](https://github.com/brqnko/bytekin)で問題を報告してください
+- プルリクエストで改善を貢献してください
 
-## 📄 License
+## ライセンス
 
-bytekin is licensed under the Apache License 2.0.
-See [LICENSE](LICENSE) for details.
+bytekinはApache License 2.0の下でライセンスされています。
+詳細は[LICENSE](LICENSE)をご覧ください。
 
-## 🎉 Ready to Get Started?
+## 始める準備はできましたか?
 
-→ [Begin with Installation](./installation.md)
+→ [インストールから始める](./installation.md)
 
-→ [Build Your First Transformation](./first-transformation.md)
+→ [最初の変換を構築する](./first-transformation.md)
 
-→ [Explore All Features](./features.md)
+→ [すべての機能を探る](./features.md)

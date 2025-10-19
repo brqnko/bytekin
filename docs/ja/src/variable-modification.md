@@ -1,8 +1,8 @@
-# Variable Modification
+# 変数の変更
 
-Modify local variable values within methods during bytecode transformation.
+バイトコード変換中にメソッド内のローカル変数の値を変更します。
 
-## Basic Usage
+## 基本的な使用方法
 
 ```java
 @ModifyClass("com.example.Processor")
@@ -13,16 +13,16 @@ public class ProcessorHooks {
         variableIndex = 1
     )
     public static void sanitizeInput(String original) {
-        // Transformation logic
+        // 変換ロジック
     }
 }
 ```
 
-## Understanding Variable Indices
+## 変数インデックスの理解
 
-Local variables in a method are stored in slots, indexed starting from 0:
+メソッド内のローカル変数はスロットに格納され、0から始まるインデックスが付けられます:
 
-### Instance Methods
+### インスタンスメソッド
 
 ```java
 public void process(String name, int count) {
@@ -31,13 +31,13 @@ public void process(String name, int count) {
 }
 ```
 
-Variable indices:
-- `0`: `this` (implicit)
-- `1`: `name` (first parameter)
-- `2`: `count` (second parameter)
-- `3`: `result` (local variable)
+変数インデックス:
+- `0`: `this`（暗黙的）
+- `1`: `name`（第1引数）
+- `2`: `count`（第2引数）
+- `3`: `result`（ローカル変数）
 
-### Static Methods
+### 静的メソッド
 
 ```java
 public static void process(String name, int count) {
@@ -46,32 +46,32 @@ public static void process(String name, int count) {
 }
 ```
 
-Variable indices:
-- `0`: `name` (first parameter)
-- `1`: `count` (second parameter)
-- `2`: `result` (local variable)
+変数インデックス:
+- `0`: `name`（第1引数）
+- `1`: `count`（第2引数）
+- `2`: `result`（ローカル変数）
 
-## Annotation Parameters
+## アノテーションパラメータ
 
-### methodName (required)
+### methodName（必須）
 
-The name of the target method.
+対象メソッドの名前。
 
 ```java
 methodName = "process"
 ```
 
-### variableIndex (required)
+### variableIndex（必須）
 
-The index of the local variable to modify.
+変更するローカル変数のインデックス。
 
 ```java
 variableIndex = 1
 ```
 
-## Modifying Parameters
+## パラメータの変更
 
-Transform method parameters:
+メソッドパラメータを変換:
 
 ```java
 @ModifyClass("com.example.UserService")
@@ -79,16 +79,16 @@ public class UserServiceHooks {
 
     @ModifyVariable(
         methodName = "createUser",
-        variableIndex = 1  // First parameter: email
+        variableIndex = 1  // 第1引数: email
     )
     public static void normalizeEmail(String original) {
-        // The original email will be normalized
-        // e.g., "USER@EXAMPLE.COM" becomes "user@example.com"
+        // 元のメールアドレスが正規化される
+        // 例: "USER@EXAMPLE.COM" が "user@example.com" になる
     }
 }
 ```
 
-**Before:**
+**変更前:**
 ```java
 public void createUser(String email) {
     // email = "USER@EXAMPLE.COM"
@@ -96,17 +96,17 @@ public void createUser(String email) {
 }
 ```
 
-**After:**
+**変更後:**
 ```java
 public void createUser(String email) {
-    // email = "user@example.com" (normalized)
+    // email = "user@example.com" （正規化済み）
     // ...
 }
 ```
 
-## Modifying Local Variables
+## ローカル変数の変更
 
-Transform variables created inside methods:
+メソッド内で作成された変数を変換:
 
 ```java
 @ModifyClass("com.example.Calculator")
@@ -114,19 +114,19 @@ public class CalculatorHooks {
 
     @ModifyVariable(
         methodName = "calculateTotal",
-        variableIndex = 2  // Local variable: total
+        variableIndex = 2  // ローカル変数: total
     )
     public static void applyTaxToTotal(int original) {
-        // total will be multiplied by 1.1 to apply tax
+        // total に1.1を掛けて税を適用
     }
 }
 ```
 
-## Use Cases
+## ユースケース
 
-### Input Sanitization
+### 入力のサニタイゼーション
 
-Clean up method inputs:
+メソッド入力をクリーンアップ:
 
 ```java
 @ModifyClass("com.example.WebService")
@@ -134,25 +134,25 @@ public class WebServiceHooks {
 
     @ModifyVariable(
         methodName = "handleRequest",
-        variableIndex = 1  // request parameter
+        variableIndex = 1  // request パラメータ
     )
     public static void sanitizeRequest(String original) {
-        // Removes malicious characters
+        // 悪意のある文字を削除
     }
 
     @ModifyVariable(
         methodName = "handleRequest",
-        variableIndex = 2  // path parameter
+        variableIndex = 2  // path パラメータ
     )
     public static void validatePath(String original) {
-        // Ensures path doesn't escape root directory
+        // パスがルートディレクトリから逸脱しないことを確認
     }
 }
 ```
 
-### Data Transformation
+### データ変換
 
-Convert data format:
+データ形式を変換:
 
 ```java
 @ModifyClass("com.example.DateProcessor")
@@ -160,17 +160,17 @@ public class DateProcessorHooks {
 
     @ModifyVariable(
         methodName = "processDate",
-        variableIndex = 1  // date parameter
+        variableIndex = 1  // date パラメータ
     )
     public static void convertToUTC(String original) {
-        // Converts from local time to UTC
+        // ローカル時間からUTCに変換
     }
 }
 ```
 
-### Type Conversion
+### 型変換
 
-Change data types:
+データ型を変更:
 
 ```java
 @ModifyClass("com.example.Converter")
@@ -178,19 +178,19 @@ public class ConverterHooks {
 
     @ModifyVariable(
         methodName = "process",
-        variableIndex = 1  // number parameter
+        variableIndex = 1  // number パラメータ
     )
     public static void convertToPercentage(int original) {
-        // Converts raw number to percentage
+        // 生の数値をパーセンテージに変換
     }
 }
 ```
 
-## Advanced Patterns
+## 高度なパターン
 
-### Multiple Variables
+### 複数の変数
 
-Modify multiple variables in same method:
+同じメソッド内の複数の変数を変更:
 
 ```java
 @ModifyClass("com.example.Transfer")
@@ -198,92 +198,92 @@ public class TransferHooks {
 
     @ModifyVariable(
         methodName = "transfer",
-        variableIndex = 1  // from account
+        variableIndex = 1  // 送信元アカウント
     )
     public static void validateFromAccount(String original) {
-        // Validate source account
+        // 送信元アカウントを検証
     }
 
     @ModifyVariable(
         methodName = "transfer",
-        variableIndex = 2  // to account
+        variableIndex = 2  // 送信先アカウント
     )
     public static void validateToAccount(String original) {
-        // Validate destination account
+        // 送信先アカウントを検証
     }
 
     @ModifyVariable(
         methodName = "transfer",
-        variableIndex = 3  // amount
+        variableIndex = 3  // 金額
     )
     public static void validateAmount(long original) {
-        // Ensure amount is positive
+        // 金額が正であることを確認
     }
 }
 ```
 
-All three modifications are applied to the same method.
+3つすべての変更が同じメソッドに適用されます。
 
-## Type Preservation
+## 型の保持
 
-Variable type is preserved during modification:
+変更中に変数の型は保持されます:
 
 ```java
 @ModifyClass("com.example.Data")
 public class DataHooks {
 
-    // Modifying String parameter
+    // String パラメータの変更
     @ModifyVariable(methodName = "processName", variableIndex = 1)
     public static void transformName(String original) { }
 
-    // Modifying int parameter
+    // int パラメータの変更
     @ModifyVariable(methodName = "processCount", variableIndex = 1)
     public static void transformCount(int original) { }
 
-    // Modifying List parameter
+    // List パラメータの変更
     @ModifyVariable(methodName = "processItems", variableIndex = 1)
     public static void transformItems(List<?> original) { }
 }
 ```
 
-Each hook receives the correct type automatically.
+各フックは自動的に正しい型を受け取ります。
 
-## Limitations
+## 制限事項
 
-### Cannot Modify
+### 変更できないもの
 
-- Variables that are never used
-- Variables whose values are optimized away by JVM
-- Variables modified after initialization in complex ways
+- 使用されない変数
+- JVMによって最適化されて削除された値を持つ変数
+- 初期化後に複雑な方法で変更される変数
 
-### Challenges
+### 課題
 
-1. **Index calculation**: Must correctly identify variable indices
-2. **Type safety**: Parameter types must match
-3. **Scope**: Changes only within that method
-4. **Debugging**: Can be hard to trace modifications
+1. **インデックスの計算**: 変数インデックスを正しく識別する必要がある
+2. **型安全性**: パラメータの型が一致する必要がある
+3. **スコープ**: 変更はそのメソッド内でのみ有効
+4. **デバッグ**: 変更の追跡が困難な場合がある
 
-## Finding Correct Variable Indices
+## 正しい変数インデックスの特定
 
-Use `javap` to inspect variable layout:
+`javap`を使用して変数レイアウトを検査:
 
 ```bash
 javap -c -private MyClass.class | grep -A 50 "methodName"
 ```
 
-Look for LocalVariableTable which shows variable positions.
+変数の位置を示すLocalVariableTableを探してください。
 
-## Best Practices
+## ベストプラクティス
 
-1. **Document indices**: Clearly comment which variable at which index
-2. **Keep transformations simple**: Complex logic should be separate
-3. **Preserve semantics**: Ensure modified values make sense
-4. **Test thoroughly**: Verify behavior with modified variables
-5. **Use inspectors**: Verify indices are correct before applying
+1. **インデックスを文書化する**: どの変数がどのインデックスかを明確にコメントする
+2. **変換をシンプルに保つ**: 複雑なロジックは別にすべき
+3. **セマンティクスを保持する**: 変更された値が意味をなすことを確認する
+4. **徹底的にテストする**: 変更された変数での動作を検証する
+5. **インスペクタを使用する**: 適用前にインデックスが正しいことを確認する
 
-## Combining with Other Features
+## 他の機能との組み合わせ
 
-Use variable modification with injections:
+変数の変更をインジェクションと併用:
 
 ```java
 @ModifyClass("com.example.Service")
@@ -303,16 +303,16 @@ public class ServiceHooks {
 
     @ModifyVariable(
         methodName = "handle",
-        variableIndex = 1  // input parameter
+        variableIndex = 1  // input パラメータ
     )
     public static void normalizeInput(String original) {
-        // Also normalize the input
+        // 入力も正規化
     }
 }
 ```
 
-## Next Steps
+## 次のステップ
 
-- Explore [Advanced Usage](./advanced-usage.md)
-- Learn about [Mappings](./mappings.md)
-- Check [Examples](./examples.md)
+- [高度な使用方法](./advanced-usage.md)を探索する
+- [マッピング](./mappings.md)について学ぶ
+- [例](./examples.md)を確認する

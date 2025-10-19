@@ -1,8 +1,8 @@
-# Inject Transformation
+# インジェクション変換
 
-The `@Inject` annotation allows you to insert custom code at specific points in target methods.
+`@Inject`アノテーションを使用すると、ターゲットメソッドの特定のポイントにカスタムコードを挿入できます。
 
-## Basic Usage
+## 基本的な使用法
 
 ```java
 @ModifyClass("com.example.Calculator")
@@ -20,31 +20,31 @@ public class CalculatorHooks {
 }
 ```
 
-## Annotation Parameters
+## アノテーションパラメータ
 
-### methodName (required)
-The name of the target method to inject into.
+### methodName (必須)
+インジェクション対象のメソッド名。
 
 ```java
 methodName = "add"
 ```
 
-### methodDesc (required)
-The JVM descriptor of the target method signature.
+### methodDesc (必須)
+ターゲットメソッドシグネチャのJVMディスクリプタ。
 
 ```java
 methodDesc = "(II)I"  // int add(int a, int b)
 ```
 
-See [Method Descriptors](./bytecode-basics.md#method-descriptors-signatures) for details.
+詳細は[メソッドディスクリプタ](./bytecode-basics.md#method-descriptors-signatures)をご覧ください。
 
-### at (required)
-Where to inject the code within the method.
+### at (必須)
+メソッド内のどこにコードをインジェクションするか。
 
-## At Enum - Injection Points
+## At列挙型 - インジェクションポイント
 
 ### At.HEAD
-Inject at the very beginning of the method, before any existing code.
+メソッドの最初、既存のコードの前にインジェクションします。
 
 ```java
 @Inject(methodName = "calculate", methodDesc = "()I", at = At.HEAD)
@@ -54,16 +54,16 @@ public static CallbackInfo atMethodStart() {
 }
 ```
 
-**Result:**
+**結果:**
 ```java
 public int calculate() {
-    System.out.println("Method started");  // Injected
-    // Original code here
+    System.out.println("Method started");  // インジェクション済み
+    // 元のコードはここ
 }
 ```
 
 ### At.RETURN
-Inject before every return statement in the method.
+メソッド内のすべてのreturn文の前にインジェクションします。
 
 ```java
 @Inject(methodName = "getValue", methodDesc = "()I", at = At.RETURN)
@@ -73,21 +73,21 @@ public static CallbackInfo beforeReturn(CallbackInfo ci) {
 }
 ```
 
-**Result:**
+**結果:**
 ```java
 public int getValue() {
     if (condition) {
-        System.out.println("Returning: " + value);  // Injected
+        System.out.println("Returning: " + value);  // インジェクション済み
         return value;
     }
-    
-    System.out.println("Returning: " + defaultValue);  // Injected
+
+    System.out.println("Returning: " + defaultValue);  // インジェクション済み
     return defaultValue;
 }
 ```
 
 ### At.TAIL
-Inject at the very end of the method, after all code but before implicit return.
+メソッドの最後、すべてのコードの後、暗黙的なreturnの前にインジェクションします。
 
 ```java
 @Inject(methodName = "cleanup", methodDesc = "()V", at = At.TAIL)
@@ -97,51 +97,51 @@ public static CallbackInfo atMethodEnd() {
 }
 ```
 
-## Hook Method Parameters
+## フックメソッドのパラメータ
 
-Hook methods receive the same parameters as the target method, plus `CallbackInfo`:
+フックメソッドは、ターゲットメソッドと同じパラメータに加えて`CallbackInfo`を受け取ります:
 
 ```java
-// Target method:
+// ターゲットメソッド:
 public String process(String input, int count) { ... }
 
-// Hook method:
+// フックメソッド:
 @Inject(methodName = "process", methodDesc = "(Ljava/lang/String;I)Ljava/lang/String;", at = At.HEAD)
 public static CallbackInfo processHook(String input, int count, CallbackInfo ci) {
-    // Can access parameters
+    // パラメータにアクセス可能
     return CallbackInfo.empty();
 }
 ```
 
-## CallbackInfo - Controlling Behavior
+## CallbackInfo - 動作の制御
 
-The `CallbackInfo` object allows you to control how the injection behaves:
+`CallbackInfo`オブジェクトを使用して、インジェクションの動作を制御できます:
 
 ```java
 public class CallbackInfo {
-    public boolean cancelled;      // Skip original code?
-    public Object returnValue;     // Return custom value?
+    public boolean cancelled;      // 元のコードをスキップするか?
+    public Object returnValue;     // カスタム値を返すか?
 }
 ```
 
-### Cancelling Execution
+### 実行のキャンセル
 
-Skip the original method and return early:
+元のメソッドをスキップして早期にreturnします:
 
 ```java
 @Inject(methodName = "authenticate", methodDesc = "(Ljava/lang/String;)Z", at = At.HEAD)
 public static CallbackInfo checkPermission(String user, CallbackInfo ci) {
     if (!user.equals("admin")) {
         ci.cancelled = true;
-        ci.returnValue = false;  // Return false without running original code
+        ci.returnValue = false;  // 元のコードを実行せずfalseを返す
     }
     return ci;
 }
 ```
 
-### Custom Return Values
+### カスタム戻り値
 
-Return a custom value instead of the original result:
+元の結果の代わりにカスタム値を返します:
 
 ```java
 @Inject(methodName = "getCached", methodDesc = "()Ljava/lang/Object;", at = At.HEAD)
@@ -155,9 +155,9 @@ public static CallbackInfo useCachedValue(CallbackInfo ci) {
 }
 ```
 
-## Multiple Injections
+## 複数のインジェクション
 
-You can inject into the same method multiple times:
+同じメソッドに複数回インジェクションできます:
 
 ```java
 @ModifyClass("com.example.Service")
@@ -177,19 +177,19 @@ public class ServiceHooks {
 }
 ```
 
-Both injections will be applied.
+両方のインジェクションが適用されます。
 
-## Instance Methods vs Static Methods
+## インスタンスメソッド vs 静的メソッド
 
-For instance methods, the first parameter is usually `this` (or the object instance):
+インスタンスメソッドの場合、最初のパラメータは通常`this`(オブジェクトインスタンス)です:
 
 ```java
-// Target instance method:
+// ターゲットインスタンスメソッド:
 public class Calculator {
     public int add(int a, int b) { return a + b; }
 }
 
-// Hook can receive 'this':
+// フックは'this'を受け取れます:
 @Inject(methodName = "add", methodDesc = "(II)I", at = At.HEAD)
 public static CallbackInfo onAdd(Calculator self, int a, int b) {
     System.out.println("Calculator instance: " + self);
@@ -197,20 +197,20 @@ public static CallbackInfo onAdd(Calculator self, int a, int b) {
 }
 ```
 
-## Best Practices
+## ベストプラクティス
 
-1. **Keep hooks simple**: Complex logic should be in separate methods
-2. **Avoid exceptions**: Handle exceptions within hook methods
-3. **Use At.HEAD for guards**: Check conditions early
-4. **Be careful with At.RETURN**: Multiple returns need handling
-5. **Test thoroughly**: Verify injections work correctly
+1. **フックをシンプルに保つ**: 複雑なロジックは別のメソッドに
+2. **例外を避ける**: フックメソッド内で例外を処理する
+3. **ガードにAt.HEADを使用**: 早期に条件をチェック
+4. **At.RETURNに注意**: 複数のreturnには処理が必要
+5. **十分にテスト**: インジェクションが正しく動作することを検証
 
-## Examples
+## 例
 
-See [Examples - Inject](./examples-basic.md#inject-examples) for complete working examples.
+完全な動作例については、[例 - インジェクション](./examples-basic.md#inject-examples)をご覧ください。
 
-## Next Steps
+## 次のステップ
 
-- Learn about [Invoke](./invoke.md) for method interception
-- Explore [Advanced Usage](./advanced-usage.md)
-- Check [API Reference](./api-reference.md)
+- メソッドインターセプションのための[インボケーション](./invoke.md)について学ぶ
+- [高度な使用法](./advanced-usage.md)を探る
+- [APIリファレンス](./api-reference.md)をチェック

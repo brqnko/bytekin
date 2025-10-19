@@ -1,20 +1,20 @@
-# How bytekin Works
+# bytekinの動作
 
-This document explains the internal mechanisms of bytekin and how it transforms bytecode.
+このドキュメントでは、bytekinの内部メカニズムとバイトコードをどのように変換するかを説明します。
 
-## The Transformation Process
+## 変換プロセス
 
-### Step 1: Initialization
+### ステップ1: 初期化
 
 ```
-Define Hook Classes
+フッククラスを定義
         ↓
-Create BytekinTransformer.Builder
+BytekinTransformer.Builderを作成
         ↓
-Pass hook classes to Builder
+フッククラスをBuilderに渡す
 ```
 
-Example:
+例:
 ```java
 BytekinTransformer transformer = new BytekinTransformer.Builder(
     CalculatorHooks.class,
@@ -22,73 +22,73 @@ BytekinTransformer transformer = new BytekinTransformer.Builder(
 ).build();
 ```
 
-### Step 2: Analysis
+### ステップ2: 分析
 
-When `build()` is called, bytekin:
+`build()`が呼び出されると、bytekinは:
 
-1. Scans hook classes for annotations
-2. Extracts transformation rules
-3. Validates method signatures
-4. Prepares transformation strategy
-5. Creates BytekinClassTransformer instances
+1. フッククラスのアノテーションをスキャン
+2. 変換ルールを抽出
+3. メソッドシグネチャを検証
+4. 変換戦略を準備
+5. BytekinClassTransformerインスタンスを作成
 
 ```
 Builder.build()
     ↓
-Scan @ModifyClass annotations
+@ModifyClassアノテーションをスキャン
     ↓
-Extract @Inject, @Invoke, etc.
+@Inject、@Invokeなどを抽出
     ↓
-Create transformers map
+トランスフォーマーマップを作成
     ↓
-Return BytekinTransformer
+BytekinTransformerを返す
 ```
 
-### Step 3: Transformation
+### ステップ3: 変換
 
-When `transform()` is called:
+`transform()`が呼び出されると:
 
 ```java
 byte[] transformed = transformer.transform("com.example.Calculator", bytecode);
 ```
 
-bytekin:
+bytekinは:
 
-1. Looks up the target class
-2. Finds matching transformer
-3. Uses ASM to parse bytecode
-4. Applies all registered transformations
-5. Returns modified bytecode
+1. ターゲットクラスを検索
+2. 一致するトランスフォーマーを見つける
+3. ASMを使用してバイトコードを解析
+4. 登録されたすべての変換を適用
+5. 変更されたバイトコードを返す
 
 ```
-Target Bytecode
+ターゲットバイトコード
     ↓
 ASM ClassReader
     ↓
 BytekinClassVisitor
     ↓
-Apply Injections
+インジェクションを適用
     ↓
-Apply Invocations
+インボケーションを適用
     ↓
-Apply Redirects
+リダイレクトを適用
     ↓
-Apply Constant Modifications
+定数の変更を適用
     ↓
-Apply Variable Modifications
+変数の変更を適用
     ↓
 ASM ClassWriter
     ↓
-Modified Bytecode
+変更されたバイトコード
 ```
 
-## Architecture Overview
+## アーキテクチャ概要
 
-### Core Components
+### コアコンポーネント
 
 ```
 ┌─────────────────────────────────────┐
-│   BytekinTransformer (Main API)     │
+│   BytekinTransformer (メインAPI)    │
 └──────────────┬──────────────────────┘
                │
         ┌──────┴──────┐
@@ -112,9 +112,9 @@ Modified Bytecode
    └───────────────────────────┘
 ```
 
-### Visitor Pattern
+### ビジターパターン
 
-bytekin uses the **Visitor Pattern** (from ASM):
+bytekinは**ビジターパターン**（ASMから）を使用します:
 
 ```
 ┌─ ClassVisitor
@@ -123,156 +123,156 @@ bytekin uses the **Visitor Pattern** (from ASM):
 │           └─ Instruction Handlers
 ```
 
-As ASM parses bytecode, it calls methods on visitors to notify them of each element (class, method, field, instruction, etc.).
+ASMがバイトコードを解析する際、各要素（クラス、メソッド、フィールド、命令など）についてビジターのメソッドを呼び出して通知します。
 
-## Transformation Types
+## 変換タイプ
 
-### 1. Injection (Code Insertion)
+### 1. インジェクション（コード挿入）
 
-**Goal**: Insert code at specific method points
-
-```
-Method Bytecode
-    ↓
-Find injection point
-    ↓
-Insert call to hook method
-    ↓
-Continue with original code
-```
-
-Example locations:
-- `At.HEAD`: Before method body
-- `At.RETURN`: Before return statements
-- `At.TAIL`: At method end
-
-### 2. Invocation (Method Call Interception)
-
-**Goal**: Intercept method calls within a method
+**目標**: メソッドの特定箇所にコードを挿入
 
 ```
-Method Bytecode
+メソッドバイトコード
     ↓
-Find target method invocation
+インジェクションポイントを見つける
     ↓
-Call hook method with same arguments
+フックメソッドへの呼び出しを挿入
     ↓
-Optionally modify arguments
-    ↓
-Make method call (or skip it)
+元のコードを続行
 ```
 
-### 3. Redirect (Call Target Change)
+例の場所:
+- `At.HEAD`: メソッド本体の前
+- `At.RETURN`: return文の前
+- `At.TAIL`: メソッドの終わり
 
-**Goal**: Change which method is called
+### 2. インボケーション（メソッド呼び出しのインターセプト）
 
-```
-Method Call to A()
-    ↓
-Intercept call
-    ↓
-Redirect to B()
-```
-
-### 4. Constant Modification
-
-**Goal**: Change constant values
+**目標**: メソッド内のメソッド呼び出しをインターセプト
 
 ```
-Load Constant X
+メソッドバイトコード
     ↓
-Replace with Constant Y
+ターゲットメソッド呼び出しを見つける
+    ↓
+同じ引数でフックメソッドを呼び出す
+    ↓
+必要に応じて引数を変更
+    ↓
+メソッド呼び出しを行う（またはスキップ）
 ```
 
-### 5. Variable Modification
+### 3. リダイレクト（呼び出し先の変更）
 
-**Goal**: Modify local variable values
+**目標**: どのメソッドが呼び出されるかを変更
 
 ```
-Local Variable at index N
+A()へのメソッド呼び出し
     ↓
-Load from slot
+呼び出しをインターセプト
     ↓
-Apply modification
-    ↓
-Store back
+B()にリダイレクト
 ```
 
-## Key Data Structures
+### 4. 定数の変更
+
+**目標**: 定数値を変更
+
+```
+定数Xをロード
+    ↓
+定数Yに置き換え
+```
+
+### 5. 変数の変更
+
+**目標**: ローカル変数の値を変更
+
+```
+インデックスNのローカル変数
+    ↓
+スロットからロード
+    ↓
+変更を適用
+    ↓
+戻して格納
+```
+
+## 主要なデータ構造
 
 ### Injection
 
-Represents a code injection:
-- **Target Method**: Which method to inject into
-- **Hook Method**: Which hook method to call
-- **Location**: Where to inject (HEAD, RETURN, etc.)
-- **Parameters**: What parameters to pass
+コードのインジェクションを表します:
+- **ターゲットメソッド**: どのメソッドにインジェクトするか
+- **フックメソッド**: どのフックメソッドを呼び出すか
+- **場所**: どこにインジェクトするか（HEAD、RETURNなど）
+- **パラメータ**: どのパラメータを渡すか
 
 ### Invocation
 
-Represents a method call interception:
-- **Target Method**: Which method calls the target
-- **Target Call**: Which call to intercept
-- **Hook Method**: Which hook to call
-- **Shift**: Before or after the call
+メソッド呼び出しのインターセプトを表します:
+- **ターゲットメソッド**: どのメソッドがターゲットを呼び出すか
+- **ターゲット呼び出し**: どの呼び出しをインターセプトするか
+- **フックメソッド**: どのフックを呼び出すか
+- **シフト**: 呼び出しの前か後か
 
 ### CallbackInfo
 
-Controls injection behavior:
+インジェクションの動作を制御します:
 ```java
 public class CallbackInfo {
-    public boolean cancelled;      // Cancel execution?
-    public Object returnValue;     // Custom return?
-    public Object[] modifyArgs;    // Modified arguments?
+    public boolean cancelled;      // 実行をキャンセル?
+    public Object returnValue;     // カスタムリターン?
+    public Object[] modifyArgs;    // 変更された引数?
 }
 ```
 
-## Mapping System
+## マッピングシステム
 
-bytekin supports class/method name mappings for obfuscated code:
+bytekinは難読化されたコードのクラス/メソッド名マッピングをサポートしています:
 
 ```
-Original Name     Mapped Name
+元の名前     マップされた名前
      ↓                  ↓
   a.class  ────→  com.example.Calculator
   b(II)I   ────→  add(II)I
 ```
 
-Mappings are applied during transformation:
+マッピングは変換中に適用されます:
 
 ```
-Hook class references "com.example.Calculator"
+フッククラスが"com.example.Calculator"を参照
     ↓
-Apply mapping
+マッピングを適用
     ↓
-Look for mapped name in bytecode
+バイトコード内のマップされた名前を探す
     ↓
-Transform accordingly
+それに応じて変換
 ```
 
-## Thread Safety
+## スレッドセーフティ
 
-- **BytekinTransformer**: Thread-safe after `build()`
-- **Builder**: Not thread-safe during configuration
-- **transform()**: Can be called concurrently from multiple threads
+- **BytekinTransformer**: `build()`後はスレッドセーフ
+- **Builder**: 設定中はスレッドセーフではない
+- **transform()**: 複数のスレッドから同時に呼び出し可能
 
-## Performance Considerations
+## パフォーマンスの考慮事項
 
-### Efficiency
+### 効率
 
-- **One-time cost**: Building transformers
-- **Transform time**: Proportional to bytecode size
-- **Runtime overhead**: Only injected code is executed
+- **1回限りのコスト**: トランスフォーマーのビルド
+- **変換時間**: バイトコードサイズに比例
+- **ランタイムオーバーヘッド**: インジェクトされたコードのみが実行される
 
-### Optimization Tips
+### 最適化のヒント
 
-1. Build transformers once, reuse them
-2. Use transformation early in classloading
-3. Minimize hook method complexity
-4. Profile to identify bottlenecks
+1. トランスフォーマーを1回ビルドして再利用
+2. クラスロードの早い段階で変換を使用
+3. フックメソッドの複雑さを最小限に抑える
+4. ボトルネックを特定するためにプロファイル
 
-## Next Steps
+## 次のステップ
 
-- Explore [Features](./features.md)
-- Learn about [Advanced Usage](./advanced-usage.md)
-- Check out [Examples](./examples.md)
+- [機能](./features.md)を探索する
+- [高度な使用方法](./advanced-usage.md)について学ぶ
+- [例](./examples.md)を確認する

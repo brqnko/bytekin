@@ -1,8 +1,8 @@
-# Redirect Transformation
+# リダイレクト変換
 
-The `@Redirect` annotation allows you to change which method is actually called at runtime.
+`@Redirect`アノテーションを使用すると、実行時に実際に呼び出されるメソッドを変更できます。
 
-## Basic Usage
+## 基本的な使用法
 
 ```java
 @ModifyClass("com.example.LegacyService")
@@ -20,71 +20,71 @@ public class LegacyServiceHooks {
 }
 ```
 
-## Annotation Parameters
+## アノテーションパラメータ
 
-### targetMethodName (required)
+### targetMethodName (必須)
 
-The name of the method that contains the call to redirect.
+リダイレクトする呼び出しを含むメソッドの名前。
 
 ```java
 targetMethodName = "process"
 ```
 
-### targetMethodDesc (required)
+### targetMethodDesc (必須)
 
-The JVM descriptor of the target method.
+ターゲットメソッドのJVMディスクリプタ。
 
 ```java
 targetMethodDesc = "(Ljava/lang/String;)V"
 ```
 
-### redirectMethodName (required)
+### redirectMethodName (必須)
 
-The name of the new method to call instead.
+代わりに呼び出す新しいメソッドの名前。
 
 ```java
 redirectMethodName = "newImplementation"
 ```
 
-### redirectMethodDesc (required)
+### redirectMethodDesc (必須)
 
-The JVM descriptor of the redirect method.
+リダイレクトメソッドのJVMディスクリプタ。
 
 ```java
 redirectMethodDesc = "(Ljava/lang/String;)V"
 ```
 
-## How Redirect Works
+## リダイレクトの仕組み
 
-**Before:**
+**前:**
 ```java
 public class LegacyAPI {
     public void oldMethod(int value) {
-        // Old implementation
+        // 古い実装
     }
 }
 
 public class Client {
     public void use() {
-        api.oldMethod(42);  // Calls oldMethod
+        api.oldMethod(42);  // oldMethodを呼び出す
     }
 }
 ```
 
-**After Redirect:**
+**リダイレクト後:**
 ```java
 public class Client {
     public void use() {
-        api.newMethod(42);  // Redirected to newMethod!
+        api.newMethod(42);  // newMethodにリダイレクト!
     }
 }
 ```
 
-## Practical Examples
+## 実用的な例
 
-### Migration Strategy
+### 移行戦略
 
-Gradually migrate from old API to new API:
+古いAPIから新しいAPIに段階的に移行:
 
 ```java
 @ModifyClass("com.example.Application")
@@ -99,14 +99,14 @@ public class APIRedirection {
         to = "modernSearch"
     )
     public static void upgradeSearch() {
-        // Search calls are now routed to the modern implementation
+        // 検索呼び出しが最新の実装にルーティングされる
     }
 }
 ```
 
-### Mocking for Tests
+### テストのためのモッキング
 
-Replace real implementations with test doubles:
+実際の実装をテストダブルで置き換え:
 
 ```java
 @ModifyClass("com.example.DataAccess")
@@ -121,14 +121,14 @@ public class TestRedirection {
         to = "mockDB"
     )
     public static void useMockDatabase() {
-        // All database calls use mocked implementation
+        // すべてのデータベース呼び出しがモック実装を使用
     }
 }
 ```
 
-### Performance Optimization
+### パフォーマンス最適化
 
-Route to optimized implementations:
+最適化された実装にルーティング:
 
 ```java
 @ModifyClass("com.example.Processing")
@@ -143,64 +143,64 @@ public class PerformanceOptimization {
         to = "optimized"
     )
     public static void useOptimizedAlgorithm() {
-        // Uses fast algorithm instead of slow one
+        // 遅いアルゴリズムの代わりに高速アルゴリズムを使用
     }
 }
 ```
 
-## Differences from Other Transformations
+## 他の変換との違い
 
-| Feature | Inject | Invoke | Redirect |
+| 機能 | インジェクション | インボケーション | リダイレクト |
 |---------|--------|--------|----------|
-| What it does | Insert code | Intercept calls | Change target |
-| Call happens | Yes | Yes | Yes, but different target |
-| Can skip execution | Yes | Yes | Yes |
-| Use case | Add logging | Modify behavior | API migration |
+| 何をするか | コードを挿入 | 呼び出しをインターセプト | ターゲットを変更 |
+| 呼び出しは発生するか | はい | はい | はい、ただし異なるターゲット |
+| 実行をスキップできるか | はい | はい | はい |
+| ユースケース | ロギングの追加 | 動作を変更 | API移行 |
 
-## Type Compatibility
+## 型の互換性
 
-The redirect method must have compatible signature:
+リダイレクトメソッドは互換性のあるシグネチャを持つ必要があります:
 
 ```java
-// Original call
+// 元の呼び出し
 search(String query);  // (Ljava/lang/String;)Ljava/util/List;
 
-// Must redirect to compatible signature
+// 互換性のあるシグネチャにリダイレクトする必要がある
 newSearch(String query);  // (Ljava/lang/String;)Ljava/util/List;
 ```
 
-**Type mismatch will cause issues:**
+**型の不一致は問題を引き起こします:**
 ```java
-// WRONG - Different parameter types
+// 間違い - パラメータの型が異なる
 @Redirect(..., from = "process(int)", to = "process(String)")
 ```
 
-## Performance Considerations
+## パフォーマンスの考慮事項
 
-Redirect has minimal overhead compared to normal method calls since:
+リダイレクトは通常のメソッド呼び出しと比較して最小限のオーバーヘッドです:
 
-1. It's a direct bytecode substitution
-2. No wrapper or proxy is created
-3. The JVM can inline and optimize as normal
+1. 直接的なバイトコード置換である
+2. ラッパーやプロキシは作成されない
+3. JVMは通常通りインライン化と最適化が可能
 
-## Limitations
+## 制限事項
 
-- Both methods must have compatible signatures
-- Cannot redirect to final methods
-- Cannot redirect constructor calls (use `@Invoke` instead)
-- Redirects are static - same target for all calls
+- 両方のメソッドは互換性のあるシグネチャを持つ必要がある
+- finalメソッドにリダイレクトできない
+- コンストラクタ呼び出しをリダイレクトできない(代わりに`@Invoke`を使用)
+- リダイレクトは静的 - すべての呼び出しで同じターゲット
 
-## Best Practices
+## ベストプラクティス
 
-1. **Ensure compatibility**: Verify method signatures match exactly
-2. **Document redirects**: Leave comments explaining why
-3. **Test redirects**: Verify behavior after redirection
-4. **Use for migration**: Great for moving from old to new APIs
-5. **Be cautious**: Track all redirects to avoid confusion
+1. **互換性を確保**: メソッドシグネチャが完全に一致することを確認
+2. **リダイレクトを文書化**: なぜかを説明するコメントを残す
+3. **リダイレクトをテスト**: リダイレクト後の動作を検証
+4. **移行に使用**: 古いAPIから新しいAPIへの移行に最適
+5. **注意する**: 混乱を避けるためにすべてのリダイレクトを追跡
 
-## Advanced Pattern: Conditional Redirect
+## 高度なパターン: 条件付きリダイレクト
 
-While `@Redirect` is static, you can combine it with `@Invoke` for conditional behavior:
+`@Redirect`は静的ですが、`@Invoke`と組み合わせて条件付き動作を実現できます:
 
 ```java
 @Invoke(
@@ -212,7 +212,7 @@ While `@Redirect` is static, you can combine it with `@Invoke` for conditional b
 )
 public static CallbackInfo selectImplementation(String query, CallbackInfo ci) {
     if (query.length() > 100) {
-        // Use optimized search for large queries
+        // 大きなクエリには最適化された検索を使用
         ci.returnValue = optimizedSearch(query);
         ci.cancelled = true;
     }
@@ -220,8 +220,8 @@ public static CallbackInfo selectImplementation(String query, CallbackInfo ci) {
 }
 ```
 
-## Next Steps
+## 次のステップ
 
-- Learn about [Constant Modification](./constant-modification.md)
-- Explore [Advanced Usage](./advanced-usage.md)
-- Check [Examples](./examples.md)
+- [定数の変更](./constant-modification.md)について学ぶ
+- [高度な使用法](./advanced-usage.md)を探る
+- [例](./examples.md)をチェック

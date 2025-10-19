@@ -1,137 +1,137 @@
-# Classes and Interfaces
+# クラスとインターフェース
 
-Reference documentation for bytekin classes and interfaces.
+bytekinのクラスとインターフェースのリファレンスドキュメント。
 
-## Core Classes
+## コアクラス
 
 ### BytekinTransformer
 
-Main transformer class for bytecode manipulation.
+バイトコード操作のためのメイントランスフォーマークラス。
 
-**Methods:**
-- `byte[] transform(String className, byte[] bytes, int api)` - Transform class bytecode
-- `byte[] transform(String className, byte[] bytes)` - Transform (default API)
+**メソッド:**
+- `byte[] transform(String className, byte[] bytes, int api)` - クラスのバイトコードを変換
+- `byte[] transform(String className, byte[] bytes)` - 変換（デフォルトAPI）
 
-**Builder:**
-- `new BytekinTransformer.Builder(Class<?>... classes)` - Create builder
+**ビルダー:**
+- `new BytekinTransformer.Builder(Class<?>... classes)` - ビルダーを作成
 
 ### CallbackInfo
 
-Data structure for controlling transformation behavior.
+変換動作を制御するためのデータ構造。
 
-**Fields:**
-- `boolean cancelled` - Skip original code execution
-- `Object returnValue` - Custom return value
-- `Object[] modifyArgs` - Modified method arguments
+**フィールド:**
+- `boolean cancelled` - 元のコード実行をスキップ
+- `Object returnValue` - カスタム戻り値
+- `Object[] modifyArgs` - 変更されたメソッド引数
 
-**Methods:**
-- `static CallbackInfo empty()` - Create empty callback
-- `CallbackInfo(boolean cancelled, Object returnValue, Object[] modifyArgs)` - Constructor
+**メソッド:**
+- `static CallbackInfo empty()` - 空のコールバックを作成
+- `CallbackInfo(boolean cancelled, Object returnValue, Object[] modifyArgs)` - コンストラクタ
 
-## Builder Class
+## ビルダークラス
 
 ### BytekinTransformer.Builder
 
-Fluent builder for constructing transformers.
+トランスフォーマーを構築するための流暢なビルダー。
 
-**Constructors:**
-- `Builder(Class<?>... classes)` - Initialize with hook classes
+**コンストラクタ:**
+- `Builder(Class<?>... classes)` - フッククラスで初期化
 
-**Methods:**
-- `Builder mapping(IMappingProvider)` - Set mapping provider
-- `Builder inject(String, Injection)` - Add injection
-- `Builder invoke(String, Invocation)` - Add invocation
-- `Builder redirect(String, RedirectData)` - Add redirect
-- `Builder modifyConstant(String, ConstantModification)` - Add constant modification
-- `Builder modifyVariable(String, VariableModification)` - Add variable modification
-- `BytekinTransformer build()` - Build transformer
+**メソッド:**
+- `Builder mapping(IMappingProvider)` - マッピングプロバイダーを設定
+- `Builder inject(String, Injection)` - インジェクションを追加
+- `Builder invoke(String, Invocation)` - インボケーションを追加
+- `Builder redirect(String, RedirectData)` - リダイレクトを追加
+- `Builder modifyConstant(String, ConstantModification)` - 定数変更を追加
+- `Builder modifyVariable(String, VariableModification)` - 変数変更を追加
+- `BytekinTransformer build()` - トランスフォーマーをビルド
 
-## Data Classes
+## データクラス
 
 ### Injection
 
-Represents an injection point.
+インジェクションポイントを表します。
 
-**Purpose:** Store injection configuration data.
+**目的:** インジェクション設定データを格納。
 
 ### Invocation
 
-Represents an invocation point.
+インボケーションポイントを表します。
 
-**Purpose:** Store invocation configuration data.
+**目的:** インボケーション設定データを格納。
 
 ### RedirectData
 
-Represents a redirect target.
+リダイレクトターゲットを表します。
 
-**Purpose:** Store redirect configuration data.
+**目的:** リダイレクト設定データを格納。
 
 ### ConstantModification
 
-Represents a constant modification.
+定数の変更を表します。
 
-**Purpose:** Store constant modification data.
+**目的:** 定数変更データを格納。
 
 ### VariableModification
 
-Represents a variable modification.
+変数の変更を表します。
 
-**Purpose:** Store variable modification data.
+**目的:** 変数変更データを格納。
 
-## Interfaces
+## インターフェース
 
 ### IMappingProvider
 
-Interface for name mapping.
+名前マッピングのためのインターフェース。
 
-**Methods:**
-- `String getClassName(String name)` - Map class name
-- `String getMethodName(String className, String methodName, String descriptor)` - Map method name
-- `String getFieldName(String className, String fieldName)` - Map field name
+**メソッド:**
+- `String getClassName(String name)` - クラス名をマップ
+- `String getMethodName(String className, String methodName, String descriptor)` - メソッド名をマップ
+- `String getFieldName(String className, String fieldName)` - フィールド名をマップ
 
-### Implementation Examples
+### 実装例
 
-**EmptyMappingProvider** - No-op mapping (returns unchanged names)
+**EmptyMappingProvider** - 何もしないマッピング（変更されない名前を返す）
 
-**Custom Mapping:**
+**カスタムマッピング:**
 ```java
 public class CustomMapping implements IMappingProvider {
     @Override
     public String getClassName(String name) {
-        // Custom mapping logic
+        // カスタムマッピングロジック
         return name;
     }
-    
+
     @Override
     public String getMethodName(String className, String methodName, String descriptor) {
-        // Custom mapping logic
+        // カスタムマッピングロジック
         return methodName;
     }
-    
+
     @Override
     public String getFieldName(String className, String fieldName) {
-        // Custom mapping logic
+        // カスタムマッピングロジック
         return fieldName;
     }
 }
 ```
 
-## Utility Classes
+## ユーティリティクラス
 
 ### DescriptorParser
 
-Parse and validate method descriptors.
+メソッドディスクリプタを解析して検証します。
 
-**Methods:**
-- `static String parseDescriptor(String desc)` - Parse descriptor format
+**メソッド:**
+- `static String parseDescriptor(String desc)` - ディスクリプタ形式を解析
 
 ### BytecodeManipulator
 
-Low-level bytecode utilities.
+低レベルのバイトコードユーティリティ。
 
-**Purpose:** Internal utilities for bytecode manipulation.
+**目的:** バイトコード操作のための内部ユーティリティ。
 
-## Inheritance Hierarchy
+## 継承階層
 
 ```
 Object
@@ -145,16 +145,16 @@ Object
 └── VariableModification
 ```
 
-## Interface Implementations
+## インターフェースの実装
 
 ```
 IMappingProvider
 ├── EmptyMappingProvider
-└── (Custom implementations)
+└── （カスタム実装）
 ```
 
-## Next Steps
+## 次のステップ
 
-- Review [API Reference](./api-reference.md)
-- Check [Annotations](./annotations.md)
-- Explore [Examples](./examples.md)
+- [APIリファレンス](./api-reference.md)を確認する
+- [アノテーション](./annotations.md)を確認する
+- [例](./examples.md)を探索する

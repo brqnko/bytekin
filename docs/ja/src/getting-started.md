@@ -1,18 +1,18 @@
-# Getting Started with bytekin
+# bytekinを始める
 
-This section will guide you through setting up bytekin and creating your first bytecode transformation.
+このセクションでは、bytekinのセットアップと最初のバイトコード変換の作成方法を説明します。
 
-## Prerequisites
+## 前提条件
 
-- Java 8 or higher
-- Basic understanding of Java
-- Maven or Gradle (for dependency management)
+- Java 8以上
+- Javaの基本的な理解
+- MavenまたはGradle(依存関係管理のため)
 
-## Installation
+## インストール
 
 ### Maven
 
-Add the following to your `pom.xml`:
+`pom.xml`に以下を追加してください:
 
 ```xml
 <dependency>
@@ -24,7 +24,7 @@ Add the following to your `pom.xml`:
 
 ### Gradle
 
-Add the following to your `build.gradle`:
+`build.gradle`に以下を追加してください:
 
 ```gradle
 dependencies {
@@ -32,11 +32,11 @@ dependencies {
 }
 ```
 
-## Your First Transformation
+## 最初の変換
 
-### Step 1: Create a Hook Class
+### ステップ1: フッククラスの作成
 
-Create a class with the `@ModifyClass` annotation that defines how you want to transform a target class:
+ターゲットクラスをどのように変換したいかを定義する`@ModifyClass`アノテーションを持つクラスを作成します:
 
 ```java
 import io.github.brqnko.bytekin.injection.ModifyClass;
@@ -55,56 +55,56 @@ public class CalculatorHooks {
 }
 ```
 
-### Step 2: Create the Transformer
+### ステップ2: トランスフォーマーの作成
 
-Instantiate a `BytekinTransformer` with your hook class:
+フッククラスで`BytekinTransformer`をインスタンス化します:
 
 ```java
 BytekinTransformer transformer = new BytekinTransformer.Builder(CalculatorHooks.class)
     .build();
 ```
 
-### Step 3: Transform Your Classes
+### ステップ3: クラスの変換
 
-Apply the transformation to the target class bytecode:
+ターゲットクラスのバイトコードに変換を適用します:
 
 ```java
 byte[] originalBytecode = loadClassBytecode("com.example.Calculator");
 byte[] transformedBytecode = transformer.transform("com.example.Calculator", originalBytecode);
 ```
 
-### Step 4: Use the Transformed Class
+### ステップ4: 変換されたクラスの使用
 
-Load the transformed bytecode into your JVM using a custom `ClassLoader`:
+カスタム`ClassLoader`を使用して、変換されたバイトコードをJVMにロードします:
 
 ```java
 ClassLoader loader = new ByteArrayClassLoader(transformedBytecode);
 Class<?> transformedClass = loader.loadClass("com.example.Calculator");
 ```
 
-## Result
+## 結果
 
-The transformed class will have logging added to the `add` method:
+変換されたクラスには、`add`メソッドにロギングが追加されます:
 
 ```java
-// Original code
+// 元のコード
 public class Calculator {
     public int add(int a, int b) {
         return a + b;
     }
 }
 
-// Transformed code
+// 変換後のコード
 public class Calculator {
     public int add(int a, int b) {
-        System.out.println("Adding " + a + " + " + b);  // Injected!
+        System.out.println("Adding " + a + " + " + b);  // インジェクション済み!
         return a + b;
     }
 }
 ```
 
-## Next Steps
+## 次のステップ
 
-- Learn about [Core Concepts](./core-concepts.md)
-- Explore all [Features](./features.md)
-- Check out [Examples](./examples.md)
+- [コアコンセプト](./core-concepts.md)について学ぶ
+- すべての[機能](./features.md)を探る
+- [例](./examples.md)をチェックする

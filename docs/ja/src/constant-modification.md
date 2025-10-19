@@ -1,8 +1,8 @@
-# Constant Modification
+# 定数の変更
 
-Modify hardcoded constant values in bytecode without recompiling source code.
+ソースコードを再コンパイルすることなく、バイトコード内のハードコードされた定数値を変更します。
 
-## Basic Usage
+## 基本的な使用方法
 
 ```java
 @ModifyClass("com.example.Config")
@@ -19,14 +19,14 @@ public class ConfigHooks {
 }
 ```
 
-## What Constants Can Be Modified?
+## 変更可能な定数
 
-- String literals
-- Numeric constants (int, long, float, double)
-- Boolean constants
-- Constants in the constant pool
+- 文字列リテラル
+- 数値定数（int、long、float、double）
+- ブール定数
+- 定数プール内の定数
 
-## String Constants
+## 文字列定数
 
 ```java
 @ModifyClass("com.example.App")
@@ -43,21 +43,21 @@ public class AppHooks {
 }
 ```
 
-**Before:**
+**変更前:**
 ```java
 public String getAPIEndpoint() {
     return "http://localhost:8080";
 }
 ```
 
-**After:**
+**変更後:**
 ```java
 public String getAPIEndpoint() {
     return "https://api.production.com";
 }
 ```
 
-## Numeric Constants
+## 数値定数
 
 ```java
 @ModifyClass("com.example.Limits")
@@ -74,7 +74,7 @@ public class LimitsHooks {
 }
 ```
 
-## Multiple Constants in Same Method
+## 同じメソッド内の複数の定数
 
 ```java
 @ModifyClass("com.example.Config")
@@ -100,13 +100,13 @@ public class ConfigHooks {
 }
 ```
 
-Both modifications will be applied to the same method.
+両方の変更が同じメソッドに適用されます。
 
-## Use Cases
+## ユースケース
 
-### Environment Configuration
+### 環境設定
 
-Change environment-specific values:
+環境固有の値を変更:
 
 ```java
 @ModifyClass("com.example.Environment")
@@ -123,9 +123,9 @@ public class EnvironmentHooks {
 }
 ```
 
-### Feature Flags
+### フィーチャーフラグ
 
-Enable/disable features without recompilation:
+再コンパイルなしで機能を有効/無効化:
 
 ```java
 @ModifyClass("com.example.Features")
@@ -142,9 +142,9 @@ public class FeatureHooks {
 }
 ```
 
-### API Versioning
+### APIバージョニング
 
-Update API endpoints:
+APIエンドポイントを更新:
 
 ```java
 @ModifyClass("com.example.API")
@@ -161,53 +161,53 @@ public class APIHooks {
 }
 ```
 
-## Performance Impact
+## パフォーマンスへの影響
 
-Constant modification has **minimal runtime overhead**:
+定数の変更は**最小限のランタイムオーバーヘッド**です:
 
-1. Changes occur during bytecode transformation (one-time)
-2. Runtime performance is identical to recompiled code
-3. JVM can optimize modified constants
+1. 変更はバイトコード変換時に行われる（1回のみ）
+2. ランタイムパフォーマンスは再コンパイルされたコードと同一
+3. JVMは変更された定数を最適化できる
 
-## Limitations
+## 制限事項
 
-### Cannot Modify
+### 変更できないもの
 
-- Local variable initializations (in some cases)
-- Constants created at runtime
-- Constants already optimized by JVM
+- ローカル変数の初期化（一部のケース）
+- 実行時に作成される定数
+- JVMによってすでに最適化された定数
 
-### Type Matching
+### 型の一致
 
-The old value and new value must have compatible types:
+古い値と新しい値は互換性のある型である必要があります:
 
 ```java
-// CORRECT
+// 正しい
 @ModifyConstant(
     methodName = "getCount",
     oldValue = 10,        // int
-    newValue = 20         // int - compatible
+    newValue = 20         // int - 互換性あり
 )
 
-// WRONG
+// 誤り
 @ModifyConstant(
     methodName = "getCount",
     oldValue = 10,        // int
-    newValue = "20"       // String - incompatible!
+    newValue = "20"       // String - 互換性なし!
 )
 ```
 
-## Best Practices
+## ベストプラクティス
 
-1. **Use for configuration**: Not for logic changes
-2. **Document clearly**: Explain why constants are modified
-3. **Keep values consistent**: Use the exact old value
-4. **Test all paths**: Verify code works with new values
-5. **Avoid type changes**: Keep types compatible
+1. **設定に使用する**: ロジックの変更には使用しない
+2. **明確に文書化する**: 定数が変更される理由を説明する
+3. **値の一貫性を保つ**: 正確な古い値を使用する
+4. **すべてのパスをテストする**: 新しい値でコードが動作することを確認する
+5. **型の変更を避ける**: 型の互換性を保つ
 
-## Advanced: Conditional Modification
+## 応用: 条件付き変更
 
-Combine with other transformations for more control:
+より詳細な制御のために、他の変換と組み合わせる:
 
 ```java
 @ModifyClass("com.example.Service")
@@ -221,7 +221,7 @@ public class ServiceHooks {
     public static CallbackInfo checkEnvironment() {
         String env = System.getProperty("environment");
         if ("production".equals(env)) {
-            // Additional setup for production
+            // プロダクション用の追加セットアップ
         }
         return CallbackInfo.empty();
     }
@@ -237,8 +237,8 @@ public class ServiceHooks {
 }
 ```
 
-## Next Steps
+## 次のステップ
 
-- Learn about [Variable Modification](./variable-modification.md)
-- Explore [Advanced Usage](./advanced-usage.md)
-- Check [Examples](./examples.md)
+- [変数の変更](./variable-modification.md)について学ぶ
+- [高度な使用方法](./advanced-usage.md)を探索する
+- [例](./examples.md)を確認する

@@ -1,20 +1,20 @@
-# Features Overview
+# 機能概要
 
-bytekin provides several powerful transformation features to manipulate Java bytecode. This section provides an overview of each feature.
+bytekinはJavaバイトコードを操作するためのいくつかの強力な変換機能を提供します。このセクションでは各機能の概要を説明します。
 
-## Available Features
+## 利用可能な機能
 
-### 1. Inject - Code Insertion
+### 1. Inject - コードの挿入
 
-Insert custom code at specific points in methods without modifying source code.
+ソースコードを変更せずに、メソッドの特定の箇所にカスタムコードを挿入します。
 
-**Use Cases:**
-- Add logging statements
-- Implement cross-cutting concerns
-- Add security checks
-- Validate parameters
+**ユースケース:**
+- ログステートメントの追加
+- 横断的関心事の実装
+- セキュリティチェックの追加
+- パラメータの検証
 
-**Example:**
+**例:**
 ```java
 @Inject(methodName = "calculate", methodDesc = "(II)I", at = At.HEAD)
 public static CallbackInfo logStart(int a, int b) {
@@ -23,19 +23,19 @@ public static CallbackInfo logStart(int a, int b) {
 }
 ```
 
-**Learn More:** [Inject Transformation](./inject.md)
+**詳細:** [Inject変換](./inject.md)
 
-### 2. Invoke - Method Call Interception
+### 2. Invoke - メソッド呼び出しのインターセプト
 
-Intercept method calls and optionally modify arguments or return values.
+メソッド呼び出しをインターセプトし、必要に応じて引数や戻り値を変更します。
 
-**Use Cases:**
-- Intercept specific method calls
-- Modify method arguments
-- Mock or stub methods
-- Add pre/post processing
+**ユースケース:**
+- 特定のメソッド呼び出しのインターセプト
+- メソッド引数の変更
+- メソッドのモックやスタブ化
+- 前処理/後処理の追加
 
-**Example:**
+**例:**
 ```java
 @Invoke(
     targetMethodName = "process",
@@ -49,19 +49,19 @@ public static CallbackInfo validateBefore(String input) {
 }
 ```
 
-**Learn More:** [Invoke Transformation](./invoke.md)
+**詳細:** [Invoke変換](./invoke.md)
 
-### 3. Redirect - Method Call Redirection
+### 3. Redirect - メソッド呼び出しのリダイレクト
 
-Change which method is called at runtime.
+実行時に呼び出されるメソッドを変更します。
 
-**Use Cases:**
-- Redirect calls to alternative implementations
-- Mock method behavior
-- Implement method forwarding
-- Change behavior based on conditions
+**ユースケース:**
+- 代替実装への呼び出しのリダイレクト
+- メソッド動作のモック
+- メソッド転送の実装
+- 条件に基づく動作の変更
 
-**Example:**
+**例:**
 ```java
 @Redirect(
     targetMethodName = "oldMethod",
@@ -74,19 +74,19 @@ public static void redirectCall(int value) {
 }
 ```
 
-**Learn More:** [Redirect Transformation](./redirect.md)
+**詳細:** [Redirect変換](./redirect.md)
 
-### 4. Constant Modification
+### 4. 定数の変更
 
-Modify constant values embedded in bytecode.
+バイトコードに埋め込まれた定数値を変更します。
 
-**Use Cases:**
-- Change hardcoded configuration values
-- Modify string literals
-- Change numeric constants
-- Patch constants at runtime
+**ユースケース:**
+- ハードコードされた設定値の変更
+- 文字列リテラルの変更
+- 数値定数の変更
+- 実行時の定数のパッチ
 
-**Example:**
+**例:**
 ```java
 @ModifyConstant(
     methodName = "getVersion",
@@ -98,47 +98,47 @@ public static CallbackInfo updateVersion() {
 }
 ```
 
-**Learn More:** [Constant Modification](./constant-modification.md)
+**詳細:** [定数の変更](./constant-modification.md)
 
-### 5. Variable Modification
+### 5. 変数の変更
 
-Modify local variable values within methods.
+メソッド内のローカル変数の値を変更します。
 
-**Use Cases:**
-- Sanitize inputs
-- Transform data
-- Debug variable values
-- Implement custom logic
+**ユースケース:**
+- 入力のサニタイゼーション
+- データの変換
+- 変数値のデバッグ
+- カスタムロジックの実装
 
-**Example:**
+**例:**
 ```java
 @ModifyVariable(
     methodName = "process",
     variableIndex = 1
 )
 public static void transformVariable(int original) {
-    // Transformation logic
+    // 変換ロジック
 }
 ```
 
-**Learn More:** [Variable Modification](./variable-modification.md)
+**詳細:** [変数の変更](./variable-modification.md)
 
-## Combining Features
+## 機能の組み合わせ
 
-You can use multiple features together for complex transformations:
+複雑な変換のために複数の機能を組み合わせて使用できます:
 
 ```java
 @ModifyClass("com.example.Service")
 public class ServiceHooks {
-    
-    // Inject logging
+
+    // ロギングのインジェクション
     @Inject(methodName = "handle", methodDesc = "(Ljava/lang/String;)V", at = At.HEAD)
     public static CallbackInfo logStart(String input) {
         System.out.println("Processing: " + input);
         return CallbackInfo.empty();
     }
-    
-    // Intercept internal calls
+
+    // 内部呼び出しのインターセプト
     @Invoke(
         targetMethodName = "handle",
         targetMethodDesc = "(Ljava/lang/String;)V",
@@ -149,25 +149,25 @@ public class ServiceHooks {
     public static CallbackInfo validateInput(String input) {
         return new CallbackInfo(false, null, new Object[]{sanitize(input)});
     }
-    
+
     private static String sanitize(String input) {
         return input.trim().toLowerCase();
     }
 }
 ```
 
-## Choosing the Right Feature
+## 適切な機能の選択
 
-| Feature | Purpose | Complexity |
+| 機能 | 目的 | 複雑さ |
 |---------|---------|-----------|
-| Inject | Insert code at method points | Low |
-| Invoke | Intercept specific calls | Medium |
-| Redirect | Change call target | Medium |
-| Constant Modification | Change hardcoded values | Low |
-| Variable Modification | Transform local variables | High |
+| Inject | メソッドの特定箇所にコードを挿入 | 低 |
+| Invoke | 特定の呼び出しをインターセプト | 中 |
+| Redirect | 呼び出し先を変更 | 中 |
+| 定数の変更 | ハードコードされた値を変更 | 低 |
+| 変数の変更 | ローカル変数を変換 | 高 |
 
-## Next Steps
+## 次のステップ
 
-- Learn about [Inject](./inject.md) transformation
-- Explore [Invoke](./invoke.md) interception
-- Check [Examples](./examples.md)
+- [Inject](./inject.md)変換について学ぶ
+- [Invoke](./invoke.md)インターセプトを探索する
+- [例](./examples.md)を確認する

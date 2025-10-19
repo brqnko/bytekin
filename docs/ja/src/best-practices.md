@@ -1,14 +1,14 @@
-# Best Practices
+# ベストプラクティス
 
-This guide covers best practices for using bytekin effectively and safely.
+このガイドは、bytekinを効果的かつ安全に使用するためのベストプラクティスをカバーしています。
 
-## Design Principles
+## 設計原則
 
-### 1. Keep Hooks Simple
+### 1. フックをシンプルに保つ
 
-Keep hook methods focused and simple:
+フックメソッドは集中的でシンプルに保ちます:
 
-**Good:**
+**良い:**
 ```java
 @Inject(methodName = "process", methodDesc = "()V", at = At.HEAD)
 public static CallbackInfo log() {
@@ -17,21 +17,21 @@ public static CallbackInfo log() {
 }
 ```
 
-**Avoid:**
+**避けるべき:**
 ```java
 @Inject(methodName = "process", methodDesc = "()V", at = At.HEAD)
 public static CallbackInfo complexLogic() {
-    // Multiple database calls
-    // Complex calculations
-    // File I/O operations
-    // This is too much for a hook!
+    // 複数のデータベース呼び出し
+    // 複雑な計算
+    // ファイルI/O操作
+    // これはフックには多すぎます!
     return CallbackInfo.empty();
 }
 ```
 
-### 2. Extract Complex Logic
+### 2. 複雑なロジックを抽出
 
-Move complex logic to separate methods:
+複雑なロジックは別のメソッドに移動:
 
 ```java
 @Inject(methodName = "validate", methodDesc = "(Ljava/lang/String;)Z", at = At.HEAD)
@@ -44,142 +44,142 @@ public static CallbackInfo onValidate(String input, CallbackInfo ci) {
 }
 
 private static boolean isValidInput(String input) {
-    // Complex validation logic here
+    // ここに複雑な検証ロジック
     return !input.isEmpty() && input.length() < 256;
 }
 ```
 
-## Performance Guidelines
+## パフォーマンスガイドライン
 
-### 1. Minimize Hook Overhead
+### 1. フックオーバーヘッドを最小化
 
-Hooks are executed frequently. Keep them fast:
+フックは頻繁に実行されます。高速に保ちます:
 
-**Good:**
+**良い:**
 ```java
 @Inject(methodName = "getData", methodDesc = "()Ljava/lang/Object;", at = At.HEAD)
 public static CallbackInfo checkCache() {
     if (cacheHit()) {
-        // Quick cache lookup
+        // 高速なキャッシュルックアップ
         return new CallbackInfo(true, getFromCache(), null);
     }
     return CallbackInfo.empty();
 }
 ```
 
-**Avoid:**
+**避けるべき:**
 ```java
 @Inject(methodName = "getData", methodDesc = "()Ljava/lang/Object;", at = At.HEAD)
 public static CallbackInfo expensiveCheck() {
-    // Scanning entire database
+    // データベース全体をスキャン
     List<Item> results = database.queryAll();
-    // Processing results
-    // ...this is too slow!
+    // 結果を処理
+    // ...これは遅すぎます!
     return CallbackInfo.empty();
 }
 ```
 
-### 2. Reuse Builder
+### 2. Builderを再利用
 
-Build transformers once and reuse:
+トランスフォーマーを1回ビルドして再利用:
 
-**Good:**
+**良い:**
 ```java
-// In initialization code
+// 初期化コード内
 BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class)
     .build();
 
-// Use transformer multiple times
+// トランスフォーマーを複数回使用
 byte[] transformed1 = transformer.transform("com.example.Class1", bytes1);
 byte[] transformed2 = transformer.transform("com.example.Class2", bytes2);
 ```
 
-**Avoid:**
+**避けるべき:**
 ```java
-// DON'T do this in a loop!
+// ループ内でこれをしないでください!
 for (String className : classNames) {
-    // Creating transformer for each class is wasteful
+    // 各クラスごとにトランスフォーマーを作成するのは無駄
     BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class)
         .build();
     byte[] transformed = transformer.transform(className, bytes);
 }
 ```
 
-## Error Handling
+## エラーハンドリング
 
-### 1. Handle Exceptions in Hooks
+### 1. フック内で例外を処理
 
-Exceptions in hooks can break transformations:
+フック内の例外は変換を壊す可能性があります:
 
-**Good:**
+**良い:**
 ```java
 @Inject(methodName = "process", methodDesc = "()V", at = At.HEAD)
 public static CallbackInfo safeLogging() {
     try {
         System.out.println("Processing started");
     } catch (Exception e) {
-        // Handle gracefully, don't let it propagate
+        // 優雅に処理し、伝播させない
         e.printStackTrace();
     }
     return CallbackInfo.empty();
 }
 ```
 
-**Avoid:**
+**避けるべき:**
 ```java
 @Inject(methodName = "process", methodDesc = "()V", at = At.HEAD)
 public static CallbackInfo unsafeLogging() {
-    // If this throws, it breaks the transformation!
+    // これがスローされると、変換が壊れます!
     Path path = Paths.get("/invalid/path");
     Files.writeString(path, "log");
     return CallbackInfo.empty();
 }
 ```
 
-### 2. Validate Return Values
+### 2. 戻り値を検証
 
-When modifying CallbackInfo, ensure types are correct:
+CallbackInfoを変更する場合、型が正しいことを確認:
 
-**Good:**
+**良い:**
 ```java
 @Inject(methodName = "getValue", methodDesc = "()I", at = At.HEAD)
 public static CallbackInfo returnCustomValue() {
     CallbackInfo ci = new CallbackInfo();
     ci.cancelled = true;
-    ci.returnValue = 42;  // Integer matches return type
+    ci.returnValue = 42;  // Integerは戻り値型と一致
     return ci;
 }
 ```
 
-**Avoid:**
+**避けるべき:**
 ```java
 @Inject(methodName = "getValue", methodDesc = "()I", at = At.HEAD)
 public static CallbackInfo wrongType() {
     CallbackInfo ci = new CallbackInfo();
     ci.cancelled = true;
-    ci.returnValue = "42";  // String doesn't match int return type!
+    ci.returnValue = "42";  // Stringはint戻り値型と一致しない!
     return ci;
 }
 ```
 
-## Documentation
+## ドキュメント
 
-### 1. Document Transformations
+### 1. 変換をドキュメント化
 
-Clearly document what each hook does:
+各フックが何をするかを明確にドキュメント化:
 
 ```java
 /**
- * Adds authentication check to all data access methods.
- * If user is not authenticated, cancels the method and returns false.
+ * すべてのデータアクセスメソッドに認証チェックを追加。
+ * ユーザーが認証されていない場合、メソッドをキャンセルしてfalseを返す。
  */
 @ModifyClass("com.example.DataStore")
 public class DataStoreHooks {
 
     /**
-     * Injects authentication check at the start of read operations.
-     * 
-     * @param ci Callback info - set cancelled=true if not authenticated
+     * 読み取り操作の開始時に認証チェックをインジェクト。
+     *
+     * @param ci CallbackInfo - 認証されていない場合cancelled=trueを設定
      */
     @Inject(methodName = "read", methodDesc = "()Ljava/lang/Object;", at = At.HEAD)
     public static CallbackInfo ensureAuthenticated(CallbackInfo ci) {
@@ -192,30 +192,30 @@ public class DataStoreHooks {
 }
 ```
 
-### 2. Document Parameters
+### 2. パラメータをドキュメント化
 
-Clearly indicate which parameters correspond to method arguments:
+どのパラメータがメソッド引数に対応するかを明確に示す:
 
 ```java
 /**
- * Sanitizes user input before processing.
- * 
- * @param userId the user ID (first parameter of target method)
- * @param action the requested action (second parameter)
+ * 処理前にユーザー入力をサニタイズ。
+ *
+ * @param userId ユーザーID（ターゲットメソッドの第1引数）
+ * @param action 要求されたアクション（第2引数）
  */
-@Inject(methodName = "execute", methodDesc = "(Ljava/lang/String;Ljava/lang/String;)V", 
+@Inject(methodName = "execute", methodDesc = "(Ljava/lang/String;Ljava/lang/String;)V",
         at = At.HEAD)
 public static CallbackInfo sanitizeInput(String userId, String action) {
-    // userId and action are from the target method's parameters
+    // userIdとactionはターゲットメソッドのパラメータから
     return CallbackInfo.empty();
 }
 ```
 
-## Testing
+## テスト
 
-### 1. Test Transformations
+### 1. 変換をテスト
 
-Always test your transformations:
+常に変換をテスト:
 
 ```java
 public class TransformationTest {
@@ -223,51 +223,51 @@ public class TransformationTest {
     public void testInjectionWorks() {
         BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class)
             .build();
-        
+
         byte[] original = getClassBytecode("com.example.Target");
         byte[] transformed = transformer.transform("com.example.Target", original);
-        
-        // Load and test transformed class
+
+        // 変換されたクラスをロードしてテスト
         Class<?> clazz = loadFromBytecode(transformed);
         Object instance = clazz.newInstance();
-        
-        // Verify transformation was applied
+
+        // 変換が適用されたことを確認
         assertNotNull(instance);
     }
 }
 ```
 
-### 2. Verify No Regression
+### 2. リグレッションがないことを確認
 
-Ensure original behavior is preserved:
+元の動作が保持されていることを確認:
 
 ```java
 @Test
 public void testOriginalBehaviorPreserved() {
-    // Test without transformation
+    // 変換なしでテスト
     Calculator calc1 = new Calculator();
     int result1 = calc1.add(3, 4);
-    
-    // Test with transformation
+
+    // 変換ありでテスト
     byte[] transformed = applyTransformation(Calculator.class);
     Calculator calc2 = loadTransformed(transformed);
     int result2 = calc2.add(3, 4);
-    
-    // Results should be the same
+
+    // 結果は同じであるべき
     assertEquals(result1, result2);
 }
 ```
 
-## Compatibility
+## 互換性
 
-### 1. Version Compatibility
+### 1. バージョン互換性
 
-Document supported Java versions:
+サポートされているJavaバージョンをドキュメント化:
 
 ```java
 /**
- * These hooks work with Java 8+
- * Uses standard method descriptors compatible across versions
+ * これらのフックはJava 8+で動作
+ * バージョン間で互換性のある標準メソッドディスクリプタを使用
  */
 @ModifyClass("com.example.Service")
 public class CompatibleHooks {
@@ -275,27 +275,27 @@ public class CompatibleHooks {
 }
 ```
 
-### 2. Library Compatibility
+### 2. ライブラリ互換性
 
-Check for incompatibilities with other bytecode tools:
+他のバイトコードツールとの非互換性を確認:
 
 ```java
-// Document conflicts with other bytecode manipulation
-// For example: Spring, Mockito, AspectJ, etc.
+// 他のバイトコード操作との競合をドキュメント化
+// 例: Spring、Mockito、AspectJなど
 ```
 
-## Security
+## セキュリティ
 
-### 1. Input Validation
+### 1. 入力検証
 
-Always validate inputs in hooks:
+フック内で常に入力を検証:
 
 ```java
-@Inject(methodName = "processFile", methodDesc = "(Ljava/lang/String;)V", 
+@Inject(methodName = "processFile", methodDesc = "(Ljava/lang/String;)V",
         at = At.HEAD)
 public static CallbackInfo validatePath(String path, CallbackInfo ci) {
     if (path != null && isPathTraversal(path)) {
-        // Prevent directory traversal attacks
+        // ディレクトリトラバーサル攻撃を防ぐ
         ci.cancelled = true;
     }
     return ci;
@@ -306,13 +306,13 @@ private static boolean isPathTraversal(String path) {
 }
 ```
 
-### 2. Avoid Sensitive Data Exposure
+### 2. 機密データの露出を避ける
 
-Don't log or expose sensitive information:
+機密情報をログに記録したり露出させたりしない:
 
-**Good:**
+**良い:**
 ```java
-@Inject(methodName = "login", methodDesc = "(Ljava/lang/String;Ljava/lang/String;)Z", 
+@Inject(methodName = "login", methodDesc = "(Ljava/lang/String;Ljava/lang/String;)Z",
         at = At.HEAD)
 public static CallbackInfo logAttempt(String user) {
     System.out.println("Login attempt by: " + user);
@@ -320,33 +320,33 @@ public static CallbackInfo logAttempt(String user) {
 }
 ```
 
-**Avoid:**
+**避けるべき:**
 ```java
-@Inject(methodName = "login", methodDesc = "(Ljava/lang/String;Ljava/lang/String;)Z", 
+@Inject(methodName = "login", methodDesc = "(Ljava/lang/String;Ljava/lang/String;)Z",
         at = At.HEAD)
 public static CallbackInfo logAttempt(String user, String password) {
-    // Don't log passwords!
+    // パスワードをログに記録しないでください!
     System.out.println("Login attempt: " + user + " / " + password);
     return CallbackInfo.empty();
 }
 ```
 
-## Debugging Tips
+## デバッグのヒント
 
-### 1. Bytecode Inspection
+### 1. バイトコード検査
 
-Inspect generated bytecode to verify transformations:
+生成されたバイトコードを検査して変換を確認:
 
 ```bash
-# Use javap to inspect the transformed class
+# javapを使用して変換されたクラスを検査
 javap -c TransformedClass.class
 
-# Look for your injected method calls
+# インジェクトされたメソッド呼び出しを探す
 ```
 
-### 2. Add Logging
+### 2. ログを追加
 
-Use logging to track transformation execution:
+ログを使用して変換の実行を追跡:
 
 ```java
 @Inject(methodName = "critical", methodDesc = "()V", at = At.HEAD)
@@ -357,20 +357,20 @@ public static CallbackInfo logEntry() {
 }
 ```
 
-## Maintenance
+## メンテナンス
 
-### 1. Version Your Hooks
+### 1. フックのバージョン管理
 
-Keep track of hook versions:
+フックのバージョンを追跡:
 
 ```java
 /**
- * Transformation hooks for version 2.0
- * 
- * Changes from v1.0:
- * - Added authentication checks
- * - Optimized caching strategy
- * - Fixed null pointer issue in legacy code
+ * バージョン2.0の変換フック
+ *
+ * v1.0からの変更点:
+ * - 認証チェックを追加
+ * - キャッシング戦略を最適化
+ * - レガシーコードのnullポインタ問題を修正
  */
 @ModifyClass("com.example.Service")
 public class ServiceHooksV2 {
@@ -378,59 +378,59 @@ public class ServiceHooksV2 {
 }
 ```
 
-### 2. Keep Records
+### 2. 記録を保持
 
-Document why each transformation exists:
+各変換が存在する理由をドキュメント化:
 
 ```
-Transform: Calculator.add() logging
-Created: 2025-01-15
-Reason: Performance monitoring for debug builds
-Status: Active
-Notes: Can be removed after profiling phase
+変換: Calculator.add()のログ記録
+作成日: 2025-01-15
+理由: デバッグビルドのパフォーマンス監視
+ステータス: アクティブ
+注記: プロファイリングフェーズ後に削除可能
 ```
 
-## Common Pitfalls
+## よくある落とし穴
 
-### 1. Wrong Method Descriptors
+### 1. 間違ったメソッドディスクリプタ
 
-❌ **Wrong:**
+❌ **誤り:**
 ```java
-@Inject(methodName = "add", methodDesc = "(I I)I", at = At.HEAD)  // Spaces in descriptor!
+@Inject(methodName = "add", methodDesc = "(I I)I", at = At.HEAD)  // ディスクリプタ内のスペース!
 ```
 
-✅ **Right:**
+✅ **正しい:**
 ```java
 @Inject(methodName = "add", methodDesc = "(II)I", at = At.HEAD)
 ```
 
-### 2. Type Mismatches
+### 2. 型の不一致
 
-❌ **Wrong:**
+❌ **誤り:**
 ```java
 @Invoke(..., invokeMethodDesc = "(I)V", shift = Shift.BEFORE)
-public static CallbackInfo hook(String param) {  // Type mismatch!
+public static CallbackInfo hook(String param) {  // 型の不一致!
 }
 ```
 
-✅ **Right:**
+✅ **正しい:**
 ```java
 @Invoke(..., invokeMethodDesc = "(I)V", shift = Shift.BEFORE)
-public static CallbackInfo hook(int param) {  // Correct type
+public static CallbackInfo hook(int param) {  // 正しい型
 }
 ```
 
-### 3. Modifying Immutable Data
+### 3. 不変データの変更
 
-❌ **Wrong:**
+❌ **誤り:**
 ```java
 @ModifyVariable(methodName = "process", variableIndex = 1)
 public static void modify(String str) {
-    str = str.toUpperCase();  // Strings are immutable, won't work!
+    str = str.toUpperCase();  // Stringは不変、機能しない!
 }
 ```
 
-✅ **Right:**
+✅ **正しい:**
 ```java
 @Inject(methodName = "process", methodDesc = "(Ljava/lang/String;)V", at = At.HEAD)
 public static CallbackInfo modifyByReplacing(String str, CallbackInfo ci) {
@@ -439,8 +439,8 @@ public static CallbackInfo modifyByReplacing(String str, CallbackInfo ci) {
 }
 ```
 
-## Next Steps
+## 次のステップ
 
-- Review [API Reference](./api-reference.md)
-- Check out [Examples](./examples.md)
-- Join the community and share your patterns
+- [APIリファレンス](./api-reference.md)を確認する
+- [例](./examples.md)を確認する
+- コミュニティに参加してパターンを共有する
