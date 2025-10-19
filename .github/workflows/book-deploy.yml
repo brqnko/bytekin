@@ -1,0 +1,38 @@
+name: Deploy Multi-Language mdBook to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install mdBook
+        uses: peaceiris/actions-mdbook@v1
+        with:
+          mdbook-version: 'latest'
+
+      - name: Create 'public' directory
+        run: mkdir public
+
+      - name: Build English Book (en)
+        run: mdbook build docs/en -d ../public/en
+
+      - name: Build Japanese Book (ja)
+        run: mdbook build docs/ja -d ../public/ja
+
+      - name: Create root index.html for redirect
+        run: |
+          echo '<meta http-equiv="refresh" content="0; url=en/">' > public/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
