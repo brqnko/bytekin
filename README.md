@@ -45,8 +45,9 @@ public static void beforeMyMethod(CallbackInfo ci) {
 
 ## Documentation
 
-[Full Documentation](docs/en/book/index.html) | [日本語ドキュメント](docs/ja/book/index.html)
+[Full Documentation](https://brqnko.github.io/bytekin/en/) | [日本語ドキュメント]([docs/ja/book/index.html](https://brqnko.github.io/bytekin/ja/))
 
 ## License
 
 Apache License 2.0 - See [LICENSE](LICENSE) for details.
+
