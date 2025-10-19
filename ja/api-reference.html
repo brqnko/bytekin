@@ -1,0 +1,409 @@
+<!DOCTYPE HTML>
+<html lang="ja" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>APIリファレンス - bytekin ドキュメント (日本語)</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">bytekin ドキュメント (日本語)</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="apiリファレンス"><a class="header" href="#apiリファレンス">APIリファレンス</a></h1>
+<p>このセクションではbytekinの詳細なAPIドキュメントを提供します。</p>
+<h2 id="コアクラス"><a class="header" href="#コアクラス">コアクラス</a></h2>
+<h3 id="bytekintransformer"><a class="header" href="#bytekintransformer">BytekinTransformer</a></h3>
+<p>バイトコード変換のメインエントリーポイント。</p>
+<pre><code class="language-java">public class BytekinTransformer {
+    public byte[] transform(String className, byte[] bytes, int api);
+
+    public static class Builder {
+        public Builder(Class&lt;?&gt;... classes);
+        public Builder mapping(IMappingProvider mapping);
+        public Builder inject(String className, Injection injection);
+        public Builder invoke(String className, Invocation invocation);
+        public Builder redirect(String className, RedirectData redirect);
+        public Builder modifyConstant(String className, ConstantModification modification);
+        public Builder modifyVariable(String className, VariableModification modification);
+        public BytekinTransformer build();
+    }
+}
+</code></pre>
+<h3 id="callbackinfo"><a class="header" href="#callbackinfo">CallbackInfo</a></h3>
+<p>フックメソッド内で変換動作を制御します。</p>
+<pre><code class="language-java">public class CallbackInfo {
+    public boolean cancelled;
+    public Object returnValue;
+    public Object[] modifyArgs;
+
+    public static CallbackInfo empty();
+}
+</code></pre>
+<h2 id="アノテーション"><a class="header" href="#アノテーション">アノテーション</a></h2>
+<h3 id="modifyclass"><a class="header" href="#modifyclass">@ModifyClass</a></h3>
+<p>バイトコード変換のフックコンテナとしてクラスをマークします。</p>
+<pre><code class="language-java">@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ModifyClass {
+    String className();
+}
+</code></pre>
+<h3 id="inject"><a class="header" href="#inject">@Inject</a></h3>
+<p>メソッドの特定の箇所にコードをインジェクトします。</p>
+<pre><code class="language-java">@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Inject {
+    String methodName();
+    String methodDesc();
+    At at();
+}
+</code></pre>
+<h3 id="invoke"><a class="header" href="#invoke">@Invoke</a></h3>
+<p>メソッド呼び出しをインターセプトします。</p>
+<pre><code class="language-java">@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Invoke {
+    String targetMethodName();
+    String targetMethodDesc();
+    String invokeMethodName();
+    String invokeMethodDesc();
+    Shift shift();
+}
+</code></pre>
+<h3 id="redirect"><a class="header" href="#redirect">@Redirect</a></h3>
+<p>メソッド呼び出しを別のターゲットにリダイレクトします。</p>
+<pre><code class="language-java">@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Redirect {
+    String targetMethodName();
+    String targetMethodDesc();
+    String redirectMethodName();
+    String redirectMethodDesc();
+}
+</code></pre>
+<h3 id="modifyconstant"><a class="header" href="#modifyconstant">@ModifyConstant</a></h3>
+<p>バイトコード内の定数値を変更します。</p>
+<pre><code class="language-java">@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ModifyConstant {
+    String methodName();
+    Object oldValue();
+    Object newValue();
+}
+</code></pre>
+<h3 id="modifyvariable"><a class="header" href="#modifyvariable">@ModifyVariable</a></h3>
+<p>ローカル変数の値を変更します。</p>
+<pre><code class="language-java">@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ModifyVariable {
+    String methodName();
+    int variableIndex();
+}
+</code></pre>
+<h2 id="列挙型"><a class="header" href="#列挙型">列挙型</a></h2>
+<h3 id="at"><a class="header" href="#at">At</a></h3>
+<p>コードをインジェクトする場所を指定します。</p>
+<pre><code class="language-java">public enum At {
+    HEAD,      // メソッド本体の前
+    RETURN,    // return文の前
+    TAIL       // メソッドの終わり
+}
+</code></pre>
+<h3 id="shift"><a class="header" href="#shift">Shift</a></h3>
+<p>メソッド呼び出しに対する相対的なタイミングを指定します。</p>
+<pre><code class="language-java">public enum Shift {
+    BEFORE,    // 呼び出しの前
+    AFTER      // 呼び出しの後
+}
+</code></pre>
+<h2 id="インターフェース"><a class="header" href="#インターフェース">インターフェース</a></h2>
+<h3 id="imappingprovider"><a class="header" href="#imappingprovider">IMappingProvider</a></h3>
+<p>クラス名とメソッド名をマッピングします。</p>
+<pre><code class="language-java">public interface IMappingProvider {
+    String getClassName(String name);
+    String getMethodName(String className, String methodName, String descriptor);
+    String getFieldName(String className, String fieldName);
+}
+</code></pre>
+<h2 id="データクラス"><a class="header" href="#データクラス">データクラス</a></h2>
+<h3 id="injection"><a class="header" href="#injection">Injection</a></h3>
+<p>インジェクション変換を表します。</p>
+<pre><code class="language-java">public class Injection {
+    // コンストラクタとメソッド
+}
+</code></pre>
+<h3 id="invocation"><a class="header" href="#invocation">Invocation</a></h3>
+<p>インボケーション変換を表します。</p>
+<pre><code class="language-java">public class Invocation {
+    // コンストラクタとメソッド
+}
+</code></pre>
+<h3 id="redirectdata"><a class="header" href="#redirectdata">RedirectData</a></h3>
+<p>リダイレクト変換を表します。</p>
+<pre><code class="language-java">public class RedirectData {
+    // コンストラクタとメソッド
+}
+</code></pre>
+<h3 id="constantmodification"><a class="header" href="#constantmodification">ConstantModification</a></h3>
+<p>定数変更変換を表します。</p>
+<pre><code class="language-java">public class ConstantModification {
+    // コンストラクタとメソッド
+}
+</code></pre>
+<h3 id="variablemodification"><a class="header" href="#variablemodification">VariableModification</a></h3>
+<p>変数変更変換を表します。</p>
+<pre><code class="language-java">public class VariableModification {
+    // コンストラクタとメソッド
+}
+</code></pre>
+<h2 id="一般的な例外"><a class="header" href="#一般的な例外">一般的な例外</a></h2>
+<h3 id="verifyerror"><a class="header" href="#verifyerror">VerifyError</a></h3>
+<p>変換されたバイトコードが無効な場合にスローされます。</p>
+<h3 id="classnotfoundexception"><a class="header" href="#classnotfoundexception">ClassNotFoundException</a></h3>
+<p>ターゲットクラスが見つからない場合にスローされます。</p>
+<h3 id="classformatexception"><a class="header" href="#classformatexception">ClassFormatException</a></h3>
+<p>バイトコード形式が無効な場合にスローされます。</p>
+<h2 id="ユーティリティクラス"><a class="header" href="#ユーティリティクラス">ユーティリティクラス</a></h2>
+<h3 id="descriptorparser"><a class="header" href="#descriptorparser">DescriptorParser</a></h3>
+<p>メソッドディスクリプタの解析と検証のためのユーティリティ。</p>
+<h3 id="bytecodemanipulator"><a class="header" href="#bytecodemanipulator">BytecodeManipulator</a></h3>
+<p>低レベルのバイトコード操作ユーティリティ。</p>
+<h2 id="スレッディング"><a class="header" href="#スレッディング">スレッディング</a></h2>
+<p>すべてのpublicメソッドは<strong>初期化後はスレッドセーフ</strong>です:</p>
+<ul>
+<li><code>BytekinTransformer.transform()</code>は複数のスレッドから呼び出し可能</li>
+<li><code>Builder</code>は設定中は<strong>スレッドセーフではない</strong></li>
+<li><code>CallbackInfo</code>は各フック呼び出しにローカル</li>
+</ul>
+<h2 id="パフォーマンス特性"><a class="header" href="#パフォーマンス特性">パフォーマンス特性</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>操作</th><th>複雑さ</th></tr></thead><tbody>
+<tr><td>Builder.build()</td><td>O(n) n = フックメソッド数</td></tr>
+<tr><td>transform()</td><td>O(m) m = バイトコードサイズ</td></tr>
+<tr><td>フックの実行</td><td>平均O(1)</td></tr>
+</tbody></table>
+</div>
+<h2 id="次のステップ"><a class="header" href="#次のステップ">次のステップ</a></h2>
+<ul>
+<li><a href="./annotations.html">アノテーション</a>を詳しく確認する</li>
+<li><a href="./classes-interfaces.html">クラスとインターフェース</a>を確認する</li>
+<li><a href="./examples.html">例</a>を探索する</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="custom-transformers.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="annotations.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="custom-transformers.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="annotations.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

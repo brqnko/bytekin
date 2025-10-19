@@ -1,0 +1,476 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Advanced Examples - bytekin documentation (English)</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">bytekin documentation (English)</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="advanced-examples"><a class="header" href="#advanced-examples">Advanced Examples</a></h1>
+<p>Advanced use cases and patterns for bytekin.</p>
+<h2 id="example-1-custom-classloader"><a class="header" href="#example-1-custom-classloader">Example 1: Custom ClassLoader</a></h2>
+<p>Implement a custom ClassLoader that applies transformations:</p>
+<pre><code class="language-java">public class TransformingClassLoader extends ClassLoader {
+    private final BytekinTransformer transformer;
+    private final ClassLoader parent;
+    
+    public TransformingClassLoader(BytekinTransformer transformer, ClassLoader parent) {
+        super(parent);
+        this.transformer = transformer;
+        this.parent = parent;
+    }
+    
+    @Override
+    protected Class&lt;?&gt; findClass(String name) throws ClassNotFoundException {
+        try {
+            byte[] classBytes = loadBytesFromClasspath(name);
+            byte[] transformed = transformer.transform(name, classBytes);
+            return defineClass(name, transformed, 0, transformed.length);
+        } catch (IOException e) {
+            throw new ClassNotFoundException("Cannot find " + name, e);
+        }
+    }
+    
+    private byte[] loadBytesFromClasspath(String className) throws IOException {
+        String path = className.replace('.', '/') + ".class";
+        try (InputStream is = parent.getResourceAsStream(path)) {
+            return is.readAllBytes();
+        }
+    }
+}
+
+// Usage
+BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class).build();
+ClassLoader loader = new TransformingClassLoader(transformer, ClassLoader.getSystemClassLoader());
+Class&lt;?&gt; clazz = loader.loadClass("com.example.MyClass");
+</code></pre>
+<h2 id="example-2-java-agent"><a class="header" href="#example-2-java-agent">Example 2: Java Agent</a></h2>
+<p>Create a Java agent for bytecode transformation:</p>
+<pre><code class="language-java">public class BytekinAgent {
+    public static void premain(String agentArgs, Instrumentation inst) {
+        BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class).build();
+        inst.addTransformer((loader, className, klass, pd, bytecode) -&gt; {
+            return transformer.transform(className, bytecode);
+        });
+    }
+}
+</code></pre>
+<p>Launch with: <code>java -javaagent:bytekin-agent.jar MyApplication</code></p>
+<h2 id="example-3-aspect-oriented-programming-aop"><a class="header" href="#example-3-aspect-oriented-programming-aop">Example 3: Aspect-Oriented Programming (AOP)</a></h2>
+<p>Implement cross-cutting concerns:</p>
+<pre><code class="language-java">@ModifyClass("com.example.UserService")
+public class AuditingAspect {
+    
+    @Inject(methodName = "save", methodDesc = "(Lcom/example/User;)V", at = At.HEAD)
+    public static CallbackInfo auditBefore(Object user) {
+        System.out.println("Audit: save() started");
+        return CallbackInfo.empty();
+    }
+    
+    @Inject(methodName = "delete", methodDesc = "(I)V", at = At.HEAD)
+    public static CallbackInfo auditDelete(int id) {
+        System.out.println("Audit: delete(" + id + ") started");
+        return CallbackInfo.empty();
+    }
+}
+</code></pre>
+<h2 id="example-4-lazy-initialization"><a class="header" href="#example-4-lazy-initialization">Example 4: Lazy Initialization</a></h2>
+<p>Implement lazy loading pattern:</p>
+<pre><code class="language-java">@ModifyClass("com.example.Repository")
+public class LazyLoadingHooks {
+    private static Object resource;
+    
+    @Inject(methodName = "initialize", methodDesc = "()V", at = At.HEAD)
+    public static CallbackInfo lazyInit(CallbackInfo ci) {
+        if (resource == null) {
+            synchronized (LazyLoadingHooks.class) {
+                if (resource == null) {
+                    resource = loadExpensiveResource();
+                }
+            }
+        }
+        ci.cancelled = true;
+        return ci;
+    }
+    
+    private static Object loadExpensiveResource() {
+        // Expensive initialization
+        return new Object();
+    }
+}
+</code></pre>
+<h2 id="example-5-dynamic-configuration"><a class="header" href="#example-5-dynamic-configuration">Example 5: Dynamic Configuration</a></h2>
+<p>Change behavior based on configuration:</p>
+<pre><code class="language-java">@ModifyClass("com.example.Service")
+public class DynamicConfigHooks {
+    private static final Properties config = new Properties();
+    
+    static {
+        try {
+            config.load(new FileInputStream("config.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @Inject(methodName = "process", methodDesc = "(Ljava/lang/String;)V", at = At.HEAD)
+    public static CallbackInfo checkConfig(String input, CallbackInfo ci) {
+        boolean enabled = Boolean.parseBoolean(config.getProperty("feature.enabled", "false"));
+        if (!enabled) {
+            ci.cancelled = true;
+        }
+        return ci;
+    }
+}
+</code></pre>
+<h2 id="example-6-multi-layer-transformation"><a class="header" href="#example-6-multi-layer-transformation">Example 6: Multi-Layer Transformation</a></h2>
+<p>Apply multiple transformers sequentially:</p>
+<pre><code class="language-java">public class MultiLayerTransformation {
+    public static void main(String[] args) {
+        BytekinTransformer logging = new BytekinTransformer.Builder(LoggingHooks.class).build();
+        BytekinTransformer security = new BytekinTransformer.Builder(SecurityHooks.class).build();
+        BytekinTransformer caching = new BytekinTransformer.Builder(CachingHooks.class).build();
+        
+        byte[] original = getClassBytecode("com.example.Service");
+        
+        // Apply layer by layer
+        byte[] withLogging = logging.transform("com.example.Service", original);
+        byte[] withSecurity = security.transform("com.example.Service", withLogging);
+        byte[] withCaching = caching.transform("com.example.Service", withSecurity);
+        
+        Class&lt;?&gt; transformed = loadClass(withCaching);
+    }
+}
+</code></pre>
+<h2 id="example-7-performance-profiling"><a class="header" href="#example-7-performance-profiling">Example 7: Performance Profiling</a></h2>
+<p>Add profiling without source changes:</p>
+<pre><code class="language-java">@ModifyClass("com.example.CriticalPath")
+public class ProfilingHooks {
+    private static final ThreadLocal&lt;Long&gt; timer = ThreadLocal.withInitial(() -&gt; 0L);
+    
+    @Inject(methodName = "compute", methodDesc = "()Ljava/lang/Object;", at = At.HEAD)
+    public static CallbackInfo startProfiling() {
+        timer.set(System.nanoTime());
+        return CallbackInfo.empty();
+    }
+    
+    @Inject(methodName = "compute", methodDesc = "()Ljava/lang/Object;", at = At.RETURN)
+    public static CallbackInfo endProfiling() {
+        long duration = System.nanoTime() - timer.get();
+        System.out.println("Duration: " + (duration / 1_000_000.0) + "ms");
+        return CallbackInfo.empty();
+    }
+}
+</code></pre>
+<h2 id="example-8-resilience-pattern"><a class="header" href="#example-8-resilience-pattern">Example 8: Resilience Pattern</a></h2>
+<p>Add retry logic:</p>
+<pre><code class="language-java">@ModifyClass("com.example.HttpClient")
+public class ResilienceHooks {
+    private static final int MAX_RETRIES = 3;
+    
+    @Inject(methodName = "request", methodDesc = "(Ljava/lang/String;)Ljava/lang/String;", 
+            at = At.HEAD)
+    public static CallbackInfo addRetry(String url, CallbackInfo ci) {
+        String result = null;
+        int attempt = 0;
+        
+        while (attempt &lt; MAX_RETRIES) {
+            try {
+                result = executeRequest(url);
+                break;
+            } catch (Exception e) {
+                attempt++;
+                if (attempt &gt;= MAX_RETRIES) throw e;
+            }
+        }
+        
+        ci.cancelled = true;
+        ci.returnValue = result;
+        return ci;
+    }
+    
+    private static String executeRequest(String url) throws Exception {
+        // Make HTTP request
+        return "";
+    }
+}
+</code></pre>
+<h2 id="example-9-observability"><a class="header" href="#example-9-observability">Example 9: Observability</a></h2>
+<p>Collect metrics:</p>
+<pre><code class="language-java">@ModifyClass("com.example.DataStore")
+public class ObservabilityHooks {
+    private static final AtomicLong callCount = new AtomicLong(0);
+    private static final AtomicLong errorCount = new AtomicLong(0);
+    
+    @Inject(methodName = "query", methodDesc = "(Ljava/lang/String;)Ljava/util/List;", 
+            at = At.HEAD)
+    public static CallbackInfo trackCall(String query) {
+        callCount.incrementAndGet();
+        return CallbackInfo.empty();
+    }
+    
+    @Invoke(
+        targetMethodName = "query",
+        targetMethodDesc = "(Ljava/lang/String;)Ljava/util/List;",
+        invokeMethodName = "throwException",
+        invokeMethodDesc = "()V",
+        shift = Shift.BEFORE
+    )
+    public static CallbackInfo trackError() {
+        errorCount.incrementAndGet();
+        return CallbackInfo.empty();
+    }
+    
+    public static void printMetrics() {
+        System.out.println("Calls: " + callCount.get());
+        System.out.println("Errors: " + errorCount.get());
+    }
+}
+</code></pre>
+<h2 id="example-10-migration-strategy"><a class="header" href="#example-10-migration-strategy">Example 10: Migration Strategy</a></h2>
+<p>Gradually migrate from old to new API:</p>
+<pre><code class="language-java">@ModifyClass("com.example.Application")
+public class MigrationHooks {
+    private static final boolean USE_NEW_API = true;
+    
+    @Redirect(
+        targetMethodName = "main",
+        targetMethodDesc = "([Ljava/lang/String;)V",
+        redirectMethodName = "oldSearch",
+        redirectMethodDesc = "(Ljava/lang/String;)Ljava/util/List;",
+        from = "search",
+        to = USE_NEW_API ? "newSearch" : "oldSearch"
+    )
+    public static void migrateAPI() {
+        // Gradually route to new implementation
+    }
+}
+</code></pre>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li>Review <a href="./best-practices.html">Best Practices</a></li>
+<li>Check <a href="./troubleshooting.html">Troubleshooting</a></li>
+<li>Explore <a href="./advanced-usage.html">Advanced Usage</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="examples-basic.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="best-practices.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="examples-basic.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="best-practices.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

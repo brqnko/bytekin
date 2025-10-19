@@ -1,0 +1,507 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Advanced Usage - bytekin documentation (English)</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">bytekin documentation (English)</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="advanced-usage"><a class="header" href="#advanced-usage">Advanced Usage</a></h1>
+<p>This section covers advanced patterns and techniques for using bytekin effectively.</p>
+<h2 id="programmatic-api-non-annotation-based"><a class="header" href="#programmatic-api-non-annotation-based">Programmatic API (Non-Annotation Based)</a></h2>
+<p>While annotations are convenient, you can also use the programmatic API:</p>
+<pre><code class="language-java">BytekinTransformer transformer = new BytekinTransformer.Builder()
+    .inject("com.example.Calculator", new Injection(
+        "add",
+        "(II)I",
+        At.HEAD,
+        Arrays.asList(Parameter.THIS, Parameter.INT, Parameter.INT)
+    ))
+    .build();
+</code></pre>
+<h2 id="multiple-hook-classes"><a class="header" href="#multiple-hook-classes">Multiple Hook Classes</a></h2>
+<p>Organize hooks into multiple classes and pass them all:</p>
+<pre><code class="language-java">BytekinTransformer transformer = new BytekinTransformer.Builder(
+    LoggingHooks.class,
+    AuthenticationHooks.class,
+    PerformanceHooks.class,
+    SecurityHooks.class
+).build();
+</code></pre>
+<h2 id="class-remapping"><a class="header" href="#class-remapping">Class Remapping</a></h2>
+<p>Handle obfuscated code using mappings:</p>
+<pre><code class="language-java">class MyMappingProvider implements IMappingProvider {
+    @Override
+    public String getClassName(String name) {
+        // Map a.class to com.example.Calculator
+        if ("a".equals(name)) return "com.example.Calculator";
+        return name;
+    }
+    
+    @Override
+    public String getMethodName(String className, String methodName, String descriptor) {
+        // Map b to add
+        if ("com.example.Calculator".equals(className) &amp;&amp; "b".equals(methodName)) {
+            return "add";
+        }
+        return methodName;
+    }
+    
+    @Override
+    public String getFieldName(String className, String fieldName) {
+        return fieldName;
+    }
+}
+
+BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class)
+    .mapping(new MyMappingProvider())
+    .build();
+</code></pre>
+<h2 id="chaining-transformations"><a class="header" href="#chaining-transformations">Chaining Transformations</a></h2>
+<p>Apply multiple transformations to the same class:</p>
+<pre><code class="language-java">byte[] original = getClassBytecode("com.example.Service");
+
+// First transformation
+byte[] step1 = transformer1.transform("com.example.Service", original);
+
+// Second transformation
+byte[] step2 = transformer2.transform("com.example.Service", step1);
+
+// Load final result
+Class&lt;?&gt; clazz = loadFromBytecode(step2);
+</code></pre>
+<h2 id="conditional-hook-logic"><a class="header" href="#conditional-hook-logic">Conditional Hook Logic</a></h2>
+<p>Execute hooks based on conditions:</p>
+<pre><code class="language-java">@Inject(methodName = "process", methodDesc = "(Ljava/lang/String;)V", at = At.HEAD)
+public static CallbackInfo conditionalHook(String input, CallbackInfo ci) {
+    // Only inject for certain inputs
+    if (input.startsWith("test_")) {
+        System.out.println("Test mode: " + input);
+    }
+    
+    // Only inject for certain environments
+    String env = System.getProperty("app.env", "dev");
+    if ("prod".equals(env)) {
+        // Different behavior for production
+    }
+    
+    return ci;
+}
+</code></pre>
+<h2 id="stateful-hooks"><a class="header" href="#stateful-hooks">Stateful Hooks</a></h2>
+<p>Maintain state across hook invocations:</p>
+<pre><code class="language-java">@ModifyClass("com.example.RequestHandler")
+public class RequestHooks {
+    private static final Map&lt;String, Integer&gt; callCounts = new ConcurrentHashMap&lt;&gt;();
+    
+    @Inject(methodName = "handle", methodDesc = "(Ljava/lang/String;)V", at = At.HEAD)
+    public static CallbackInfo trackCalls(String id, CallbackInfo ci) {
+        int count = callCounts.getOrDefault(id, 0);
+        callCounts.put(id, count + 1);
+        
+        if (count &gt; 100) {
+            System.out.println("High call count for: " + id);
+        }
+        
+        return ci;
+    }
+}
+</code></pre>
+<h2 id="combining-multiple-transformations"><a class="header" href="#combining-multiple-transformations">Combining Multiple Transformations</a></h2>
+<p>Use different transformation types on the same method:</p>
+<pre><code class="language-java">@ModifyClass("com.example.DataService")
+public class ServiceHooks {
+    
+    // Log entry
+    @Inject(methodName = "query", methodDesc = "(Ljava/lang/String;)Ljava/util/List;", 
+            at = At.HEAD)
+    public static CallbackInfo logEntry(String sql) {
+        System.out.println("Query: " + sql);
+        return CallbackInfo.empty();
+    }
+    
+    // Intercept database calls
+    @Invoke(
+        targetMethodName = "query",
+        targetMethodDesc = "(Ljava/lang/String;)Ljava/util/List;",
+        invokeMethodName = "execute",
+        invokeMethodDesc = "(Ljava/lang/String;)Ljava/util/List;",
+        shift = Shift.BEFORE
+    )
+    public static CallbackInfo cacheLookup(String sql, CallbackInfo ci) {
+        List&lt;?&gt; cached = getFromCache(sql);
+        if (cached != null) {
+            ci.cancelled = true;
+            ci.returnValue = cached;
+        }
+        return ci;
+    }
+    
+    // Modify constant database URL
+    @ModifyConstant(methodName = "getConnection", oldValue = "localhost", 
+                    newValue = "db.production.com")
+    public static CallbackInfo updateDbLocation() {
+        return CallbackInfo.empty();
+    }
+}
+</code></pre>
+<h2 id="performance-optimization-pattern"><a class="header" href="#performance-optimization-pattern">Performance Optimization Pattern</a></h2>
+<p>Use hooks for efficient performance monitoring:</p>
+<pre><code class="language-java">@ModifyClass("com.example.CriticalPath")
+public class PerformanceHooks {
+    private static final int SLOW_THRESHOLD = 1000; // ms
+    
+    @Inject(methodName = "criticalOperation", methodDesc = "()V", at = At.HEAD)
+    public static CallbackInfo startTimer() {
+        TIMER.set(System.currentTimeMillis());
+        return CallbackInfo.empty();
+    }
+    
+    @Inject(methodName = "criticalOperation", methodDesc = "()V", at = At.RETURN)
+    public static CallbackInfo checkTimer() {
+        long duration = System.currentTimeMillis() - TIMER.get();
+        if (duration &gt; SLOW_THRESHOLD) {
+            System.out.println("Slow operation: " + duration + "ms");
+        }
+        return CallbackInfo.empty();
+    }
+    
+    private static final ThreadLocal&lt;Long&gt; TIMER = ThreadLocal.withInitial(() -&gt; 0L);
+}
+</code></pre>
+<h2 id="security-pattern---input-validation"><a class="header" href="#security-pattern---input-validation">Security Pattern - Input Validation</a></h2>
+<p>Validate all inputs at entry points:</p>
+<pre><code class="language-java">@ModifyClass("com.example.WebController")
+public class SecurityHooks {
+    
+    @Inject(methodName = "handleRequest", methodDesc = "(Ljava/lang/String;)V", 
+            at = At.HEAD)
+    public static CallbackInfo validateRequest(String request, CallbackInfo ci) {
+        if (request == null || isMalicious(request)) {
+            ci.cancelled = true;  // Block request
+            return ci;
+        }
+        return ci;
+    }
+    
+    private static boolean isMalicious(String request) {
+        // Check for SQL injection, XSS, etc.
+        return request.contains("DROP") || request.contains("&lt;script&gt;");
+    }
+}
+</code></pre>
+<h2 id="testing-pattern---mock-objects"><a class="header" href="#testing-pattern---mock-objects">Testing Pattern - Mock Objects</a></h2>
+<p>Use hooks for dependency injection in tests:</p>
+<pre><code class="language-java">@ModifyClass("com.example.UserService")
+public class TestHooks {
+    private static UserRepository mockRepository = new MockUserRepository();
+    
+    @Inject(methodName = "getUserById", methodDesc = "(I)Lcom/example/User;", 
+            at = At.HEAD)
+    public static CallbackInfo useMockRepository() {
+        // Inject mock repository
+        return CallbackInfo.empty();
+    }
+}
+</code></pre>
+<h2 id="ab-testing-pattern"><a class="header" href="#ab-testing-pattern">A/B Testing Pattern</a></h2>
+<p>Route to different implementations based on user:</p>
+<pre><code class="language-java">@ModifyClass("com.example.Algorithm")
+public class ABTestingHooks {
+    
+    @Invoke(
+        targetMethodName = "process",
+        targetMethodDesc = "(Ljava/lang/Object;)Ljava/lang/Object;",
+        invokeMethodName = "compute",
+        invokeMethodDesc = "(Ljava/lang/Object;)Ljava/lang/Object;",
+        shift = Shift.BEFORE
+    )
+    public static CallbackInfo selectImplementation(Object data, CallbackInfo ci) {
+        // Route to new or old implementation based on user
+        if (useNewImplementation(data)) {
+            ci.returnValue = computeNew(data);
+            ci.cancelled = true;
+        }
+        return ci;
+    }
+    
+    private static boolean useNewImplementation(Object data) {
+        String userId = extractUserId(data);
+        int hash = userId.hashCode();
+        return hash % 2 == 0;  // 50/50 split
+    }
+}
+</code></pre>
+<h2 id="feature-flag-pattern"><a class="header" href="#feature-flag-pattern">Feature Flag Pattern</a></h2>
+<p>Enable/disable features without deployment:</p>
+<pre><code class="language-java">@ModifyClass("com.example.Features")
+public class FeatureFlagHooks {
+    private static final Map&lt;String, Boolean&gt; flags = new ConcurrentHashMap&lt;&gt;();
+    
+    @Inject(methodName = "newFeature", methodDesc = "()V", at = At.HEAD)
+    public static CallbackInfo checkFeatureFlag(CallbackInfo ci) {
+        if (!isFeatureEnabled("newFeature")) {
+            ci.cancelled = true;  // Skip this method
+        }
+        return ci;
+    }
+    
+    private static boolean isFeatureEnabled(String feature) {
+        return flags.getOrDefault(feature, false);
+    }
+    
+    public static void setFeatureFlag(String feature, boolean enabled) {
+        flags.put(feature, enabled);
+    }
+}
+</code></pre>
+<h2 id="lazy-initialization-pattern"><a class="header" href="#lazy-initialization-pattern">Lazy Initialization Pattern</a></h2>
+<p>Defer expensive initialization:</p>
+<pre><code class="language-java">@ModifyClass("com.example.Config")
+public class ConfigHooks {
+    private static volatile Configuration config;
+    
+    @Inject(methodName = "getConfig", methodDesc = "()Lcom/example/Configuration;", 
+            at = At.HEAD)
+    public static CallbackInfo lazyInitialize(CallbackInfo ci) {
+        if (config == null) {
+            synchronized (ConfigHooks.class) {
+                if (config == null) {
+                    config = loadConfiguration();  // Expensive operation
+                }
+            }
+        }
+        ci.cancelled = true;
+        ci.returnValue = config;
+        return ci;
+    }
+}
+</code></pre>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li>Explore <a href="./mappings.html">Mappings</a> in detail</li>
+<li>Review <a href="./best-practices.html">Best Practices</a></li>
+<li>Check <a href="./examples.html">Examples</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="variable-modification.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="mappings.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="variable-modification.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="mappings.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

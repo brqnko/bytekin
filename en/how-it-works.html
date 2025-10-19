@@ -1,0 +1,451 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>How bytekin Works - bytekin documentation (English)</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">bytekin documentation (English)</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="how-bytekin-works"><a class="header" href="#how-bytekin-works">How bytekin Works</a></h1>
+<p>This document explains the internal mechanisms of bytekin and how it transforms bytecode.</p>
+<h2 id="the-transformation-process"><a class="header" href="#the-transformation-process">The Transformation Process</a></h2>
+<h3 id="step-1-initialization"><a class="header" href="#step-1-initialization">Step 1: Initialization</a></h3>
+<pre><code>Define Hook Classes
+        ↓
+Create BytekinTransformer.Builder
+        ↓
+Pass hook classes to Builder
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-java">BytekinTransformer transformer = new BytekinTransformer.Builder(
+    CalculatorHooks.class,
+    StringHooks.class
+).build();
+</code></pre>
+<h3 id="step-2-analysis"><a class="header" href="#step-2-analysis">Step 2: Analysis</a></h3>
+<p>When <code>build()</code> is called, bytekin:</p>
+<ol>
+<li>Scans hook classes for annotations</li>
+<li>Extracts transformation rules</li>
+<li>Validates method signatures</li>
+<li>Prepares transformation strategy</li>
+<li>Creates BytekinClassTransformer instances</li>
+</ol>
+<pre><code>Builder.build()
+    ↓
+Scan @ModifyClass annotations
+    ↓
+Extract @Inject, @Invoke, etc.
+    ↓
+Create transformers map
+    ↓
+Return BytekinTransformer
+</code></pre>
+<h3 id="step-3-transformation"><a class="header" href="#step-3-transformation">Step 3: Transformation</a></h3>
+<p>When <code>transform()</code> is called:</p>
+<pre><code class="language-java">byte[] transformed = transformer.transform("com.example.Calculator", bytecode);
+</code></pre>
+<p>bytekin:</p>
+<ol>
+<li>Looks up the target class</li>
+<li>Finds matching transformer</li>
+<li>Uses ASM to parse bytecode</li>
+<li>Applies all registered transformations</li>
+<li>Returns modified bytecode</li>
+</ol>
+<pre><code>Target Bytecode
+    ↓
+ASM ClassReader
+    ↓
+BytekinClassVisitor
+    ↓
+Apply Injections
+    ↓
+Apply Invocations
+    ↓
+Apply Redirects
+    ↓
+Apply Constant Modifications
+    ↓
+Apply Variable Modifications
+    ↓
+ASM ClassWriter
+    ↓
+Modified Bytecode
+</code></pre>
+<h2 id="architecture-overview"><a class="header" href="#architecture-overview">Architecture Overview</a></h2>
+<h3 id="core-components"><a class="header" href="#core-components">Core Components</a></h3>
+<pre><code>┌─────────────────────────────────────┐
+│   BytekinTransformer (Main API)     │
+└──────────────┬──────────────────────┘
+               │
+        ┌──────┴──────┐
+        ↓             ↓
+    Builder      transform()
+        │             │
+        └──────┬──────┘
+               ↓
+   ┌───────────────────────────┐
+   │  BytekinClassTransformer  │
+   └───────────┬───────────────┘
+               ↓
+   ┌───────────────────────────┐
+   │   BytekinClassVisitor     │
+   │  (ASM ClassVisitor)       │
+   └───────────┬───────────────┘
+               ↓
+   ┌───────────────────────────┐
+   │  BytekinMethodVisitor     │
+   │  (ASM MethodVisitor)      │
+   └───────────────────────────┘
+</code></pre>
+<h3 id="visitor-pattern"><a class="header" href="#visitor-pattern">Visitor Pattern</a></h3>
+<p>bytekin uses the <strong>Visitor Pattern</strong> (from ASM):</p>
+<pre><code>┌─ ClassVisitor
+│   └─ Method Visitor
+│       └─ Code Visitor
+│           └─ Instruction Handlers
+</code></pre>
+<p>As ASM parses bytecode, it calls methods on visitors to notify them of each element (class, method, field, instruction, etc.).</p>
+<h2 id="transformation-types"><a class="header" href="#transformation-types">Transformation Types</a></h2>
+<h3 id="1-injection-code-insertion"><a class="header" href="#1-injection-code-insertion">1. Injection (Code Insertion)</a></h3>
+<p><strong>Goal</strong>: Insert code at specific method points</p>
+<pre><code>Method Bytecode
+    ↓
+Find injection point
+    ↓
+Insert call to hook method
+    ↓
+Continue with original code
+</code></pre>
+<p>Example locations:</p>
+<ul>
+<li><code>At.HEAD</code>: Before method body</li>
+<li><code>At.RETURN</code>: Before return statements</li>
+<li><code>At.TAIL</code>: At method end</li>
+</ul>
+<h3 id="2-invocation-method-call-interception"><a class="header" href="#2-invocation-method-call-interception">2. Invocation (Method Call Interception)</a></h3>
+<p><strong>Goal</strong>: Intercept method calls within a method</p>
+<pre><code>Method Bytecode
+    ↓
+Find target method invocation
+    ↓
+Call hook method with same arguments
+    ↓
+Optionally modify arguments
+    ↓
+Make method call (or skip it)
+</code></pre>
+<h3 id="3-redirect-call-target-change"><a class="header" href="#3-redirect-call-target-change">3. Redirect (Call Target Change)</a></h3>
+<p><strong>Goal</strong>: Change which method is called</p>
+<pre><code>Method Call to A()
+    ↓
+Intercept call
+    ↓
+Redirect to B()
+</code></pre>
+<h3 id="4-constant-modification"><a class="header" href="#4-constant-modification">4. Constant Modification</a></h3>
+<p><strong>Goal</strong>: Change constant values</p>
+<pre><code>Load Constant X
+    ↓
+Replace with Constant Y
+</code></pre>
+<h3 id="5-variable-modification"><a class="header" href="#5-variable-modification">5. Variable Modification</a></h3>
+<p><strong>Goal</strong>: Modify local variable values</p>
+<pre><code>Local Variable at index N
+    ↓
+Load from slot
+    ↓
+Apply modification
+    ↓
+Store back
+</code></pre>
+<h2 id="key-data-structures"><a class="header" href="#key-data-structures">Key Data Structures</a></h2>
+<h3 id="injection"><a class="header" href="#injection">Injection</a></h3>
+<p>Represents a code injection:</p>
+<ul>
+<li><strong>Target Method</strong>: Which method to inject into</li>
+<li><strong>Hook Method</strong>: Which hook method to call</li>
+<li><strong>Location</strong>: Where to inject (HEAD, RETURN, etc.)</li>
+<li><strong>Parameters</strong>: What parameters to pass</li>
+</ul>
+<h3 id="invocation"><a class="header" href="#invocation">Invocation</a></h3>
+<p>Represents a method call interception:</p>
+<ul>
+<li><strong>Target Method</strong>: Which method calls the target</li>
+<li><strong>Target Call</strong>: Which call to intercept</li>
+<li><strong>Hook Method</strong>: Which hook to call</li>
+<li><strong>Shift</strong>: Before or after the call</li>
+</ul>
+<h3 id="callbackinfo"><a class="header" href="#callbackinfo">CallbackInfo</a></h3>
+<p>Controls injection behavior:</p>
+<pre><code class="language-java">public class CallbackInfo {
+    public boolean cancelled;      // Cancel execution?
+    public Object returnValue;     // Custom return?
+    public Object[] modifyArgs;    // Modified arguments?
+}
+</code></pre>
+<h2 id="mapping-system"><a class="header" href="#mapping-system">Mapping System</a></h2>
+<p>bytekin supports class/method name mappings for obfuscated code:</p>
+<pre><code>Original Name     Mapped Name
+     ↓                  ↓
+  a.class  ────→  com.example.Calculator
+  b(II)I   ────→  add(II)I
+</code></pre>
+<p>Mappings are applied during transformation:</p>
+<pre><code>Hook class references "com.example.Calculator"
+    ↓
+Apply mapping
+    ↓
+Look for mapped name in bytecode
+    ↓
+Transform accordingly
+</code></pre>
+<h2 id="thread-safety"><a class="header" href="#thread-safety">Thread Safety</a></h2>
+<ul>
+<li><strong>BytekinTransformer</strong>: Thread-safe after <code>build()</code></li>
+<li><strong>Builder</strong>: Not thread-safe during configuration</li>
+<li><strong>transform()</strong>: Can be called concurrently from multiple threads</li>
+</ul>
+<h2 id="performance-considerations"><a class="header" href="#performance-considerations">Performance Considerations</a></h2>
+<h3 id="efficiency"><a class="header" href="#efficiency">Efficiency</a></h3>
+<ul>
+<li><strong>One-time cost</strong>: Building transformers</li>
+<li><strong>Transform time</strong>: Proportional to bytecode size</li>
+<li><strong>Runtime overhead</strong>: Only injected code is executed</li>
+</ul>
+<h3 id="optimization-tips"><a class="header" href="#optimization-tips">Optimization Tips</a></h3>
+<ol>
+<li>Build transformers once, reuse them</li>
+<li>Use transformation early in classloading</li>
+<li>Minimize hook method complexity</li>
+<li>Profile to identify bottlenecks</li>
+</ol>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li>Explore <a href="./features.html">Features</a></li>
+<li>Learn about <a href="./advanced-usage.html">Advanced Usage</a></li>
+<li>Check out <a href="./examples.html">Examples</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="bytecode-basics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="features.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="bytecode-basics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="features.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Redirect Transformation - bytekin documentation (English)</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">bytekin documentation (English)</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="redirect-transformation"><a class="header" href="#redirect-transformation">Redirect Transformation</a></h1>
+<p>The <code>@Redirect</code> annotation allows you to change which method is actually called at runtime.</p>
+<h2 id="basic-usage"><a class="header" href="#basic-usage">Basic Usage</a></h2>
+<pre><code class="language-java">@ModifyClass("com.example.LegacyService")
+public class LegacyServiceHooks {
+
+    @Redirect(
+        targetMethodName = "oldMethod",
+        targetMethodDesc = "(I)V",
+        redirectMethodName = "newMethod",
+        redirectMethodDesc = "(I)V"
+    )
+    public static void redirectCall(int value) {
+        System.out.println("Redirecting call with value: " + value);
+    }
+}
+</code></pre>
+<h2 id="annotation-parameters"><a class="header" href="#annotation-parameters">Annotation Parameters</a></h2>
+<h3 id="targetmethodname-required"><a class="header" href="#targetmethodname-required">targetMethodName (required)</a></h3>
+<p>The name of the method that contains the call to redirect.</p>
+<pre><code class="language-java">targetMethodName = "process"
+</code></pre>
+<h3 id="targetmethoddesc-required"><a class="header" href="#targetmethoddesc-required">targetMethodDesc (required)</a></h3>
+<p>The JVM descriptor of the target method.</p>
+<pre><code class="language-java">targetMethodDesc = "(Ljava/lang/String;)V"
+</code></pre>
+<h3 id="redirectmethodname-required"><a class="header" href="#redirectmethodname-required">redirectMethodName (required)</a></h3>
+<p>The name of the new method to call instead.</p>
+<pre><code class="language-java">redirectMethodName = "newImplementation"
+</code></pre>
+<h3 id="redirectmethoddesc-required"><a class="header" href="#redirectmethoddesc-required">redirectMethodDesc (required)</a></h3>
+<p>The JVM descriptor of the redirect method.</p>
+<pre><code class="language-java">redirectMethodDesc = "(Ljava/lang/String;)V"
+</code></pre>
+<h2 id="how-redirect-works"><a class="header" href="#how-redirect-works">How Redirect Works</a></h2>
+<p><strong>Before:</strong></p>
+<pre><code class="language-java">public class LegacyAPI {
+    public void oldMethod(int value) {
+        // Old implementation
+    }
+}
+
+public class Client {
+    public void use() {
+        api.oldMethod(42);  // Calls oldMethod
+    }
+}
+</code></pre>
+<p><strong>After Redirect:</strong></p>
+<pre><code class="language-java">public class Client {
+    public void use() {
+        api.newMethod(42);  // Redirected to newMethod!
+    }
+}
+</code></pre>
+<h2 id="practical-examples"><a class="header" href="#practical-examples">Practical Examples</a></h2>
+<h3 id="migration-strategy"><a class="header" href="#migration-strategy">Migration Strategy</a></h3>
+<p>Gradually migrate from old API to new API:</p>
+<pre><code class="language-java">@ModifyClass("com.example.Application")
+public class APIRedirection {
+
+    @Redirect(
+        targetMethodName = "main",
+        targetMethodDesc = "([Ljava/lang/String;)V",
+        redirectMethodName = "legacySearch",
+        redirectMethodDesc = "(Ljava/lang/String;)Ljava/util/List;",
+        from = "oldSearch",
+        to = "modernSearch"
+    )
+    public static void upgradeSearch() {
+        // Search calls are now routed to the modern implementation
+    }
+}
+</code></pre>
+<h3 id="mocking-for-tests"><a class="header" href="#mocking-for-tests">Mocking for Tests</a></h3>
+<p>Replace real implementations with test doubles:</p>
+<pre><code class="language-java">@ModifyClass("com.example.DataAccess")
+public class TestRedirection {
+
+    @Redirect(
+        targetMethodName = "query",
+        targetMethodDesc = "(Ljava/lang/String;)Ljava/util/List;",
+        redirectMethodName = "fetchFromDatabase",
+        redirectMethodDesc = "(Ljava/lang/String;)Ljava/util/List;",
+        from = "realDB",
+        to = "mockDB"
+    )
+    public static void useMockDatabase() {
+        // All database calls use mocked implementation
+    }
+}
+</code></pre>
+<h3 id="performance-optimization"><a class="header" href="#performance-optimization">Performance Optimization</a></h3>
+<p>Route to optimized implementations:</p>
+<pre><code class="language-java">@ModifyClass("com.example.Processing")
+public class PerformanceOptimization {
+
+    @Redirect(
+        targetMethodName = "processLargeList",
+        targetMethodDesc = "(Ljava/util/List;)Ljava/util/List;",
+        redirectMethodName = "slowImplementation",
+        redirectMethodDesc = "(Ljava/util/List;)Ljava/util/List;",
+        from = "bruteForce",
+        to = "optimized"
+    )
+    public static void useOptimizedAlgorithm() {
+        // Uses fast algorithm instead of slow one
+    }
+}
+</code></pre>
+<h2 id="differences-from-other-transformations"><a class="header" href="#differences-from-other-transformations">Differences from Other Transformations</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Feature</th><th>Inject</th><th>Invoke</th><th>Redirect</th></tr></thead><tbody>
+<tr><td>What it does</td><td>Insert code</td><td>Intercept calls</td><td>Change target</td></tr>
+<tr><td>Call happens</td><td>Yes</td><td>Yes</td><td>Yes, but different target</td></tr>
+<tr><td>Can skip execution</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Use case</td><td>Add logging</td><td>Modify behavior</td><td>API migration</td></tr>
+</tbody></table>
+</div>
+<h2 id="type-compatibility"><a class="header" href="#type-compatibility">Type Compatibility</a></h2>
+<p>The redirect method must have compatible signature:</p>
+<pre><code class="language-java">// Original call
+search(String query);  // (Ljava/lang/String;)Ljava/util/List;
+
+// Must redirect to compatible signature
+newSearch(String query);  // (Ljava/lang/String;)Ljava/util/List;
+</code></pre>
+<p><strong>Type mismatch will cause issues:</strong></p>
+<pre><code class="language-java">// WRONG - Different parameter types
+@Redirect(..., from = "process(int)", to = "process(String)")
+</code></pre>
+<h2 id="performance-considerations"><a class="header" href="#performance-considerations">Performance Considerations</a></h2>
+<p>Redirect has minimal overhead compared to normal method calls since:</p>
+<ol>
+<li>It's a direct bytecode substitution</li>
+<li>No wrapper or proxy is created</li>
+<li>The JVM can inline and optimize as normal</li>
+</ol>
+<h2 id="limitations"><a class="header" href="#limitations">Limitations</a></h2>
+<ul>
+<li>Both methods must have compatible signatures</li>
+<li>Cannot redirect to final methods</li>
+<li>Cannot redirect constructor calls (use <code>@Invoke</code> instead)</li>
+<li>Redirects are static - same target for all calls</li>
+</ul>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<ol>
+<li><strong>Ensure compatibility</strong>: Verify method signatures match exactly</li>
+<li><strong>Document redirects</strong>: Leave comments explaining why</li>
+<li><strong>Test redirects</strong>: Verify behavior after redirection</li>
+<li><strong>Use for migration</strong>: Great for moving from old to new APIs</li>
+<li><strong>Be cautious</strong>: Track all redirects to avoid confusion</li>
+</ol>
+<h2 id="advanced-pattern-conditional-redirect"><a class="header" href="#advanced-pattern-conditional-redirect">Advanced Pattern: Conditional Redirect</a></h2>
+<p>While <code>@Redirect</code> is static, you can combine it with <code>@Invoke</code> for conditional behavior:</p>
+<pre><code class="language-java">@Invoke(
+    targetMethodName = "search",
+    targetMethodDesc = "(Ljava/lang/String;)Ljava/util/List;",
+    invokeMethodName = "getResults",
+    invokeMethodDesc = "(Ljava/lang/String;)Ljava/util/List;",
+    shift = Shift.BEFORE
+)
+public static CallbackInfo selectImplementation(String query, CallbackInfo ci) {
+    if (query.length() &gt; 100) {
+        // Use optimized search for large queries
+        ci.returnValue = optimizedSearch(query);
+        ci.cancelled = true;
+    }
+    return ci;
+}
+</code></pre>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li>Learn about <a href="./constant-modification.html">Constant Modification</a></li>
+<li>Explore <a href="./advanced-usage.html">Advanced Usage</a></li>
+<li>Check <a href="./examples.html">Examples</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="invoke.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="constant-modification.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="invoke.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="constant-modification.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

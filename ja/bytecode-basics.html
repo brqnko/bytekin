@@ -1,0 +1,354 @@
+<!DOCTYPE HTML>
+<html lang="ja" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>バイトコード変換とは? - bytekin ドキュメント (日本語)</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">bytekin ドキュメント (日本語)</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="バイトコードの基礎"><a class="header" href="#バイトコードの基礎">バイトコードの基礎</a></h1>
+<h2 id="javaバイトコードとは"><a class="header" href="#javaバイトコードとは">Javaバイトコードとは?</a></h2>
+<p>Javaソースコード（<code>.java</code>ファイル）はJavaバイトコード（<code>.class</code>ファイルに含まれる）にコンパイルされます。このバイトコードはJava仮想マシン（JVM）が理解するプラットフォーム非依存の中間言語です。</p>
+<h3 id="ソースコードとバイトコード"><a class="header" href="#ソースコードとバイトコード">ソースコードとバイトコード</a></h3>
+<p><strong>Javaソースコード:</strong></p>
+<pre><code class="language-java">public class Example {
+    public void greet(String name) {
+        System.out.println("Hello, " + name);
+    }
+}
+</code></pre>
+<p><strong>コンパイルされたバイトコード（概念的）:</strong></p>
+<pre><code>aload_0
+aload_1
+invokedynamic &lt;concat&gt;
+getstatic System.out
+swap
+invokevirtual println
+return
+</code></pre>
+<p>バイトコードバージョンはより冗長で、オペレーティングシステムに依存しません。</p>
+<h2 id="バイトコードが重要な理由"><a class="header" href="#バイトコードが重要な理由">バイトコードが重要な理由</a></h2>
+<ol>
+<li><strong>プラットフォーム非依存</strong>: JVMがあればどのシステムでも動作</li>
+<li><strong>実行時の柔軟性</strong>: ロード前にバイトコードを変換可能</li>
+<li><strong>セキュリティ</strong>: JVMはバイトコードの正しさを検証可能</li>
+<li><strong>最適化</strong>: JVMはネイティブコードにJITコンパイル可能</li>
+<li><strong>イントロスペクション</strong>: ツールはソースコードなしでバイトコードを分析可能</li>
+</ol>
+<h2 id="バイトコードの読み方"><a class="header" href="#バイトコードの読み方">バイトコードの読み方</a></h2>
+<h3 id="検査ツール"><a class="header" href="#検査ツール">検査ツール</a></h3>
+<ul>
+<li><strong>javap</strong>: 組み込みのJava逆アセンブラ</li>
+<li><strong>Bytecode Viewer</strong>: バイトコード検査用のGUIツール</li>
+<li><strong>ASM Tree View</strong>: IDE可視化プラグイン</li>
+</ul>
+<h3 id="例-javapの使用"><a class="header" href="#例-javapの使用">例: javapの使用</a></h3>
+<pre><code class="language-bash">javap -c Example.class
+</code></pre>
+<p>出力は各メソッドのバイトコード命令を表示します。</p>
+<h2 id="一般的なバイトコード命令"><a class="header" href="#一般的なバイトコード命令">一般的なバイトコード命令</a></h2>
+<p>頻繁に遭遇するバイトコード命令:</p>
+<div class="table-wrapper"><table><thead><tr><th>命令</th><th>目的</th></tr></thead><tbody>
+<tr><td><code>aload</code></td><td>オブジェクト参照をロード</td></tr>
+<tr><td><code>iload</code></td><td>整数をロード</td></tr>
+<tr><td><code>invoke*</code></td><td>メソッドを呼び出す（静的、仮想など）</td></tr>
+<tr><td><code>return</code></td><td>メソッドから戻る</td></tr>
+<tr><td><code>getstatic</code></td><td>静的フィールドを読む</td></tr>
+<tr><td><code>putstatic</code></td><td>静的フィールドに書き込む</td></tr>
+<tr><td><code>new</code></td><td>新しいオブジェクトを作成</td></tr>
+</tbody></table>
+</div>
+<h2 id="メソッドディスクリプタシグネチャ"><a class="header" href="#メソッドディスクリプタシグネチャ">メソッドディスクリプタ（シグネチャ）</a></h2>
+<p>バイトコードはメソッドシグネチャに特別な記法を使用します:</p>
+<pre><code>(パラメータ型)戻り値型
+</code></pre>
+<h3 id="プリミティブ型"><a class="header" href="#プリミティブ型">プリミティブ型</a></h3>
+<ul>
+<li><code>Z</code> - boolean</li>
+<li><code>B</code> - byte</li>
+<li><code>C</code> - char</li>
+<li><code>S</code> - short</li>
+<li><code>I</code> - int</li>
+<li><code>J</code> - long</li>
+<li><code>F</code> - float</li>
+<li><code>D</code> - double</li>
+<li><code>V</code> - void</li>
+</ul>
+<h3 id="オブジェクト型"><a class="header" href="#オブジェクト型">オブジェクト型</a></h3>
+<ul>
+<li><code>Ljava/lang/String;</code> - Stringクラス</li>
+<li><code>L...classname...;</code> - 任意のクラス</li>
+</ul>
+<h3 id="配列型"><a class="header" href="#配列型">配列型</a></h3>
+<ul>
+<li><code>[I</code> - int配列</li>
+<li><code>[Ljava/lang/String;</code> - String配列</li>
+</ul>
+<h3 id="例"><a class="header" href="#例">例</a></h3>
+<ul>
+<li><code>(II)I</code> - 2つの整数を加算: <code>int method(int a, int b) { return ...; }</code></li>
+<li><code>(Ljava/lang/String;)V</code> - 文字列を受け取り、何も返さない: <code>void method(String s) { ... }</code></li>
+<li><code>()Ljava/lang/String;</code> - パラメータなし、文字列を返す: <code>String method() { ... }</code></li>
+<li><code>([Ljava/lang/String;)V</code> - 文字列配列を受け取る: <code>void method(String[] args) { ... }</code></li>
+</ul>
+<h2 id="クラス参照"><a class="header" href="#クラス参照">クラス参照</a></h2>
+<p>クラスは完全修飾名を<code>/</code>区切りで参照されます:</p>
+<ul>
+<li><code>java/lang/String</code></li>
+<li><code>java/util/ArrayList</code></li>
+<li><code>com/mycompany/MyClass</code></li>
+</ul>
+<p>bytekinでは、通常、ドット付きの標準Java記法を使用します:</p>
+<ul>
+<li><code>java.lang.String</code></li>
+<li><code>java.util.ArrayList</code></li>
+<li><code>com.mycompany.MyClass</code></li>
+</ul>
+<h2 id="クラスファイル形式"><a class="header" href="#クラスファイル形式">クラスファイル形式</a></h2>
+<p>コンパイルされた<code>.class</code>ファイルには以下が含まれます:</p>
+<ol>
+<li><strong>マジックナンバー</strong>: クラスファイルとして識別（<code>0xCAFEBABE</code>）</li>
+<li><strong>バージョン</strong>: Javaバージョン情報</li>
+<li><strong>定数プール</strong>: 文字列、メソッド名、フィールド名、型情報</li>
+<li><strong>アクセスフラグ</strong>: public、final、abstractなど</li>
+<li><strong>このクラス</strong>: クラス名</li>
+<li><strong>スーパークラス</strong>: 親クラス</li>
+<li><strong>インターフェース</strong>: 実装されたインターフェース</li>
+<li><strong>フィールド</strong>: クラスメンバー変数</li>
+<li><strong>メソッド</strong>: バイトコード付きメソッド</li>
+<li><strong>属性</strong>: 追加のメタデータ</li>
+</ol>
+<h2 id="重要な注意事項"><a class="header" href="#重要な注意事項">重要な注意事項</a></h2>
+<ul>
+<li>バイトコードは<strong>人間が読めるものではない</strong>が、<strong>体系的で分析可能</strong></li>
+<li><strong>すべてのJavaソースの構造</strong>がバイトコードにマッピングされる</li>
+<li><strong>バイトコードは検証可能</strong> - JVMは実行前に正しさをチェック</li>
+<li><strong>バイトコードは操作可能</strong> - ソースコードなしでプログラム的に操作できる</li>
+</ul>
+<h2 id="次のステップ"><a class="header" href="#次のステップ">次のステップ</a></h2>
+<ul>
+<li><a href="./how-it-works.html">bytekinの動作</a>を学ぶ</li>
+<li><a href="./core-concepts.html">コア概念</a>を理解する</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="core-concepts.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="how-it-works.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="core-concepts.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="how-it-works.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

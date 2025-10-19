@@ -1,0 +1,571 @@
+<!DOCTYPE HTML>
+<html lang="ja" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>トラブルシューティング - bytekin ドキュメント (日本語)</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">bytekin ドキュメント (日本語)</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="トラブルシューティングガイド"><a class="header" href="#トラブルシューティングガイド">トラブルシューティングガイド</a></h1>
+<p>このガイドは、bytekin使用時の一般的な問題を解決するのに役立ちます。</p>
+<h2 id="変換が適用されない"><a class="header" href="#変換が適用されない">変換が適用されない</a></h2>
+<h3 id="症状"><a class="header" href="#症状">症状</a></h3>
+<ul>
+<li>フックメソッドが呼び出されない</li>
+<li>元のコードが変更なしで実行される</li>
+<li>フック内のブレークポイントが到達されない</li>
+</ul>
+<h3 id="原因と解決策"><a class="header" href="#原因と解決策">原因と解決策</a></h3>
+<h4 id="1-不正なクラス名"><a class="header" href="#1-不正なクラス名">1. 不正なクラス名</a></h4>
+<p><code>@ModifyClass</code>の値はバイトコードのクラス名と正確に一致する必要があります。</p>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">@ModifyClass("Calculator")  // 誤り!
+public class CalcHooks { }
+</code></pre>
+<p><strong>解決策:</strong></p>
+<pre><code class="language-java">@ModifyClass("com.example.Calculator")  // 正しい
+public class CalcHooks { }
+</code></pre>
+<p><strong>確認方法:</strong></p>
+<pre><code class="language-bash"># JAR内のすべてのクラスをリスト
+jar tf myapp.jar | grep -i calculator
+</code></pre>
+<h4 id="2-間違ったメソッドディスクリプタ"><a class="header" href="#2-間違ったメソッドディスクリプタ">2. 間違ったメソッドディスクリプタ</a></h4>
+<p><code>methodDesc</code>はバイトコード内のメソッドシグネチャと正確に一致する必要があります。</p>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">// バイトコード内のメソッド: public int add(int a, int b)
+@Inject(methodName = "add", methodDesc = "(int, int)int", at = At.HEAD)  // 誤り!
+public static CallbackInfo hook() { }
+</code></pre>
+<p><strong>解決策:</strong></p>
+<pre><code class="language-java">@Inject(methodName = "add", methodDesc = "(II)I", at = At.HEAD)  // 正しい
+public static CallbackInfo hook() { }
+</code></pre>
+<p><strong>正しいディスクリプタの見つけ方:</strong></p>
+<pre><code class="language-bash"># javapを使用してメソッドシグネチャを確認
+javap -c com.example.Calculator | grep -A 5 "public int add"
+</code></pre>
+<h4 id="3-フッククラスがbuilderに渡されていない"><a class="header" href="#3-フッククラスがbuilderに渡されていない">3. フッククラスがBuilderに渡されていない</a></h4>
+<p>フッククラスはBuilderに渡す必要があります。</p>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">BytekinTransformer transformer = new BytekinTransformer.Builder()
+    .build();  // フックはどこ?
+</code></pre>
+<p><strong>解決策:</strong></p>
+<pre><code class="language-java">BytekinTransformer transformer = new BytekinTransformer.Builder(MyHooks.class)
+    .build();  // フッククラスを渡す
+</code></pre>
+<h4 id="4-クラスがまだロードされていない"><a class="header" href="#4-クラスがまだロードされていない">4. クラスがまだロードされていない</a></h4>
+<p>変換は、JVMがクラスをロードする前に適用する必要があります。</p>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">// クラスがすでにロード済み
+Class&lt;?&gt; clazz = Class.forName("com.example.MyClass");
+
+// 今変換しようとしている - 遅すぎる!
+byte[] transformed = transformer.transform("com.example.MyClass", bytecode);
+</code></pre>
+<p><strong>解決策:</strong></p>
+<ul>
+<li>ロード中に変換を適用するカスタム<code>ClassLoader</code>を使用</li>
+<li>またはクラスロードをインターセプトするJava instrumentation/agentsを使用</li>
+</ul>
+<h2 id="型不一致エラー"><a class="header" href="#型不一致エラー">型不一致エラー</a></h2>
+<h3 id="症状-1"><a class="header" href="#症状-1">症状</a></h3>
+<ul>
+<li><code>java.lang.ClassCastException</code></li>
+<li>メソッドから誤った値が返される</li>
+<li>型の非互換性エラー</li>
+</ul>
+<h3 id="一般的な原因"><a class="header" href="#一般的な原因">一般的な原因</a></h3>
+<h4 id="1-callbackinfoの間違った戻り値型"><a class="header" href="#1-callbackinfoの間違った戻り値型">1. CallbackInfoの間違った戻り値型</a></h4>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">@Inject(methodName = "getCount", methodDesc = "()I", at = At.HEAD)
+public static CallbackInfo wrongReturn() {
+    CallbackInfo ci = new CallbackInfo();
+    ci.cancelled = true;
+    ci.returnValue = "42";  // intの代わりにString!
+    return ci;
+}
+</code></pre>
+<p><strong>解決策:</strong></p>
+<pre><code class="language-java">@Inject(methodName = "getCount", methodDesc = "()I", at = At.HEAD)
+public static CallbackInfo correctReturn() {
+    CallbackInfo ci = new CallbackInfo();
+    ci.cancelled = true;
+    ci.returnValue = 42;  // 正しい: int
+    return ci;
+}
+</code></pre>
+<h4 id="2-フックメソッドの間違ったパラメータ型"><a class="header" href="#2-フックメソッドの間違ったパラメータ型">2. フックメソッドの間違ったパラメータ型</a></h4>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">// ターゲットメソッド: void process(int count, String name)
+@Inject(methodName = "process", methodDesc = "(ILjava/lang/String;)V", at = At.HEAD)
+public static CallbackInfo wrongParams(String name, int count) {  // 逆!
+    return CallbackInfo.empty();
+}
+</code></pre>
+<p><strong>解決策:</strong></p>
+<pre><code class="language-java">@Inject(methodName = "process", methodDesc = "(ILjava/lang/String;)V", at = At.HEAD)
+public static CallbackInfo correctParams(int count, String name) {  // 正しい順序
+    return CallbackInfo.empty();
+}
+</code></pre>
+<h4 id="3-引数を間違った型に変更"><a class="header" href="#3-引数を間違った型に変更">3. 引数を間違った型に変更</a></h4>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">@Invoke(..., shift = Shift.BEFORE)
+public static CallbackInfo wrongArgType() {
+    CallbackInfo ci = new CallbackInfo();
+    ci.modifyArgs = new Object[]{"100"};  // intの代わりにString
+    return ci;
+}
+</code></pre>
+<p><strong>解決策:</strong></p>
+<pre><code class="language-java">@Invoke(..., shift = Shift.BEFORE)
+public static CallbackInfo correctArgType() {
+    CallbackInfo ci = new CallbackInfo();
+    ci.modifyArgs = new Object[]{100};  // 正しい: int
+    return ci;
+}
+</code></pre>
+<h2 id="ヌルポインタ例外"><a class="header" href="#ヌルポインタ例外">ヌルポインタ例外</a></h2>
+<h3 id="症状-2"><a class="header" href="#症状-2">症状</a></h3>
+<ul>
+<li>変換中のNPE</li>
+<li>変換されたメソッド呼び出し時のNPE</li>
+<li>バイトコードから発生するスタックトレース</li>
+</ul>
+<h3 id="原因と解決策-1"><a class="header" href="#原因と解決策-1">原因と解決策</a></h3>
+<h4 id="1-インジェクションからnullを返す"><a class="header" href="#1-インジェクションからnullを返す">1. インジェクションからnullを返す</a></h4>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">@Inject(methodName = "getValue", methodDesc = "()Ljava/lang/String;", at = At.HEAD)
+public static CallbackInfo returnNull() {
+    CallbackInfo ci = new CallbackInfo();
+    ci.cancelled = true;
+    ci.returnValue = null;  // オブジェクトには有効だが、期待されていない可能性
+    return ci;
+}
+</code></pre>
+<p><strong>解決策:</strong></p>
+<ul>
+<li>nullが返される可能性があることを文書化</li>
+<li>または代わりにデフォルト値を返す:</li>
+</ul>
+<pre><code class="language-java">ci.returnValue = "";  // nullの代わりに空文字列
+</code></pre>
+<h4 id="2-フック内でnullパラメータにアクセス"><a class="header" href="#2-フック内でnullパラメータにアクセス">2. フック内でnullパラメータにアクセス</a></h4>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">@Inject(methodName = "process", methodDesc = "(Ljava/lang/String;)V", at = At.HEAD)
+public static CallbackInfo unsafeAccess(String input) {
+    System.out.println(input.length());  // inputがnullの場合NPE!
+    return CallbackInfo.empty();
+}
+</code></pre>
+<p><strong>解決策:</strong></p>
+<pre><code class="language-java">@Inject(methodName = "process", methodDesc = "(Ljava/lang/String;)V", at = At.HEAD)
+public static CallbackInfo safeAccess(String input) {
+    if (input != null) {
+        System.out.println(input.length());
+    }
+    return CallbackInfo.empty();
+}
+</code></pre>
+<h2 id="パフォーマンスの問題"><a class="header" href="#パフォーマンスの問題">パフォーマンスの問題</a></h2>
+<h3 id="症状-3"><a class="header" href="#症状-3">症状</a></h3>
+<ul>
+<li>アプリケーションの起動が遅い</li>
+<li>メモリ使用量が多い</li>
+<li>応答時間が低下</li>
+</ul>
+<h3 id="原因と解決策-2"><a class="header" href="#原因と解決策-2">原因と解決策</a></h3>
+<h4 id="1-複雑なフックメソッド"><a class="header" href="#1-複雑なフックメソッド">1. 複雑なフックメソッド</a></h4>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">@Inject(methodName = "process", methodDesc = "()V", at = At.HEAD)
+public static CallbackInfo slowHook() {
+    // データベースクエリ
+    List&lt;Item&gt; items = database.queryAll();
+    // ファイルI/O
+    Files.write(Paths.get("log.txt"), data);
+    // 高コストな計算
+    // ...
+    return CallbackInfo.empty();
+}
+</code></pre>
+<p><strong>解決策:</strong></p>
+<ul>
+<li>フックをシンプルで高速に保つ</li>
+<li>高コストな作業をバックグラウンドスレッドに延期</li>
+<li>リソースの遅延初期化を使用</li>
+</ul>
+<h4 id="2-トランスフォーマーの繰り返しビルド"><a class="header" href="#2-トランスフォーマーの繰り返しビルド">2. トランスフォーマーの繰り返しビルド</a></h4>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">for (String className : classNames) {
+    // 各クラスごとに新しいトランスフォーマーを作成!
+    BytekinTransformer transformer = new BytekinTransformer.Builder(Hooks.class)
+        .build();
+    transformer.transform(className, bytecode);
+}
+</code></pre>
+<p><strong>解決策:</strong></p>
+<pre><code class="language-java">// 1回ビルドして、何度も再利用
+BytekinTransformer transformer = new BytekinTransformer.Builder(Hooks.class)
+    .build();
+
+for (String className : classNames) {
+    transformer.transform(className, bytecode);
+}
+</code></pre>
+<h4 id="3-不要なクラスの変換"><a class="header" href="#3-不要なクラスの変換">3. 不要なクラスの変換</a></h4>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">// 必要ない場合でも、すべてのクラスに変換を適用
+for (String className : allClasses) {
+    byte[] transformed = transformer.transform(className, bytecode);
+}
+</code></pre>
+<p><strong>解決策:</strong></p>
+<ul>
+<li>必要な特定のクラスのみを変換</li>
+<li>フィルタリング/命名パターンを使用</li>
+<li>ホットスポットを特定するためにプロファイル</li>
+</ul>
+<h2 id="バイトコード検証エラー"><a class="header" href="#バイトコード検証エラー">バイトコード検証エラー</a></h2>
+<h3 id="症状-4"><a class="header" href="#症状-4">症状</a></h3>
+<ul>
+<li>クラスロード時の<code>java.lang.VerifyError</code></li>
+<li>「Illegal type at offset X」エラー</li>
+<li>スタックトレースが解釈困難</li>
+</ul>
+<h3 id="一般的な原因-1"><a class="header" href="#一般的な原因-1">一般的な原因</a></h3>
+<h4 id="1-無効なバイトコード変更"><a class="header" href="#1-無効なバイトコード変更">1. 無効なバイトコード変更</a></h4>
+<p>これは通常、変換が無効なバイトコードを作成したことを意味します。</p>
+<p><strong>デバッグ方法:</strong></p>
+<ol>
+<li><code>javap</code>を使用して変換されたバイトコードを検査</li>
+<li>異常な命令シーケンスを探す</li>
+<li>戻り値型が一致することを確認</li>
+</ol>
+<h4 id="2-不正なメソッドディスクリプタ"><a class="header" href="#2-不正なメソッドディスクリプタ">2. 不正なメソッドディスクリプタ</a></h4>
+<p>不正なディスクリプタは検証失敗を引き起こす可能性があります。</p>
+<p><strong>解決策:</strong></p>
+<ul>
+<li>すべてのメソッドディスクリプタを再確認</li>
+<li>確認のためにオンラインディスクリプタコンバータを使用</li>
+<li><code>javap</code>出力と比較</li>
+</ul>
+<h2 id="メソッドが見つからない"><a class="header" href="#メソッドが見つからない">メソッドが見つからない</a></h2>
+<h3 id="症状-5"><a class="header" href="#症状-5">症状</a></h3>
+<ul>
+<li>特定のメソッドが変換されていない</li>
+<li>オーバーロードされたメソッドが問題を引き起こす</li>
+<li>コンストラクタ変換が失敗</li>
+</ul>
+<h3 id="原因と解決策-3"><a class="header" href="#原因と解決策-3">原因と解決策</a></h3>
+<h4 id="1-オーバーロードされたメソッド"><a class="header" href="#1-オーバーロードされたメソッド">1. オーバーロードされたメソッド</a></h4>
+<p>オーバーロードされたメソッドは完全なディスクリプタで区別する必要があります。</p>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">// クラスに複数のadd()メソッドがある
+// add(int, int) と add(double, double)
+
+@Inject(methodName = "add", methodDesc = "(II)I", at = At.HEAD)  // intバージョンのみに一致
+public static CallbackInfo hook() { }
+</code></pre>
+<p><strong>解決策:</strong></p>
+<ul>
+<li>パラメータと戻り値型を含む完全なディスクリプタを使用</li>
+<li>ディスクリプタが自動的にオーバーロードを区別</li>
+</ul>
+<h4 id="2-プライベートまたは内部メソッド"><a class="header" href="#2-プライベートまたは内部メソッド">2. プライベートまたは内部メソッド</a></h4>
+<p>一部のプライベートメソッドはアクセスできない可能性があります。</p>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">@Inject(methodName = "internalMethod", methodDesc = "()V", at = At.HEAD)  // プライベートメソッド
+public static CallbackInfo hook() { }
+</code></pre>
+<p><strong>解決策:</strong></p>
+<ul>
+<li>メソッドが合成またはブリッジメソッドでないことを確認</li>
+<li>メソッド名とディスクリプタが正確に正しいことを確認</li>
+</ul>
+<h2 id="変換されたクラスをロードできない"><a class="header" href="#変換されたクラスをロードできない">変換されたクラスをロードできない</a></h2>
+<h3 id="症状-6"><a class="header" href="#症状-6">症状</a></h3>
+<ul>
+<li>変換後のClassNotFoundException</li>
+<li>クラスが見つからないようだ</li>
+<li>カスタムClassLoaderの問題</li>
+</ul>
+<h3 id="原因と解決策-4"><a class="header" href="#原因と解決策-4">原因と解決策</a></h3>
+<h4 id="1-不正なclassloaderセットアップ"><a class="header" href="#1-不正なclassloaderセットアップ">1. 不正なClassLoaderセットアップ</a></h4>
+<p><strong>問題:</strong></p>
+<pre><code class="language-java">// デフォルトのクラスローダーで変換されたバイトコードを使用しようとしている
+byte[] transformed = transformer.transform("com.example.MyClass", bytecode);
+Class&lt;?&gt; clazz = Class.forName("com.example.MyClass");  // 変換されたバイトコードを使用しない!
+</code></pre>
+<p><strong>解決策:</strong></p>
+<ul>
+<li>変換されたバイトコードを使用するカスタムClassLoaderを作成</li>
+<li>またはinstrumentation/agentsを使用してロードをインターセプト</li>
+</ul>
+<h4 id="2-バイトコードの破損"><a class="header" href="#2-バイトコードの破損">2. バイトコードの破損</a></h4>
+<p>変換が無効なバイトコードを生成した可能性があります。</p>
+<p><strong>解決策:</strong></p>
+<ul>
+<li>変換がバイトコードを破損していないことを確認</li>
+<li>バイトコードのサイズ/整合性を確認</li>
+<li>バイトコード検査ツールを使用</li>
+</ul>
+<h2 id="デバッグのヒント"><a class="header" href="#デバッグのヒント">デバッグのヒント</a></h2>
+<h3 id="1-詳細な出力を有効にする"><a class="header" href="#1-詳細な出力を有効にする">1. 詳細な出力を有効にする</a></h3>
+<pre><code class="language-java">// フックにデバッグログを追加
+@Inject(methodName = "process", methodDesc = "()V", at = At.HEAD)
+public static CallbackInfo debug() {
+    System.out.println("[DEBUG] Hook executed");
+    System.out.println("[DEBUG] Stack: " + Arrays.toString(Thread.currentThread().getStackTrace()));
+    return CallbackInfo.empty();
+}
+</code></pre>
+<h3 id="2-バイトコードを検査"><a class="header" href="#2-バイトコードを検査">2. バイトコードを検査</a></h3>
+<pre><code class="language-bash"># 変換されたバイトコードを表示
+javap -c -private TransformedClass.class
+
+# インジェクトされた呼び出しを探す
+</code></pre>
+<h3 id="3-バイトコードビューアを使用"><a class="header" href="#3-バイトコードビューアを使用">3. バイトコードビューアを使用</a></h3>
+<p>Bytecode ViewerやIDEAプラグインなどのツールがバイトコードの可視化に役立ちます。</p>
+<h3 id="4-パフォーマンスをプロファイル"><a class="header" href="#4-パフォーマンスをプロファイル">4. パフォーマンスをプロファイル</a></h3>
+<pre><code class="language-bash"># JProfilerまたはYourKitを使用してボトルネックを特定
+# メモリ使用量とCPU時間を監視
+</code></pre>
+<h2 id="よくある質問"><a class="header" href="#よくある質問">よくある質問</a></h2>
+<p><strong>Q: ブートストラップクラスを変換できますか?</strong>
+A: 標準のクラスローダーでは簡単ではありません。instrumentation APIでJavaエージェントを使用してください。</p>
+<p><strong>Q: 変換はシリアライゼーションに影響しますか?</strong>
+A: 変換されたクラスは異なるバイトコードを持ちますが、フィールドを変更しなければ同じシリアライゼーション形式です。</p>
+<p><strong>Q: bytekinをSpring Bootで使用できますか?</strong>
+A: はい、ただしカスタムクラスロードを設定するか、エージェントを使用する必要があります。</p>
+<h2 id="ヘルプを得る"><a class="header" href="#ヘルプを得る">ヘルプを得る</a></h2>
+<ol>
+<li>このトラブルシューティングガイドを確認</li>
+<li><a href="./best-practices.html">ベストプラクティス</a>を確認</li>
+<li><a href="./examples.html">例</a>を確認</li>
+<li><a href="https://github.com/brqnko/bytekin/issues">GitHub</a>でissueを開く</li>
+</ol>
+<h2 id="次のステップ"><a class="header" href="#次のステップ">次のステップ</a></h2>
+<ul>
+<li><a href="./best-practices.html">ベストプラクティス</a>を確認する</li>
+<li><a href="./examples.html">例</a>を確認する</li>
+<li>GitHubでissueを報告する</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="faq.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="faq.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
