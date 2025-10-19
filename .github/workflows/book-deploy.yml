@@ -5,6 +5,8 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -20,12 +22,12 @@ jobs:
 
       - name: Create 'public' directory
         run: mkdir public
-
+      
       - name: Build English Book (en)
-        run: mdbook build docs/en -d ../public/en
+        run: mdbook build docs/en -d ./public/en
 
       - name: Build Japanese Book (ja)
-        run: mdbook build docs/ja -d ../public/ja
+        run: mdbook build docs/ja -d ./public/ja
 
       - name: Create root index.html for redirect
         run: |
