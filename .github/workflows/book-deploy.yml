@@ -21,13 +21,15 @@ jobs:
           mdbook-version: 'latest'
 
       - name: Create 'public' directory
-        run: mkdir public
-      
+        run: mkdir -p public
+
       - name: Build English Book (en)
-        run: mdbook build docs/en -d ./public/en
+        working-directory: docs/en
+        run: mdbook build --dest-dir "$GITHUB_WORKSPACE/public/en"
 
       - name: Build Japanese Book (ja)
-        run: mdbook build docs/ja -d ./public/ja
+        working-directory: docs/ja
+        run: mdbook build --dest-dir "$GITHUB_WORKSPACE/public/ja"
 
       - name: Create root index.html for redirect
         run: |
